@@ -626,8 +626,10 @@ Expected: 200. 검색어가 없으면 API를 부르지 않으므로 빈 검색�
 
 `/register/place/search?q=오월`을 연다.
 
-Expected: 500. 서버 로그에 `환경변수 NAVER_SEARCH_CLIENT_ID가 없습니다`가 찍힌다.
-이것이 설계가 정한 동작이다 — 검색 화면에서 검색이 죽으면 보여 줄 것이 없다.
+Expected: 200이지만 "검색을 불러오지 못했어요" 상태. 페이지의 `try/catch`가
+환경변수 예외까지 함께 잡는다. 서버 로그에
+`[place-search] 지역검색 호출 실패 Error: 환경변수 NAVER_SEARCH_CLIENT_ID가 없습니다`가
+찍혀야 한다 — 사용자는 어차피 손쓸 수 없고, 개발자는 여기서 정확한 원인을 본다.
 
 - [ ] **Step 4: 커밋**
 
