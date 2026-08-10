@@ -7,7 +7,6 @@ import { NaverMap } from "../../components/ui/NaverMap";
 import { PlaceResultItem } from "../../components/ui/PlaceResultItem";
 import { RestaurantCard } from "../../components/ui/RestaurantCard";
 import { StatTile } from "../../components/ui/StatTile";
-import { searchPlaces } from "../../lib/places/search";
 import { profile, restaurants, metaLine } from "../../lib/restaurants";
 import { Gallery, Specimen } from "../lib/Matrix";
 
@@ -28,6 +27,18 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const sample = restaurants[1];
+
+/**
+ * design.pen `04a Place Search - Results`가 그린 5건. 실제 검색은 네이버
+ * 지역검색 API가 하지만, Storybook에는 서버가 없어 시안 값을 그대로 둡니다.
+ */
+const PLACE_RESULTS = [
+  { name: "오월식당", address: "서울 구로구 디지털로 300" },
+  { name: "오월식당 신도림점", address: "서울 구로구 경인로 662" },
+  { name: "오월 브런치", address: "서울 구로구 디지털로26길 38" },
+  { name: "오월정 한식당", address: "서울 영등포구 도림로 45" },
+  { name: "카페 오월", address: "서울 구로구 구로중앙로 152" },
+];
 
 /**
  * One component, two shapes. The phone row is design.pen's `오월식당 Card`;
@@ -199,11 +210,11 @@ export const PlaceResultItems: Story = {
       >
         <div className="flex w-[328px] flex-col bg-background-canvas p-2">
           <p className="type-label-md text-text-muted">
-            검색 결과 {searchPlaces("오월").length}
+            검색 결과 {PLACE_RESULTS.length}
           </p>
-          {searchPlaces("오월").map((place) => (
+          {PLACE_RESULTS.map((place) => (
             <PlaceResultItem
-              key={place.id}
+              key={place.name}
               href="#"
               name={place.name}
               address={place.address}

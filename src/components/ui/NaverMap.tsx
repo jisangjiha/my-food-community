@@ -29,6 +29,13 @@ export interface NaverMapProps {
   label: string;
   /** NCP Client ID. `null`이면 도식으로 폴백한다. */
   clientId: string | null;
+  /**
+   * 지도 중심. 생략하면 서울시청.
+   *
+   * 고른 장소의 좌표가 없을 때(이름만 직접 입력, 좌표 파싱 실패)를 위해
+   * 선택값이다.
+   */
+  center?: { lat: number; lng: number };
   className?: string;
 }
 
@@ -42,17 +49,25 @@ export interface NaverMapProps {
  * 키가 없거나 스크립트 로드·인증이 실패하면 기존 `MapCanvas` 도식으로 되돌린다.
  * 지도는 등록 흐름의 한 조각이라, 지도가 죽었다고 화면 전체가 죽으면 안 된다.
  */
-export function NaverMap({ label, clientId, className }: NaverMapProps) {
+export function NaverMap({
+  label,
+  clientId,
+  center = SEOUL_CITY_HALL,
+  className,
+}: NaverMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<naver.maps.Map | null>(null);
   const [failed, setFailed] = useState(false);
+
+  // 객체를 그대로 의존성에 넣으면 매 렌더 새 참조라 지도가 끝없이 다시 만들어진다.
+  const { lat, lng } = center;
 
   const initMap = useCallback(() => {
     if (mapRef.current || !containerRef.current) return;
     if (typeof naver === "undefined" || !naver.maps) return;
 
     mapRef.current = new naver.maps.Map(containerRef.current, {
-      center: new naver.maps.LatLng(SEOUL_CITY_HALL.lat, SEOUL_CITY_HALL.lng),
+      center: new naver.maps.LatLng(lat, lng),
       zoom: DEFAULT_ZOOM,
       // 지도는 움직여야 한다 — 핀이 고정이라 위치를 고르는 수단이 이것뿐이다.
       draggable: true,
@@ -65,7 +80,10 @@ export function NaverMap({ label, clientId, className }: NaverMapProps) {
       mapDataControl: false,
       scaleControl: false,
     });
-  }, []);
+    // 좌표가 바뀌면 아래 effect의 정리가 지도를 destroy 하고 새 좌표로 다시
+    // 만든다. 검색 → 등록은 라우트 전환이라 컴포넌트가 어차피 새로 마운트되므로
+    // 이 경로는 사실상 거의 타지 않지만, 타도 맞게 동작한다.
+  }, [lat, lng]);
 
   useEffect(() => {
     window.navermap_authFailure = () => {

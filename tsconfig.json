@@ -6,6 +6,10 @@
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
+    // scripts/*.mts는 Node의 --experimental-strip-types로 바로 돌린다. Node의
+    // ESM 해석기는 상대 경로에 확장자를 요구하므로 `./x.ts`로 써야 하는데,
+    // 기본 설정의 tsc는 그것을 막는다. noEmit이라 켜도 안전하다.
+    "allowImportingTsExtensions": true,
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",
