@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { locationDraftToQuery } from "../../lib/places/location";
 import type { ReverseGeocodeResult } from "../../lib/reverse-geocode/dto";
+import { Button } from "../ui/Button";
 import { ButtonLink } from "../ui/ButtonLink";
 import { Card } from "../ui/Card";
 import { NaverMap } from "../ui/NaverMap";
@@ -105,6 +106,14 @@ export function PlaceLocationPicker({
     return () => abortRef.current?.abort();
   }, []);
 
+  /**
+   * 검색으로 고른 장소가 있으면 지도에 못 박는다.
+   *
+   * 별도 상태를 두지 않는 이유: `name`이 이미 "검색으로 고른 장소인가"를 뜻한다.
+   * 상태를 하나 더 두면 둘이 어긋나는 조합이 생긴다.
+   */
+  const pinned = name !== "";
+
   const handleCenterChange = useCallback(
     (next: { lat: number; lng: number }) => {
       setCenter(next);
@@ -123,7 +132,8 @@ export function PlaceLocationPicker({
         label={name !== "" ? name : "장소 선택"}
         clientId={clientId}
         center={initialCenter}
-        onCenterChange={handleCenterChange}
+        variant={pinned ? "marker" : "picker"}
+        onCenterChange={pinned ? undefined : handleCenterChange}
       />
 
       <Card>
@@ -137,6 +147,23 @@ export function PlaceLocationPicker({
           <p className="type-body-lg text-text-muted">
             {status === "error" ? ADDRESS_ERROR : address}
           </p>
+        )}
+
+        {/*
+          주소를 다시 조회하지 않는다 — 좌표가 그대로라 답이 같다. 지도도 움직이지
+          않으므로, 검색 직후라면 마커가 화면 중앙에 있어 전환 즉시 핀이 그 자리에서
+          시작한다. 거기서 조금씩 끌어 미세조정하면 된다.
+        */}
+        {pinned && (
+          <Button
+            type="button"
+            variant="secondary"
+            leadingIcon="edit"
+            className="mt-1 w-full"
+            onClick={() => setName("")}
+          >
+            지도에서 직접 선택
+          </Button>
         )}
       </Card>
 
