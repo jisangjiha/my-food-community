@@ -41,6 +41,24 @@ export function locationDraftToQuery(draft: PlaceLocationDraft): string {
   }).toString();
 }
 
+/**
+ * 돌아갈 내부 경로. 아니면 기본값.
+ *
+ * `returnTo`는 URL에 실려 오는 값이라 사용자가 무엇이든 넣을 수 있다. 그대로
+ * 링크에 쓰면 오픈 리다이렉트다.
+ *
+ * `/`로 시작하는 것만으로는 부족하다 — `//evil.com`은 프로토콜 상대 URL이라
+ * 브라우저가 외부 주소로 읽는다.
+ */
+export function readReturnTo(
+  value: string | string[] | undefined,
+  fallback: string,
+): string {
+  const path = readParam(value);
+  if (!path.startsWith("/") || path.startsWith("//")) return fallback;
+  return path;
+}
+
 /** 같은 이름으로 두 번 실려 오면 배열이 된다. 그때는 없는 것으로 본다. */
 function readParam(value: string | string[] | undefined): string {
   return typeof value === "string" ? value.trim() : "";

@@ -32,6 +32,15 @@ export interface PlaceLocationPickerProps {
   initialCenter: { lat: number; lng: number };
   /** NCP Client ID. null이면 지도가 도식으로 폴백한다. */
   clientId: string | null;
+  /**
+   * "이 위치로 …" 버튼이 갈 곳. 기본은 등록 화면이다.
+   *
+   * 수정 흐름에서 장소를 바꾸러 오면 여기로 되돌아가야 한다. 페이지가 이미
+   * `readReturnTo`로 걸러 넘겨준다 — 이 컴포넌트는 검사하지 않는다.
+   */
+  returnTo?: string;
+  /** 버튼 문구. 수정 흐름에서 "등록하기"는 거짓말이다. */
+  confirmLabel?: string;
 }
 
 /**
@@ -48,6 +57,8 @@ export function PlaceLocationPicker({
   initialAddress,
   initialCenter,
   clientId,
+  returnTo = "/register",
+  confirmLabel = "이 위치로 등록하기",
 }: PlaceLocationPickerProps) {
   const [name, setName] = useState(initialName);
   const [address, setAddress] = useState(initialAddress);
@@ -137,11 +148,11 @@ export function PlaceLocationPicker({
         화면이 곧바로 되돌려보낸다.
       */}
       <ButtonLink
-        href={`/register?${locationDraftToQuery({ name, address, ...center })}`}
+        href={`${returnTo}?${locationDraftToQuery({ name, address, ...center })}`}
         aria-disabled={status !== "idle"}
         className={`w-full ${status !== "idle" ? "pointer-events-none opacity-50" : ""}`}
       >
-        이 위치로 등록하기
+        {confirmLabel}
       </ButtonLink>
     </>
   );

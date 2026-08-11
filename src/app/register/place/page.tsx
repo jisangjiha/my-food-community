@@ -7,6 +7,7 @@ import { parseLatLng } from "../../../lib/local-search/parse";
 import { SEOUL_CITY_HALL } from "../../../lib/maps/constants";
 import { NAVER_MAP_CLIENT_ID } from "../../../lib/maps/env";
 import { PLACE_PENDING_ADDRESS } from "../../../lib/places/dto";
+import { readReturnTo } from "../../../lib/places/location";
 import { reverseGeocode } from "../../../lib/reverse-geocode/service";
 
 /**
@@ -35,7 +36,7 @@ import { reverseGeocode } from "../../../lib/reverse-geocode/service";
 export default async function PlaceRegisterPage(
   props: PageProps<"/register/place">,
 ) {
-  const { name, address, lat, lng } = await props.searchParams;
+  const { name, address, lat, lng, returnTo } = await props.searchParams;
 
   const selectedName = typeof name === "string" ? name.trim() : "";
   // 검색으로 들어왔는지의 판정 기준은 `?address`가 비어 있지 않은지 하나다.
@@ -46,6 +47,9 @@ export default async function PlaceRegisterPage(
     providedAddress !== ""
       ? providedAddress
       : await resolveAddress(center.lat, center.lng);
+  // 사용자가 URL에 무엇이든 넣을 수 있으므로 내부 경로만 통과시킨다.
+  const backTo = readReturnTo(returnTo, "/register");
+  const isEditing = backTo !== "/register";
 
   return (
     <AppShell tabBar={false}>
@@ -81,6 +85,8 @@ export default async function PlaceRegisterPage(
           initialAddress={initialAddress}
           initialCenter={center}
           clientId={NAVER_MAP_CLIENT_ID}
+          returnTo={backTo}
+          confirmLabel={isEditing ? "이 위치로 변경하기" : "이 위치로 등록하기"}
         />
       </PageContainer>
     </AppShell>
