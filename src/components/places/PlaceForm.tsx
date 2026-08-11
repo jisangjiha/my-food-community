@@ -12,6 +12,7 @@ import {
   PLACE_NAME_MAX_LENGTH,
   PLACE_TITLE_MAX_LENGTH,
   type PlaceDto,
+  type PlaceImageDto,
 } from "../../lib/places/dto";
 import {
   locationDraftToQuery,
@@ -31,38 +32,53 @@ const IMAGE_LABELS = PLACE_IMAGE_MIME_TYPES.map((type) =>
   type.split("/")[1].toUpperCase(),
 ).join(", ");
 
-export interface PlaceRegisterFormProps {
+export interface PlaceFormProps {
   /** 앞 화면에서 고른 장소. 이름은 비어 있을 수 있다. */
   location: PlaceLocationDraft;
+  /**
+   * 고칠 글. 없으면 새 글이다.
+   *
+   * `mode: "edit"` 같은 플래그를 쓰지 않는 이유: 플래그를 두면 "수정인데 글이
+   * 없는" 상태가 타입상 가능해진다.
+   */
+  place?: PlaceDto;
 }
 
 /**
- * 맛집 등록 폼 — design.pen `03 Register Page - Place Entry`.
+ * 맛집 등록·수정 폼 — design.pen `03 Register Page - Place Entry`.
  *
- * 제출은 `ProfileEditForm`과 같은 방식이다. `FormData`를 만들어
- * `POST /api/places`에 보내고, 성공하면 만들어진 글로 이동한다. 서버 액션을
- * 새로 만들지 않는 이유는 그 라우트와 `readCreatePlaceInput`이 이미 있고
- * 검증까지 끝나 있어서다 — 같은 규칙을 부르는 입구가 둘이 되면 언젠가 갈라진다.
+ * 등록과 수정이 한 컴포넌트인 이유: 다른 것은 초기값, 사진 두 종류, 요청 세
+ * 가지뿐이고 필드·검증·에러 표시는 전부 같다. 나누면 그 전부가 두 벌이 되고
+ * 한쪽만 고치는 날이 온다.
+ *
+ * 제출은 `ProfileEditForm`과 같은 방식이다. `FormData`를 만들어 BFF 라우트에
+ * 보내고, 성공하면 그 글로 이동한다. 서버 액션을 새로 만들지 않는 이유는 그
+ * 라우트와 입력 검증이 이미 있어서다 — 같은 규칙을 부르는 입구가 둘이 되면
+ * 언젠가 갈라진다.
  *
  * 주소는 입력 칸이 아니다. 손으로 고치면 좌표와 어긋나 상세 화면이 거짓말을 한다.
  * 바꾸려면 "장소 다시 선택"으로 지도 화면에 돌아간다.
  */
-export function PlaceRegisterForm({ location }: PlaceRegisterFormProps) {
+export function PlaceForm({ location, place }: PlaceFormProps) {
   const router = useRouter();
 
   const [name, setName] = useState(location.name);
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const [title, setTitle] = useState(place?.title ?? "");
+  const [content, setContent] = useState(place?.content ?? "");
+  /** 그대로 둘 기존 사진. 지우면 여기서 빠지고 서버가 실제로 지운다. */
+  const [kept, setKept] = useState<PlaceImageDto[]>(place?.images ?? []);
   const [files, setFiles] = useState<File[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+
+  const imageCount = kept.length + files.length;
 
   const canSave =
     !saving &&
     name.trim() !== "" &&
     title.trim() !== "" &&
     content.trim().length >= PLACE_CONTENT_MIN_LENGTH &&
-    files.length > 0;
+    imageCount > 0;
 
   /**
    * 고른 파일을 담는다. 형식·크기·개수를 여기서 미리 거른다.
@@ -86,7 +102,7 @@ export function PlaceRegisterForm({ location }: PlaceRegisterFormProps) {
       accepted.push(file);
     }
 
-    const room = PLACE_IMAGE_MAX_COUNT - files.length;
+    const room = PLACE_IMAGE_MAX_COUNT - imageCount;
     const taken = accepted.slice(0, Math.max(room, 0));
     if (accepted.length > taken.length) {
       rejected.push(`사진은 ${PLACE_IMAGE_MAX_COUNT}장까지 올릴 수 있습니다.`);
@@ -98,6 +114,10 @@ export function PlaceRegisterForm({ location }: PlaceRegisterFormProps) {
 
   function removeFile(index: number) {
     setFiles(files.filter((_, i) => i !== index));
+  }
+
+  function removeKept(path: string) {
+    setKept(kept.filter((image) => image.path !== path));
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -115,9 +135,15 @@ export function PlaceRegisterForm({ location }: PlaceRegisterFormProps) {
     body.append("lat", String(location.lat));
     body.append("lng", String(location.lng));
     for (const file of files) body.append("images", file);
+    // 수정은 "바뀐 것"이 아니라 "최종 상태"를 보낸다. 여기 없는 기존 사진은
+    // 서버가 지운다.
+    for (const image of kept) body.append("keepImagePaths", image.path);
 
     try {
-      const response = await fetch("/api/places", { method: "POST", body });
+      const response = await fetch(
+        place ? `/api/places/${place.id}` : "/api/places",
+        { method: place ? "PATCH" : "POST", body },
+      );
       if (!response.ok) {
         const payload = (await response.json().catch(() => null)) as
           | { error?: { message?: string } }
@@ -128,12 +154,12 @@ export function PlaceRegisterForm({ location }: PlaceRegisterFormProps) {
         );
       }
 
-      const place = (await response.json()) as PlaceDto;
+      const saved = (await response.json()) as PlaceDto;
       // 목록 화면들이 서버 컴포넌트라, 캐시를 비우지 않으면 방금 쓴 글이 안 보인다.
-      router.push(`/restaurants/${place.id}`);
+      router.push(`/restaurants/${saved.id}`);
       router.refresh();
     } catch (reason) {
-      console.error("[PlaceRegisterForm] 등록 실패", reason);
+      console.error("[PlaceForm] 저장 실패", reason);
       setError(
         reason instanceof Error
           ? reason.message
@@ -161,18 +187,27 @@ export function PlaceRegisterForm({ location }: PlaceRegisterFormProps) {
       )}
 
       <Dropzone
-        state={files.length === 0 ? "error" : "default"}
+        state={imageCount === 0 ? "error" : "default"}
         helperText={`${IMAGE_LABELS} · 최대 ${MAX_MB}MB · ${PLACE_IMAGE_MAX_COUNT}장까지`}
         guideText={
-          files.length === 0 ? "사진을 1장 이상 올려주세요" : "끌어다 놓거나"
+          imageCount === 0 ? "사진을 1장 이상 올려주세요" : "끌어다 놓거나"
         }
         accept={IMAGE_ACCEPT}
         multiple
         onFilesSelected={addFiles}
       />
 
-      {files.length > 0 && (
+      {imageCount > 0 && (
         <ul className="flex flex-col gap-2">
+          {kept.map((image) => (
+            <li key={image.path}>
+              <FileItem
+                name={image.path.split("/").at(-1) ?? image.path}
+                status="등록된 사진"
+                onDelete={() => removeKept(image.path)}
+              />
+            </li>
+          ))}
           {files.map((file, index) => (
             <li key={`${file.name}-${index}`}>
               <FileItem
@@ -190,7 +225,11 @@ export function PlaceRegisterForm({ location }: PlaceRegisterFormProps) {
         <p className="type-label-md text-text-brand">선택한 위치</p>
         <p className="type-body-lg text-text-default">{location.address}</p>
         <ButtonLink
-          href={`/register/place?${locationDraftToQuery({ ...location, name })}`}
+          href={`/register/place?${locationDraftToQuery({ ...location, name })}${
+            place
+              ? `&returnTo=${encodeURIComponent(`/restaurants/${place.id}/edit`)}`
+              : ""
+          }`}
           variant="secondary"
           leadingIcon="search"
           className="mt-1 w-full"
@@ -242,7 +281,13 @@ export function PlaceRegisterForm({ location }: PlaceRegisterFormProps) {
         leadingIcon="check"
         className="mt-1 w-full"
       >
-        {saving ? "저장 중…" : canSave ? "저장" : "필수 항목 확인 후 저장"}
+        {saving
+          ? "저장 중…"
+          : canSave
+            ? place
+              ? "수정 저장"
+              : "저장"
+            : "필수 항목 확인 후 저장"}
       </Button>
     </form>
   );

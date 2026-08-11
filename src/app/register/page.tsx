@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { Icon } from "../../components/foundation/Icon";
 import { AppShell } from "../../components/layout/AppShell";
 import { PageContainer } from "../../components/layout/PageContainer";
-import { PlaceRegisterForm } from "../../components/places/PlaceRegisterForm";
+import { PlaceForm } from "../../components/places/PlaceForm";
 import { readLocationDraftFromQuery } from "../../lib/places/location";
 
 /**
@@ -53,7 +53,7 @@ export default async function RegisterPage(props: PageProps<"/register">) {
           맛집 등록
         </h1>
 
-        <PlaceRegisterForm location={location} />
+        <PlaceForm location={location} />
       </PageContainer>
     </AppShell>
   );
