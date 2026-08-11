@@ -3,6 +3,7 @@
 import Script from "next/script";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { DEFAULT_ZOOM, SEOUL_CITY_HALL } from "../../lib/maps/constants";
 import {
   CenterPin,
   MAP_CANVAS_SIZES,
@@ -10,14 +11,9 @@ import {
   type MapCanvasSize,
 } from "./MapCanvas";
 
-/**
- * 서울시청. 선택한 장소에 좌표가 아직 없어 지도는 늘 여기서 시작한다.
- * 좌표가 생기면 이 상수 대신 장소의 좌표를 받도록 prop을 연다.
- */
-export const SEOUL_CITY_HALL = { lat: 37.5666103, lng: 126.9783882 };
-
-/** 건물이 구분되는 축척. */
-export const DEFAULT_ZOOM = 16;
+// 상수는 `src/lib/maps/constants.ts`에 있다. 이 파일은 `"use client"`라 서버
+// 컴포넌트가 여기서 값을 가져가면 클라이언트 참조가 되어 서버에서 `undefined`가
+// 된다. 그 사연은 그쪽 파일 주석에 있다.
 
 declare global {
   interface Window {

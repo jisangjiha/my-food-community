@@ -1,13 +1,14 @@
 import { AppShell } from "../../../components/layout/AppShell";
 import { FlowTopBar } from "../../../components/layout/FlowTopBar";
 import { PageContainer } from "../../../components/layout/PageContainer";
+import { PlaceLocationPicker } from "../../../components/places/PlaceLocationPicker";
 import { ButtonLink } from "../../../components/ui/ButtonLink";
-import { Card } from "../../../components/ui/Card";
-import { NaverMap } from "../../../components/ui/NaverMap";
 import { TextField } from "../../../components/ui/TextField";
 import { parseLatLng } from "../../../lib/local-search/parse";
+import { SEOUL_CITY_HALL } from "../../../lib/maps/constants";
 import { NAVER_MAP_CLIENT_ID } from "../../../lib/maps/env";
 import { PLACE_PENDING_ADDRESS } from "../../../lib/places/dto";
+import { reverseGeocode } from "../../../lib/reverse-geocode/service";
 
 /**
  * 장소 등록 — design.pen `04 Place Register - Location`.
@@ -18,9 +19,16 @@ import { PLACE_PENDING_ADDRESS } from "../../../lib/places/dto";
  * 상단 검색창은 장식이 아니라 진짜 폼이다. 입력하고 넘기면 `/register/place/search`로
  * 이동한다. 시안이 그린 것과 같은 `TextField`이므로 상태(포커스·에러)도 그대로 따라간다.
  *
- * 없는 값은 기본값 한 벌로 메운다 — 주소는 `PLACE_PENDING_ADDRESS`, 지도는
- * 서울시청. 검색 결과가 없어 이름만 직접 입력하고 돌아온 경우가 이 규칙에
- * 그대로 얹힌다. 별도 분기가 없다.
+ * 없는 값은 기본값 한 벌로 메운다 — 지도는 서울시청. 주소가 실려 오지 않았으면
+ * 여기서 리버스 지오코딩으로 채운다. 검색 결과가 없어 이름만 직접 입력하고
+ * 돌아온 경우가 이 규칙에 그대로 얹힌다.
+ *
+ * 최초 조회를 클라이언트가 아니라 여기서 하는 이유: 서버 컴포넌트는 BFF 계층
+ * 함수를 직접 부를 수 있고, 그러면 화면이 처음부터 주소를 갖고 그려진다.
+ * 마운트 후에 부르면 왕복이 하나 늘고 주소 자리가 한 번 비어 보인다.
+ *
+ * 지도와 카드는 `PlaceLocationPicker`가 함께 소유한다. 지도를 움직이면 주소가
+ * 따라 바뀌어야 하므로 둘의 상태 주인이 하나여야 한다.
  *
  * 맛집 등록 폼 자체가 아직 배선 전이라(사진·이름·주소 어느 것도 저장되지 않는다),
  * "이 위치로 등록하기"는 고른 장소를 들고 돌아가지 않고 등록 화면으로만 돌아간다.
@@ -32,12 +40,14 @@ export default async function PlaceRegisterPage(
   const { name, address, lat, lng } = await props.searchParams;
 
   const selectedName = typeof name === "string" ? name.trim() : "";
-  const selectedAddress =
-    typeof address === "string" && address.trim() !== ""
-      ? address.trim()
-      : PLACE_PENDING_ADDRESS;
+  // 검색으로 들어왔는지의 판정 기준은 `?address`가 비어 있지 않은지 하나다.
+  const providedAddress = typeof address === "string" ? address.trim() : "";
   // 좌표는 URL로 들어오므로 손으로 고쳐 넣을 수 있다. 검색 결과와 같은 잣대로 검증한다.
-  const center = parseLatLng(lat, lng);
+  const center = parseLatLng(lat, lng) ?? SEOUL_CITY_HALL;
+  const initialAddress =
+    providedAddress !== ""
+      ? providedAddress
+      : await resolveAddress(center.lat, center.lng);
 
   return (
     <AppShell tabBar={false}>
@@ -68,19 +78,12 @@ export default async function PlaceRegisterPage(
           키는 서버에서만 읽어 prop으로 내려간다. 브라우저로 나가는 지점이 이
           한 줄뿐이라, 키가 어디로 새는지 grep 한 번으로 알 수 있다.
         */}
-        <NaverMap
-          label={selectedName !== "" ? selectedName : "장소 선택"}
+        <PlaceLocationPicker
+          initialName={selectedName}
+          initialAddress={initialAddress}
+          initialCenter={center}
           clientId={NAVER_MAP_CLIENT_ID}
-          center={center ?? undefined}
         />
-
-        <Card>
-          <p className="type-label-md text-text-brand">선택한 위치</p>
-          <h2 className="type-heading-md text-text-default">
-            {selectedName !== "" ? selectedName : "장소를 선택해 주세요"}
-          </h2>
-          <p className="type-body-lg text-text-muted">{selectedAddress}</p>
-        </Card>
 
         <ButtonLink href="/register" className="w-full">
           이 위치로 등록하기
@@ -88,4 +91,20 @@ export default async function PlaceRegisterPage(
       </PageContainer>
     </AppShell>
   );
+}
+
+/**
+ * 좌표 → 지번주소. 실패하면 기본 문구로 물러선다.
+ *
+ * 여기서 던지면 지도를 고르는 화면 전체가 죽는다. 주소는 이 화면의 한 조각일
+ * 뿐이고, 주소를 못 얻어도 지도를 움직여 다시 시도할 수 있다. 원인은 로그에 남긴다.
+ */
+async function resolveAddress(lat: number, lng: number): Promise<string> {
+  try {
+    const { address } = await reverseGeocode(lat, lng);
+    return address ?? PLACE_PENDING_ADDRESS;
+  } catch (reason) {
+    console.error("[place-register] 최초 주소 조회 실패", reason);
+    return PLACE_PENDING_ADDRESS;
+  }
 }

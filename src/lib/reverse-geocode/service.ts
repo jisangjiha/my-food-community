@@ -45,8 +45,10 @@ export async function reverseGeocode(
 
   if (!response.ok) {
     const body = await response.text().catch(() => "");
+    // 좌표를 함께 남긴다. 키는 헤더에 있으므로 URL에 비밀값이 없다. 어떤 좌표가
+    // 거절당했는지 모르면 "호출 실패"라는 말만 남아 고칠 실마리가 없다.
     throw new Error(
-      `네이버 리버스 지오코딩 실패 (${response.status}): ${body.slice(0, 200)}`,
+      `네이버 리버스 지오코딩 실패 (${response.status}) coords=${coords}: ${body.slice(0, 200)}`,
     );
   }
 
