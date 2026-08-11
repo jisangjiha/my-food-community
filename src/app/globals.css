@@ -1,26 +1,266 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ── Font ──────────────────────────────────────────────────────────────── */
+
+@font-face {
+  font-family: "Pretendard Variable";
+  src: url("/fonts/PretendardVariable.woff2") format("woff2-variations");
+  font-weight: 45 920;
+  font-style: normal;
+  font-display: swap;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ── Design tokens ─────────────────────────────────────────────────────────
+   Handed off 1:1 from design.pen `variables`. Primitive names and semantic
+   names are kept verbatim so a token in Storybook, in the design file, and in
+   a Tailwind utility all read the same.
+   ──────────────────────────────────────────────────────────────────────── */
+
+/* `static` keeps every token as a CSS variable. Without it Tailwind emits only
+   the ones some utility happens to reference, and unused design tokens would
+   silently disappear from the handoff. */
+@theme static {
+  /* Primitive · brand */
+  --color-brand-50: #faf5fb;
+  --color-brand-100: #f4e9f5;
+  --color-brand-200: #e9d4e9;
+  --color-brand-300: #d5afd4;
+  --color-brand-400: #bc85ba;
+  --color-brand-500: #a263a0;
+  --color-brand-600: #8b4e89;
+  --color-brand-700: #713f6f;
+  --color-brand-800: #5d355b;
+  --color-brand-900: #4d2e4b;
+  --color-brand-950: #301c2f;
+
+  /* Primitive · neutral */
+  --color-neutral-50: #fafafb;
+  --color-neutral-100: #f3f1f5;
+  --color-neutral-200: #e7e3eb;
+  --color-neutral-300: #d2ccd8;
+  --color-neutral-400: #a89fb0;
+  --color-neutral-500: #837989;
+  --color-neutral-600: #665d6c;
+  --color-neutral-700: #524a57;
+  --color-neutral-800: #3b353f;
+  --color-neutral-900: #241f27;
+  --color-neutral-950: #171319;
+
+  /* Primitive · amber (warning) */
+  --color-amber-50: #fef9ec;
+  --color-amber-100: #fcefc9;
+  --color-amber-200: #f9de8f;
+  --color-amber-300: #f5c74e;
+  --color-amber-400: #f1b01f;
+  --color-amber-500: #d9930e;
+  --color-amber-600: #b87209;
+  --color-amber-700: #93520c;
+  --color-amber-800: #7a4211;
+  --color-amber-900: #683812;
+  --color-amber-950: #3c1d05;
+
+  /* Primitive · green (success) */
+  --color-green-50: #ecfbf3;
+  --color-green-100: #d1f5e1;
+  --color-green-200: #a6ebc7;
+  --color-green-300: #6ddaa6;
+  --color-green-400: #42b883;
+  --color-green-500: #23a06c;
+  --color-green-600: #178055;
+  --color-green-700: #156646;
+  --color-green-800: #14513a;
+  --color-green-900: #114331;
+  --color-green-950: #07261b;
+
+  /* Primitive · blue (info) */
+  --color-blue-50: #eef5ff;
+  --color-blue-100: #d9e8ff;
+  --color-blue-200: #bcd7ff;
+  --color-blue-300: #8ebbff;
+  --color-blue-400: #5a97fb;
+  --color-blue-500: #3b75f0;
+  --color-blue-600: #2a5ad6;
+  --color-blue-700: #2447ad;
+  --color-blue-800: #243e88;
+  --color-blue-900: #23386b;
+  --color-blue-950: #182242;
+
+  /* Primitive · rose (error) */
+  --color-rose-50: #fef2f4;
+  --color-rose-100: #fce1e6;
+  --color-rose-200: #f9c6d0;
+  --color-rose-300: #f49cad;
+  --color-rose-400: #ec6684;
+  --color-rose-500: #d94a68;
+  --color-rose-600: #be3251;
+  --color-rose-700: #9e2643;
+  --color-rose-800: #84223c;
+  --color-rose-900: #702038;
+  --color-rose-950: #3e0e1b;
+
+  /* Semantic · text — never a raw hex, always a primitive reference */
+  --color-text-default: var(--color-neutral-900);
+  --color-text-muted: var(--color-neutral-500);
+  --color-text-subtle: var(--color-neutral-400);
+  --color-text-brand: var(--color-brand-600);
+  --color-text-brand-strong: var(--color-brand-700);
+  --color-text-on-brand: var(--color-neutral-50);
+  --color-text-success: var(--color-green-700);
+  --color-text-warning: var(--color-amber-700);
+  --color-text-error: var(--color-rose-600);
+  --color-text-info: var(--color-blue-700);
+
+  /* Semantic · background */
+  --color-background-default: var(--color-neutral-50);
+  --color-background-surface: var(--color-neutral-50);
+  --color-background-subtle: var(--color-neutral-100);
+  --color-background-canvas: var(--color-brand-50);
+  --color-background-brand: var(--color-brand-600);
+  --color-background-brand-strong: var(--color-brand-700);
+  --color-background-brand-muted: var(--color-brand-200);
+  --color-background-brand-subtle: var(--color-brand-100);
+  --color-background-disabled: var(--color-brand-300);
+  --color-background-overlay: var(--color-neutral-950);
+  --color-background-success: var(--color-green-50);
+  --color-background-warning: var(--color-amber-50);
+  --color-background-error: var(--color-rose-50);
+  --color-background-info: var(--color-blue-50);
+
+  /* Semantic · border */
+  --color-border-default: var(--color-neutral-200);
+  --color-border-strong: var(--color-neutral-300);
+  --color-border-brand: var(--color-brand-500);
+  --color-border-success: var(--color-green-500);
+  --color-border-warning: var(--color-amber-500);
+  --color-border-error: var(--color-rose-500);
+  --color-border-error-subtle: var(--color-rose-200);
+  --color-border-info: var(--color-blue-500);
+
+  /* Semantic · other */
+  --color-star: var(--color-amber-400);
+
+  /* Typography */
+  --font-sans: "Pretendard Variable", system-ui, sans-serif;
+
+  --text-100: 12px;
+  --text-200: 14px;
+  --text-300: 16px;
+  --text-400: 20px;
+  --text-500: 24px;
+  --text-600: 28px;
+  --text-700: 32px;
+  --text-800: 36px;
+  --text-900: 40px;
+
+  --font-weight-regular: 400;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --leading-tight: 1.2;
+  --leading-normal: 1.4;
+
+  --tracking-ds: -0.02em;
+
+  /* Spacing */
+  --spacing-8: 8px;
+  --spacing-12: 12px;
+  --spacing-16: 16px;
+  --spacing-20: 20px;
+  --spacing-24: 24px;
+  --spacing-32: 32px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ── Type styles ───────────────────────────────────────────────────────────
+   The 10 styles from 06-ds-foundation-typography.txt. Composed only from the
+   tokens above so a style can never drift from the scale.
+
+   Declared with `@utility`, not `@layer components`, so a style can carry a
+   variant — `md:type-heading-sm` promotes a card title at the tablet
+   breakpoint. A plain component class cannot do that. Font family and tracking
+   are repeated per utility because each one has to stand alone.
+   ──────────────────────────────────────────────────────────────────────── */
+
+@utility type-display-lg {
+  font-family: var(--font-sans);
+  letter-spacing: var(--tracking-ds);
+  font-size: var(--text-800);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--leading-tight);
+}
+@utility type-display-md {
+  font-family: var(--font-sans);
+  letter-spacing: var(--tracking-ds);
+  font-size: var(--text-700);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--leading-tight);
+}
+@utility type-display-sm {
+  font-family: var(--font-sans);
+  letter-spacing: var(--tracking-ds);
+  font-size: var(--text-600);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--leading-tight);
+}
+@utility type-heading-lg {
+  font-family: var(--font-sans);
+  letter-spacing: var(--tracking-ds);
+  font-size: var(--text-500);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--leading-tight);
+}
+@utility type-heading-md {
+  font-family: var(--font-sans);
+  letter-spacing: var(--tracking-ds);
+  font-size: var(--text-400);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--leading-tight);
+}
+@utility type-heading-sm {
+  font-family: var(--font-sans);
+  letter-spacing: var(--tracking-ds);
+  font-size: var(--text-300);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--leading-tight);
+}
+@utility type-body-lg {
+  font-family: var(--font-sans);
+  letter-spacing: var(--tracking-ds);
+  font-size: var(--text-300);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--leading-normal);
+}
+@utility type-body-md {
+  font-family: var(--font-sans);
+  letter-spacing: var(--tracking-ds);
+  font-size: var(--text-200);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--leading-normal);
+}
+@utility type-label-lg {
+  font-family: var(--font-sans);
+  letter-spacing: var(--tracking-ds);
+  font-size: var(--text-200);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--leading-normal);
+}
+@utility type-label-md {
+  font-family: var(--font-sans);
+  letter-spacing: var(--tracking-ds);
+  font-size: var(--text-100);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--leading-normal);
+}
+
+/* ── Base ──────────────────────────────────────────────────────────────────
+   Inside `@layer base` so a utility can override it. An unlayered rule beats
+   every layered one regardless of specificity, which would make
+   `bg-background-canvas` on `<body>` silently do nothing.
+   ──────────────────────────────────────────────────────────────────────── */
+
+@layer base {
+  body {
+    background: var(--color-background-default);
+    color: var(--color-text-default);
+    font-family: var(--font-sans);
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }

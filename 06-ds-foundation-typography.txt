@@ -1,0 +1,61 @@
+다음 디자인시스템 가이드에 맞게 타이포그래피를 렌더할 것.
+
+===
+
+1. 프리미티브 토큰 생성:
+    - 대상:
+      - variables 메뉴
+    - 종류:
+      - font-family: "Pretendard Variable" (파일명: PretendardVariable.woff2)
+    - 사이즈:
+      - font-size-900: 40
+      - font-size-800: 36
+      - font-size-700: 32
+      - font-size-600: 28
+      - font-size-500: 24
+      - font-size-400: 20
+      - font-size-300: 16
+      - font-size-200: 14
+      - font-size-100: 12
+    - 두께:
+      - font-weight-bold: "700"
+      - font-weight-semibold: "600"
+      - font-weight-regular: "400"
+    - 행간:
+      - font-line-height-tight: 1.2
+      - font-line-height-normal: 1.4
+
+2. 타이포그래피 렌더:
+    - 대상:
+      - 신규 프레임
+    - 방식:
+      - 각 구조의 사이즈별 1행 영역 차지
+    - 구조:
+      - display-lg => font-size-800, font-weight-bold    , font-line-height-tight
+      - display-md => font-size-700, font-weight-bold    , font-line-height-tight
+      - display-sm => font-size-600, font-weight-bold    , font-line-height-tight
+      - heading-lg => font-size-500, font-weight-bold    , font-line-height-tight
+      - heading-md => font-size-400, font-weight-bold    , font-line-height-tight
+      - heading-sm => font-size-300, font-weight-semibold, font-line-height-tight
+      - body-lg    => font-size-300, font-weight-regular , font-line-height-normal
+      - body-md    => font-size-200, font-weight-regular , font-line-height-normal
+      - label-lg   => font-size-200, font-weight-semibold, font-line-height-normal
+      - label-md   => font-size-100, font-weight-regular , font-line-height-normal
+    - 공통 자간:
+      - -2%
+      
+3. 컴포넌트 생성:
+    - 대상:
+      - 위에서 렌더한 타이포그래피 영역 프레임
+        - 신규 프레임 생성하지 않음
+    - 방식:
+      - 각 구조의 사이즈별 텍스트 각 각 컴포넌트 생성
+    - 주의사항:
+      - 텍스트를 컴포넌트로 만들어야하며, 이를 감싸는 바깥 영역은 컴포넌트가 되어서는 안됨
+
+3. 최종 검토사항
+    - [  ] 프리미티브 토큰 명칭이 올바르게 되어있는지 확인
+    - [  ] 프리미티브 토큰으로 타이포그래피가 렌더되었는지 확인
+    - [  ] 공통 자간이 반영되었는지 확인
+    - [  ] 타이포그래피 프레임내의 타이포들이 모두 컴포넌트로 전환 되었는지 확인
+    - [  ] 주의사항이 모두 반영되었는지 확인

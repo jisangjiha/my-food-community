@@ -1,0 +1,69 @@
+다음 디자인시스템 가이드에 맞게 아이코노그래피를 렌더할 것.
+
+===
+
+1. 아이코노그래피 렌더:
+    - 대상:
+      - 신규 프레임
+    - 소스:
+      - 루시드 아이콘
+    - 방식:
+      - 20행으로 렌더
+      - 1행당 아이콘 1개 렌더
+      - 아이콘 1개는 총 4개 사이즈로 구성
+        - 16, 20, 24, 32
+      - 20행을 넘기면, 기존의 프레임 내에서 오른쪽 1행부터 렌더
+     - 종류:
+      - arrow-left
+      - arrow-right
+      - arrow-up
+      - arrow-down
+      - chevron-left
+      - chevron-right
+      - chevron-up
+      - chevron-down
+      - home
+      - calendar
+      - copy
+      - refresh
+      - logout
+      - close
+      - menu
+      - search
+      - filter
+      - sort
+      - plus
+      - edit
+      - delete
+      - bookmark
+      - share
+      - more-horizontal
+      - more-vertical
+      - check
+      - info
+      - warning
+      - error
+      - user
+      - settings
+      - notification
+      - heart
+      - star
+      - comment
+      - image
+
+2. 컴포넌트 생성:
+    - 대상:
+      - 위에서 렌더한 아이코노그래피 영역 프레임
+        - 신규 프레임 생성하지 않음
+      - 방식:
+        - 각 아이콘 사이즈별 1개당 각 각 컴포넌트 생성
+          - 아이콘 1개당 4개 컴포넌트
+      - 주의사항:
+        - 아이콘을 컴포넌트로 만들어야하며, 이를 감싸는 바깥 영역은 컴포넌트가 되어서는 안됨
+      
+2. 최종 검토사항
+    - [  ] 루시드 아이콘을 사용하였는지 확인
+    - [  ] 아이콘 사이즈를 올바르게 지켰는지 확인
+    - [  ] 아이콘 종류 개수가 모두 맞는지 확인
+    - [  ] 아이코노그래피 프레임내의 아이콘들이 모두 컴포넌트로 전환되었는지 확인
+    - [  ] 주의사항이 모두 반영되었는지 확인
