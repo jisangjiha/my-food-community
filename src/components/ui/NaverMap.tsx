@@ -82,6 +82,7 @@ export function NaverMap({
   const mapRef = useRef<naver.maps.Map | null>(null);
   const markerRef = useRef<naver.maps.Marker | null>(null);
   const listenerRef = useRef<naver.maps.MapEventListener | null>(null);
+  const zoomListenerRef = useRef<naver.maps.MapEventListener | null>(null);
   const [failed, setFailed] = useState(false);
 
   /**
@@ -141,6 +142,19 @@ export function NaverMap({
     // 바꿔 지도가 다시 만들어졌을 때, 첫 `idle`이 "사용자가 움직였다"로 오인된다.
     lastReportedRef.current = { lat, lng };
 
+    // 줌은 위치를 바꾸려는 조작이 아니라 확인하려는 조작이다. 그런데 휠·핀치
+    // 줌은 커서 쪽으로 확대하느라 중심을 옮긴다. 그대로 두면 고른 가게가 풀리고
+    // 주소가 옆 번지로 바뀌어, 정작 "이 건물이 맞나" 확인하려고 확대한 사용자가
+    // 확인할 대상을 잃는다. 줌으로 밀린 중심은 되돌린다.
+    zoomListenerRef.current = naver.maps.Event.addListener(
+      map,
+      "zoom_changed",
+      () => {
+        const pinned = lastReportedRef.current;
+        map.setCenter(new naver.maps.LatLng(pinned.lat, pinned.lng));
+      },
+    );
+
     listenerRef.current = naver.maps.Event.addListener(map, "idle", () => {
       const nextCenter = map.getCenter();
       // `getCenter()`는 `Point | LatLng` 유니온이다. `Point`의 x/y로도
@@ -178,6 +192,10 @@ export function NaverMap({
       if (listenerRef.current) {
         naver.maps.Event.removeListener(listenerRef.current);
         listenerRef.current = null;
+      }
+      if (zoomListenerRef.current) {
+        naver.maps.Event.removeListener(zoomListenerRef.current);
+        zoomListenerRef.current = null;
       }
       markerRef.current?.setMap(null);
       markerRef.current = null;
