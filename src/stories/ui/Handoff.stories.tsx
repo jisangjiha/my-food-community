@@ -181,6 +181,19 @@ export const NaverMapFallback: Story = {
           />
         </div>
       </Specimen>
+      <Specimen
+        label="marker — 고른 장소 확인 (폴백)"
+        description="variant=marker는 좌표에 마커를 못 박고 지도는 자유롭게 움직입니다. 중심을 보고하지 않아 아무리 끌어도 선택이 바뀌지 않습니다."
+      >
+        <div className="w-[328px]">
+          <NaverMap
+            label="예빈당 성수본점"
+            clientId={null}
+            variant="marker"
+            size="lg"
+          />
+        </div>
+      </Specimen>
     </Gallery>
   ),
 };

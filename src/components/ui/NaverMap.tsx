@@ -41,10 +41,14 @@ export interface NaverMapProps {
    * `picker`는 위치를 고르는 지도다 — 중앙에 고정된 핀 아래로 지도가 흐르고,
    * 드래그·줌으로 위치를 옮긴다.
    *
-   * `static`은 이미 정해진 위치를 보여 주는 지도다. 좌표에 마커를 박고 조작을
-   * 모두 끈다. 상세 화면의 미니지도가 이것이다.
+   * `marker`는 이미 고른 장소를 확인하는 지도다. 좌표에 마커를 못 박고 지도는
+   * 자유롭게 움직인다. 중심을 보고하지 않으므로 아무리 끌어도 고른 장소가
+   * 바뀌지 않는다 — 건물이 맞는지 둘러보려고 확대한 사용자가 확인 대상을 잃지
+   * 않는다.
+   *
+   * `static`은 조작까지 막은 읽기 전용이다. 상세 화면의 미니지도가 이것이다.
    */
-  variant?: "picker" | "static";
+  variant?: "picker" | "marker" | "static";
   /** 높이와 폴백 도식의 규격. `sm` 150px, `lg` 440px. */
   size?: MapCanvasSize;
   /**
@@ -108,7 +112,8 @@ export function NaverMap({
     if (mapRef.current || !containerRef.current) return;
     if (typeof naver === "undefined" || !naver.maps) return;
 
-    const interactive = variant === "picker";
+    const interactive = variant !== "static";
+    const isPicker = variant === "picker";
     const position = new naver.maps.LatLng(lat, lng);
 
     // 지역 변수에 먼저 담는다. `mapRef.current`는 `Map | null`이라 아래 마커
@@ -130,11 +135,13 @@ export function NaverMap({
     });
     mapRef.current = map;
 
-    // 마커는 static에만 있다. picker의 핀이 마커가 아닌 이유는 위 주석에 있다 —
-    // 마커는 좌표에 붙어 지도와 함께 움직이는데, 고르는 화면에 필요한 동작은
-    // 그 반대다.
-    if (!interactive) {
+    // 마커는 picker가 아닌 두 모드에 있다. picker의 핀이 마커가 아닌 이유는 위
+    // 주석에 있다 — 마커는 좌표에 붙어 지도와 함께 움직이는데, 위치를 고르는
+    // 화면에 필요한 동작은 그 반대다.
+    if (!isPicker) {
       markerRef.current = new naver.maps.Marker({ position, map });
+      // 중심을 보고하지 않는다. 이것이 marker 모드의 존재 이유다 — 지도를
+      // 아무리 끌어도 고른 장소가 바뀌지 않는다.
       return;
     }
 
@@ -146,6 +153,8 @@ export function NaverMap({
     // 줌은 커서 쪽으로 확대하느라 중심을 옮긴다. 그대로 두면 고른 가게가 풀리고
     // 주소가 옆 번지로 바뀌어, 정작 "이 건물이 맞나" 확인하려고 확대한 사용자가
     // 확인할 대상을 잃는다. 줌으로 밀린 중심은 되돌린다.
+    //
+    // marker 모드에는 걸지 않는다. 거기서는 중심에 아무 의미가 없다.
     zoomListenerRef.current = naver.maps.Event.addListener(
       map,
       "zoom_changed",
