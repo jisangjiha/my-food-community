@@ -119,7 +119,14 @@ export function NaverMap({
       aria-label="장소 선택 지도"
       className={`relative w-full overflow-hidden rounded-2xl border border-border-default bg-background-subtle ${MAP_CANVAS_SIZES.lg.height} ${className ?? ""}`}
     >
-      <div ref={containerRef} className="absolute inset-0" />
+      {/*
+        크기를 위치(`absolute inset-0`)가 아니라 높이·폭으로 준다. 네이버 지도는
+        생성 시 이 요소에 `position: relative`를 인라인으로 덮어쓰는데, 인라인은
+        어떤 클래스보다도 세다(`MapCanvas`의 높이 주석과 같은 함정이다). 그러면
+        `inset-0`의 top/bottom은 늘리는 힘을 잃고, 네이버가 만든 자식은 전부
+        absolute라 콘텐츠 높이가 0이 된다 — 타일은 받아 놓고 그릴 면적이 없어진다.
+      */}
+      <div ref={containerRef} className="h-full w-full" />
       <CenterPin size="lg" />
       <Script
         id="naver-maps"
