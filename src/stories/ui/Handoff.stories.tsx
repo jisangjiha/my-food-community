@@ -153,6 +153,9 @@ export const MapCanvases: Story = {
  * 핀은 마커가 아니라 화면 중앙에 고정된 오버레이입니다. 지도가 그 밑에서
  * 움직이고, `pointer-events-none` 덕분에 핀 위에서 시작한 드래그도 지도로
  * 전달됩니다.
+ *
+ * `variant="static"`은 상세 화면용입니다. 중앙 고정 핀 대신 좌표에 마커를 박고
+ * 드래그·줌을 끕니다. 살아 있는 모습은 앱의 `/restaurants/{id}`에서 확인하세요.
  */
 export const NaverMapFallback: Story = {
   render: () => (
@@ -163,6 +166,19 @@ export const NaverMapFallback: Story = {
       >
         <div className="w-[328px]">
           <NaverMap label="오월식당" clientId={null} />
+        </div>
+      </Specimen>
+      <Specimen
+        label="static — 상세 미니지도 (폴백)"
+        description="variant=static은 좌표에 마커를 박고 조작을 끕니다. 키가 없어 여기서는 sm 규격의 도식으로 보입니다."
+      >
+        <div className="w-[328px]">
+          <NaverMap
+            label="예빈당 성수본점"
+            clientId={null}
+            variant="static"
+            size="sm"
+          />
         </div>
       </Specimen>
     </Gallery>
