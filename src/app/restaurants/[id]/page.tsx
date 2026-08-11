@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { Icon } from "../../../components/foundation/Icon";
 import { AppShell } from "../../../components/layout/AppShell";
 import { PageContainer } from "../../../components/layout/PageContainer";
+import { ButtonLink } from "../../../components/ui/ButtonLink";
 import { MapPreview } from "../../../components/ui/MapPreview";
 import { NaverMap } from "../../../components/ui/NaverMap";
 import { NotFoundError } from "../../../lib/api/http";
@@ -128,6 +129,21 @@ export default async function DetailPage(props: PageProps<"/restaurants/[id]">) 
             state={location ? "filled" : "empty"}
           />
         </section>
+
+        {/*
+          `isMine`은 지금까지 계산만 되고 쓰이지 않았다. 여기가 그 자리다.
+          삭제는 마이페이지에 이미 있어 여기 두지 않는다.
+        */}
+        {place.isMine && (
+          <ButtonLink
+            href={`/restaurants/${place.id}/edit`}
+            variant="secondary"
+            leadingIcon="edit"
+            className="w-full"
+          >
+            수정
+          </ButtonLink>
+        )}
 
         {rest.length > 0 && (
           <section
