@@ -2,7 +2,6 @@ import { AppShell } from "../../../components/layout/AppShell";
 import { FlowTopBar } from "../../../components/layout/FlowTopBar";
 import { PageContainer } from "../../../components/layout/PageContainer";
 import { PlaceLocationPicker } from "../../../components/places/PlaceLocationPicker";
-import { ButtonLink } from "../../../components/ui/ButtonLink";
 import { TextField } from "../../../components/ui/TextField";
 import { parseLatLng } from "../../../lib/local-search/parse";
 import { SEOUL_CITY_HALL } from "../../../lib/maps/constants";
@@ -30,9 +29,8 @@ import { reverseGeocode } from "../../../lib/reverse-geocode/service";
  * 지도와 카드는 `PlaceLocationPicker`가 함께 소유한다. 지도를 움직이면 주소가
  * 따라 바뀌어야 하므로 둘의 상태 주인이 하나여야 한다.
  *
- * 맛집 등록 폼 자체가 아직 배선 전이라(사진·이름·주소 어느 것도 저장되지 않는다),
- * "이 위치로 등록하기"는 고른 장소를 들고 돌아가지 않고 등록 화면으로만 돌아간다.
- * 폼에 상태가 생기는 시점에 같이 이어 붙일 자리다.
+ * "이 위치로 등록하기"는 `PlaceLocationPicker` 안에 있다. 드래그로 바뀐 위치를
+ * 아는 것이 그 컴포넌트뿐이라, 서버가 그린 링크로는 옛 좌표를 넘기게 된다.
  */
 export default async function PlaceRegisterPage(
   props: PageProps<"/register/place">,
@@ -84,10 +82,6 @@ export default async function PlaceRegisterPage(
           initialCenter={center}
           clientId={NAVER_MAP_CLIENT_ID}
         />
-
-        <ButtonLink href="/register" className="w-full">
-          이 위치로 등록하기
-        </ButtonLink>
       </PageContainer>
     </AppShell>
   );

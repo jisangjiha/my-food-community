@@ -2,7 +2,9 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { locationDraftToQuery } from "../../lib/places/location";
 import type { ReverseGeocodeResult } from "../../lib/reverse-geocode/dto";
+import { ButtonLink } from "../ui/ButtonLink";
 import { Card } from "../ui/Card";
 import { NaverMap } from "../ui/NaverMap";
 import { Skeleton } from "../ui/Skeleton";
@@ -50,6 +52,9 @@ export function PlaceLocationPicker({
   const [name, setName] = useState(initialName);
   const [address, setAddress] = useState(initialAddress);
   const [status, setStatus] = useState<AddressStatus>("idle");
+  // 지도가 멈출 때마다 갱신한다. "이 위치로 등록하기"가 이 값을 들고 간다 —
+  // 서버가 그린 링크는 드래그로 바뀐 위치를 알 수 없다.
+  const [center, setCenter] = useState(initialCenter);
   const abortRef = useRef<AbortController | null>(null);
 
   /** 지도를 움직였을 때의 조회. 이 컴포넌트가 조회하는 유일한 경로다. */
@@ -90,12 +95,13 @@ export function PlaceLocationPicker({
   }, []);
 
   const handleCenterChange = useCallback(
-    (center: { lat: number; lng: number }) => {
+    (next: { lat: number; lng: number }) => {
+      setCenter(next);
       // 지도를 움직였으면 고른 장소를 벗어난 것이다. 상호명을 그대로 두면
       // "예빈당 성수본점 / 서울특별시 광진구 …"처럼 화면이 거짓말을 한다.
       setName("");
       setStatus("loading");
-      void fetchAddress(center);
+      void fetchAddress(next);
     },
     [fetchAddress],
   );
@@ -122,6 +128,21 @@ export function PlaceLocationPicker({
           </p>
         )}
       </Card>
+
+      {/*
+        서버가 그린 링크가 아니라 여기 있는 이유: 드래그로 바뀐 위치를 아는 것은
+        이 컴포넌트뿐이다.
+
+        주소를 조회하는 중이거나 실패했으면 막는다. 주소 없이 넘어가면 다음
+        화면이 곧바로 되돌려보낸다.
+      */}
+      <ButtonLink
+        href={`/register?${locationDraftToQuery({ name, address, ...center })}`}
+        aria-disabled={status !== "idle"}
+        className={`w-full ${status !== "idle" ? "pointer-events-none opacity-50" : ""}`}
+      >
+        이 위치로 등록하기
+      </ButtonLink>
     </>
   );
 }
