@@ -91,6 +91,43 @@
 `/register/place`에 현재 값을 들고 돌아간다. 그쪽이 이미 검색·지도·리버스
 지오코딩을 갖춘 화면이다.
 
+### 3-2. 장소명은 폼에서 받는다
+
+C에서 "지도를 움직이면 상호명을 지운다"고 정했다. 그런데 이 문서의 2번은 지도 정보
+네 값이 다 있어야 `/register`에 머물게 한다. 둘을 합치면 **검색 없이 지도만 움직여
+위치를 잡은 사용자는 장소명이 없어 되돌려보내지는 막다른 길**에 빠진다.
+
+장소명 칸을 폼에 둔다. 검색으로 골랐으면 그 상호가 기본값으로 채워지고, 드래그로
+잡았으면 직접 쓴다. 시안에 없는 칸이 하나 늘지만, 막히는 경로가 사라지고 장소명의
+주인이 사용자가 된다.
+
+따라서 **리다이렉트 판정에서 `name`을 뺀다.** 주소와 좌표만 있으면 폼으로 들어간다.
+
+```ts
+/** 쿼리로 오가는 장소. 이름은 아직 비어 있을 수 있다. */
+export interface PlaceLocationDraft {
+  name: string;
+  address: string;
+  lat: number;
+  lng: number;
+}
+```
+
+`PlaceLocation`(이름까지 확정된 완성형)과 구분한다. 폼이 제출할 때 사용자가 쓴
+이름을 합쳐 완성형이 되고, 그때 서버의 `readLocation`이 최종 판단을 한다.
+
+### 3-3. "이 위치로 등록하기"는 `PlaceLocationPicker` 안으로 옮긴다
+
+지금 그 버튼은 서버가 그린 `ButtonLink href="/register"`라 **드래그로 바뀐 위치를
+모른다.** 현재 좌표·주소를 아는 것은 상태를 가진 `PlaceLocationPicker`뿐이다.
+
+버튼을 그 안으로 옮기고, 링크는 현재 상태(`name`/`address`/`lat`/`lng`)로 만든다.
+주소를 조회하는 중이거나 실패했으면 비활성한다 — 주소 없이 넘어가면 다음 화면이
+바로 되돌려보낸다.
+
+picker는 이제 현재 중심 좌표도 상태로 들고 있어야 한다. 지금은 초기 좌표만 알고
+드래그 결과를 주소로만 반영한다.
+
 ### 4. 제출은 클라이언트 `fetch`로 한다
 
 `src/components/profile/ProfileEditForm.tsx`가 이미 그 패턴이다 — `useState`로 폼 상태,
@@ -161,8 +198,9 @@ onFilesSelected?: (files: File[]) => void;
 | `src/stories/ui/Form.stories.tsx` | 수정 | Dropzone 스토리 갱신 |
 | `src/components/places/PlaceRegisterForm.tsx` | 신규 | 등록 폼 (클라이언트) |
 | `src/app/register/page.tsx` | 수정 | 목업 → 리다이렉트 + 폼 배선 |
-| `src/app/register/place/page.tsx` | 수정 | 장소를 쿼리로 넘김 |
-| `src/lib/places/location.ts` | 신규 | 쿼리 ↔ `PlaceLocation` 변환 (아래) |
+| `src/app/register/place/page.tsx` | 수정 | 하단 버튼을 picker로 넘김 |
+| `src/components/places/PlaceLocationPicker.tsx` | 수정 | 현재 좌표 상태 + "이 위치로 등록하기" |
+| `src/lib/places/location.ts` | 신규 | 쿼리 ↔ `PlaceLocationDraft` 변환 (아래) |
 
 ### 쿼리 ↔ 장소 변환을 한 곳에 둔다
 
@@ -172,11 +210,19 @@ onFilesSelected?: (files: File[]) => void;
 
 ```ts
 // src/lib/places/location.ts
-export function readLocationFromQuery(
-  params: Record<string, string | string[] | undefined>,
-): PlaceLocation | null;
+export interface PlaceLocationDraft {
+  name: string;
+  address: string;
+  lat: number;
+  lng: number;
+}
 
-export function locationToQuery(location: PlaceLocation): string;
+/** 주소와 좌표가 성해야 한다. 이름은 비어 있어도 된다. */
+export function readLocationDraftFromQuery(
+  params: Record<string, string | string[] | undefined>,
+): PlaceLocationDraft | null;
+
+export function locationDraftToQuery(draft: PlaceLocationDraft): string;
 ```
 
 `server-only`를 붙이지 않는다. 폼(클라이언트)이 "장소 다시 선택" 링크를 만들 때
@@ -187,23 +233,25 @@ export function locationToQuery(location: PlaceLocation): string;
 `readCreatePlaceInput`이 기대하는 이름 그대로다.
 
 ```
-title    글 제목        (맛집 이름)
-content  소개/후기
-images   파일 (여러 개)
-name     장소명
-address  지번주소
-lat, lng 좌표 (문자열)
+title    맛집 이름 (글 제목)   — 사용자 입력
+content  소개/후기            — 사용자 입력
+images   파일 (여러 개)        — 사용자 선택
+name     장소명               — 검색값이 기본, 사용자가 고칠 수 있다
+address  지번주소             — 고른 장소에서 그대로
+lat, lng 좌표 (문자열)         — 고른 장소에서 그대로
 ```
 
 `title`과 `name`은 다르다. `title`은 글 제목("성수동 인생 파스타"),
-`name`은 검색으로 고른 장소명("예빈당 성수본점")이다. 폼에서 사용자가 쓰는 것은
-`title`이고, `name`은 고른 장소에서 그대로 실린다.
+`name`은 장소명("예빈당 성수본점")이다. 둘 다 폼에서 입력하되 `name`은
+검색 결과가 기본값으로 채워진다.
 
 ## 에러 처리
 
 | 경우 | 처리 |
 | --- | --- |
-| 지도 정보 없이 `/register` 진입 | `/register/place`로 리다이렉트 |
+| 주소·좌표 없이 `/register` 진입 | `/register/place`로 리다이렉트 |
+| 장소명 없음 | 해당 필드 `error` + 저장 버튼 비활성 |
+| 주소 조회 중·실패 상태에서 "이 위치로 등록하기" | 버튼 비활성 — 주소 없이 넘어가면 다음 화면이 되돌려보낸다 |
 | 사진 0장 | 저장 버튼 비활성 + Dropzone `error` 상태 |
 | 사진 6장째 선택 | 5장까지만 담고 배너에 "사진은 5장까지" |
 | 5MB 초과·허용하지 않는 형식 | 그 파일만 버리고 배너에 이유 |
@@ -229,7 +277,10 @@ lat, lng 좌표 (문자열)
 8. 사진 6장 선택 → 5장만 담기고 배너가 뜬다
 9. 5MB 넘는 파일 → 거부되고 배너가 뜬다
 10. 폼에서 "장소 다시 선택" → `/register/place`에 현재 장소가 실려 열린다
-11. Storybook의 Dropzone 스토리가 여전히 뜬다
+11. **검색 없이 지도만 드래그 → "이 위치로 등록하기" → 폼에 장소명이 비어 있고,
+    직접 채우면 저장된다** (막다른 길이 없다)
+12. 주소 조회 중에는 "이 위치로 등록하기"가 비활성이다
+13. Storybook의 Dropzone 스토리가 여전히 뜬다
 
 ## 후속
 
