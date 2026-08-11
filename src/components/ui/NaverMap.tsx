@@ -51,6 +51,15 @@ export interface NaverMapProps {
   variant?: "picker" | "static";
   /** 높이와 폴백 도식의 규격. `sm` 150px, `lg` 440px. */
   size?: MapCanvasSize;
+  /**
+   * 지도가 멈출 때(`idle`) 바뀐 중심 좌표. 사용자가 움직였을 때만 불린다.
+   *
+   * 지도 생성 시점에도 `idle`이 한 번 발생하는데, 그때는 좌표가 초기값과 같아
+   * 걸러진다. 이게 없으면 화면이 열리자마자 "위치를 옮겼다"고 오해한다.
+   *
+   * `variant="static"`에서는 지도가 움직이지 않으므로 리스너를 달지 않는다.
+   */
+  onCenterChange?: (center: { lat: number; lng: number }) => void;
   className?: string;
 }
 
@@ -70,12 +79,30 @@ export function NaverMap({
   center = SEOUL_CITY_HALL,
   variant = "picker",
   size = "lg",
+  onCenterChange,
   className,
 }: NaverMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<naver.maps.Map | null>(null);
   const markerRef = useRef<naver.maps.Marker | null>(null);
+  const listenerRef = useRef<naver.maps.MapEventListener | null>(null);
   const [failed, setFailed] = useState(false);
+
+  /**
+   * 콜백을 ref로 들고 있는 이유: `initMap`의 의존성에 넣으면 부모가 다시 그릴
+   * 때마다 함수 정체성이 바뀌어 지도가 통째로 다시 만들어진다. 부모에게
+   * `useCallback`을 강요하는 대신 여기서 흡수한다.
+   *
+   * 렌더 중이 아니라 effect에서 갱신한다. `useRef(onCenterChange)`가 첫 렌더의
+   * 값을 이미 담고 있으므로 이후 갱신만 effect가 맡으면 빈틈이 없다.
+   */
+  const onCenterChangeRef = useRef(onCenterChange);
+  useEffect(() => {
+    onCenterChangeRef.current = onCenterChange;
+  }, [onCenterChange]);
+
+  /** 마지막으로 보고한 좌표. 초기값이 초기 중심이라 생성 시점 `idle`이 걸러진다. */
+  const lastReportedRef = useRef({ lat: center.lat, lng: center.lng });
 
   // 객체를 그대로 의존성에 넣으면 매 렌더 새 참조라 지도가 끝없이 다시 만들어진다.
   const { lat, lng } = center;
@@ -111,7 +138,28 @@ export function NaverMap({
     // 그 반대다.
     if (!interactive) {
       markerRef.current = new naver.maps.Marker({ position, map });
+      return;
     }
+
+    // 지도를 새로 만들면 기준점도 새 중심이다. 이걸 안 맞추면 부모가 `center`를
+    // 바꿔 지도가 다시 만들어졌을 때, 첫 `idle`이 "사용자가 움직였다"로 오인된다.
+    lastReportedRef.current = { lat, lng };
+
+    listenerRef.current = naver.maps.Event.addListener(map, "idle", () => {
+      const nextCenter = map.getCenter();
+      // `getCenter()`는 `Point | LatLng` 유니온이다. `Point`의 x/y로도
+      // 컴파일되지만 어느 쪽이 위도인지가 코드에 드러나지 않는다 — 뒤집혀도
+      // 아무 불평 없이 엉뚱한 곳을 가리키는 종류의 실수다. 이름이 붙은
+      // 접근자를 쓰기 위해 좁힌다.
+      if (!(nextCenter instanceof naver.maps.LatLng)) return;
+
+      const next = { lat: nextCenter.lat(), lng: nextCenter.lng() };
+      const last = lastReportedRef.current;
+      if (next.lat === last.lat && next.lng === last.lng) return;
+
+      lastReportedRef.current = next;
+      onCenterChangeRef.current?.(next);
+    });
     // 좌표가 바뀌면 아래 effect의 정리가 지도를 destroy 하고 새 좌표로 다시
     // 만든다. 검색 → 등록은 라우트 전환이라 컴포넌트가 어차피 새로 마운트되므로
     // 이 경로는 사실상 거의 타지 않지만, 타도 맞게 동작한다.
@@ -131,6 +179,10 @@ export function NaverMap({
 
     return () => {
       delete window.navermap_authFailure;
+      if (listenerRef.current) {
+        naver.maps.Event.removeListener(listenerRef.current);
+        listenerRef.current = null;
+      }
       markerRef.current?.setMap(null);
       markerRef.current = null;
       mapRef.current?.destroy();
