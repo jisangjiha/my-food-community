@@ -73,14 +73,17 @@ export interface PlaceLocation {
 남겨 두면 `address`가 두 곳에 생긴다. 하나는 최상위, 하나는 `location.address`.
 어느 쪽이 진짜인지 코드마다 다르게 판단하기 시작하면 곧 어긋난다.
 
-옮기는 대가로 소비처 4곳이 바뀐다.
+옮기는 대가로 소비처 3곳이 바뀐다.
 
 | 파일 | 현재 | 바꿀 것 |
 | --- | --- | --- |
 | `src/app/page.tsx:152` | `place.address` | `place.location?.address ?? PLACE_PENDING_ADDRESS` |
 | `src/app/my/page.tsx:150` | `place.address` | 같음 |
 | `src/app/restaurants/[id]/page.tsx:38,121` | `place.address` | 같음 |
-| `src/stories/ui/Handoff.stories.tsx:190,220` | `place.address` | 같음 |
+
+`src/stories/ui/Handoff.stories.tsx`의 `place.address`(220행)는 `PlaceDto`가 아니라
+파일 안에 있는 로컬 목(`PLACE_RESULTS`, 35행)이다. DTO 변경과 무관하므로 건드리지
+않는다.
 
 `PLACE_PENDING_ADDRESS`("등록 대기중") 상수는 남긴다. 레거시 행이 목록에서
 빈칸으로 보이면 그게 더 나쁘다.
@@ -170,7 +173,7 @@ POST /api/places, PATCH /api/places/[id]
 | `src/app/restaurants/[id]/page.tsx` | 수정 | 실제 지도, 판정 기준 변경 |
 | `src/app/page.tsx` | 수정 | 카드 meta의 주소 경로 |
 | `src/app/my/page.tsx` | 수정 | 같음 |
-| `src/stories/ui/Handoff.stories.tsx` | 수정 | 주소 경로 + `static` 변형 스토리 추가 |
+| `src/stories/ui/Handoff.stories.tsx` | 수정 | `static` 변형 스토리 추가 (DTO와 무관) |
 
 ### DTO
 
