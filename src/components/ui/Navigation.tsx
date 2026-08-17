@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import Link from "next/link";
 
 import { Icon } from "../foundation/Icon";
 import { IconButton } from "./IconButton";
@@ -117,41 +117,53 @@ export function BottomNavigation({
 
 /* ── TabNavigation ─────────────────────────────────────────────────────── */
 
+export interface TabNavigationTab {
+  label: string;
+  /** 서버에서 탭을 바꿀 때. 있으면 링크로 렌더한다. */
+  href?: string;
+  onClick?: () => void;
+}
+
+/**
+ * `filled`은 design.pen `TabNavigation`(48px 등분, 표면 배경).
+ * `inline`은 마이 페이지의 밑줄 탭(내용 폭, 배경 없음, 24 간격).
+ */
+export type TabNavigationVariant = "filled" | "inline";
+
 export interface TabNavigationProps {
-  /** 2 or more tabs, distributed evenly. */
-  tabs: { label: string; onClick?: () => void }[];
+  /** 2 or more tabs. `filled`은 폭을 등분하고 `inline`은 내용 폭이다. */
+  tabs: TabNavigationTab[];
   value?: number;
+  variant?: TabNavigationVariant;
   className?: string;
-  children?: ReactNode;
 }
 
 /** 48px tab strip with a 2px indicator under the selected tab. */
 export function TabNavigation({
   tabs,
   value = 0,
+  variant = "filled",
   className,
 }: TabNavigationProps) {
+  const inline = variant === "inline";
+
   return (
     <div
       role="tablist"
-      className={`flex w-full border-b border-border-default bg-background-surface ${className ?? ""}`}
-      style={{ height: 48 }}
+      className={[
+        "flex w-full border-b border-border-default",
+        inline ? "gap-24" : "bg-background-surface",
+        className ?? "",
+      ].join(" ")}
+      style={inline ? undefined : { height: 48 }}
     >
       {tabs.map((tab, index) => {
         const selected = index === value;
-        return (
-          <button
-            key={tab.label}
-            type="button"
-            role="tab"
-            aria-selected={selected}
-            onClick={tab.onClick}
-            className={[
-              "flex flex-1 cursor-pointer flex-col",
-              "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-border-brand",
-              selected ? "text-text-brand" : "text-text-muted",
-            ].join(" ")}
-          >
+
+        const content = inline ? (
+          <span className="type-label-lg">{tab.label}</span>
+        ) : (
+          <>
             <span className="type-label-lg flex flex-1 items-center justify-center px-4">
               {tab.label}
             </span>
@@ -160,6 +172,44 @@ export function TabNavigation({
               className={selected ? "bg-background-brand" : "bg-transparent"}
               style={{ height: 2 }}
             />
+          </>
+        );
+
+        const classes = [
+          "cursor-pointer",
+          "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-border-brand",
+          selected ? "text-text-brand" : "text-text-muted",
+          // 밑줄은 탭의 아래 테두리다. `-mb-px`로 탭 줄의 1px 선 위에 겹쳐 놓아야
+          // 2px 브랜드 선과 1px 기본 선이 3px로 쌓이지 않는다.
+          inline
+            ? `-mb-px border-b-2 pb-2 ${selected ? "border-background-brand" : "border-transparent"}`
+            : "flex flex-1 flex-col",
+        ].join(" ");
+
+        if (tab.href) {
+          return (
+            <Link
+              key={tab.label}
+              href={tab.href}
+              role="tab"
+              aria-selected={selected}
+              className={classes}
+            >
+              {content}
+            </Link>
+          );
+        }
+
+        return (
+          <button
+            key={tab.label}
+            type="button"
+            role="tab"
+            aria-selected={selected}
+            onClick={tab.onClick}
+            className={classes}
+          >
+            {content}
           </button>
         );
       })}

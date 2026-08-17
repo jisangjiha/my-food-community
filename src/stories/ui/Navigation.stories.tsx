@@ -129,6 +129,30 @@ export const Tabs: Story = {
   ),
 };
 
+/**
+ * `inline` 변형 — 마이 페이지의 밑줄 탭입니다. 간격 24, 배경 없음, 선택 탭 아래
+ * 2px 밑줄이 탭 줄의 1px 선을 덮습니다.
+ */
+export const TabsInline: Story = {
+  render: () => (
+    <Gallery>
+      <Specimen label="inline (밑줄)" description="선택: 결제 내역">
+        <div className="w-[360px] bg-background-canvas p-4">
+          <TabNavigation
+            variant="inline"
+            value={1}
+            tabs={[
+              { label: "내가 쓴 글" },
+              { label: "결제 내역" },
+              { label: "취소 내역" },
+            ]}
+          />
+        </div>
+      </Specimen>
+    </Gallery>
+  ),
+};
+
 /** The three bars in the arrangement a screen would use. */
 export const InContext: Story = {
   render: () => (

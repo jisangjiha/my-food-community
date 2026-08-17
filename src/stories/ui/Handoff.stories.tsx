@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { useState } from "react";
 
 import { ButtonLink } from "../../components/ui/ButtonLink";
 import { MapCanvas } from "../../components/ui/MapCanvas";
@@ -7,6 +8,7 @@ import { NaverMap } from "../../components/ui/NaverMap";
 import { PlaceResultItem } from "../../components/ui/PlaceResultItem";
 import { RestaurantCard } from "../../components/ui/RestaurantCard";
 import { StatTile } from "../../components/ui/StatTile";
+import { Stepper } from "../../components/ui/Stepper";
 import { profile, restaurants, metaLine } from "../../lib/restaurants";
 import { Gallery, Specimen } from "../lib/Matrix";
 
@@ -284,3 +286,47 @@ export const ButtonLinks: Story = {
     </Gallery>
   ),
 };
+
+/**
+ * 결제 시트의 인원 선택입니다. 상한은 `min(남은 자리, 1인당 최대 매수)`이고,
+ * 상한에 닿으면 `+`가 비활성됩니다. 왜 그 상한인지는 시트가 문구로 알려 줍니다.
+ */
+export const Steppers: Story = {
+  render: () => <StepperDemo />,
+};
+
+function StepperDemo() {
+  const [count, setCount] = useState(2);
+
+  return (
+    <Gallery>
+      <Specimen label="상한 4" description="남은 자리 8, 1인당 4매">
+        <Stepper
+          value={count}
+          max={4}
+          onChange={setCount}
+          decreaseLabel="인원 줄이기"
+          increaseLabel="인원 늘리기"
+        />
+      </Specimen>
+      <Specimen label="상한에 닿음" description="+ 비활성">
+        <Stepper
+          value={4}
+          max={4}
+          onChange={() => {}}
+          decreaseLabel="인원 줄이기"
+          increaseLabel="인원 늘리기"
+        />
+      </Specimen>
+      <Specimen label="최소" description="− 비활성">
+        <Stepper
+          value={1}
+          max={4}
+          onChange={() => {}}
+          decreaseLabel="인원 줄이기"
+          increaseLabel="인원 늘리기"
+        />
+      </Specimen>
+    </Gallery>
+  );
+}

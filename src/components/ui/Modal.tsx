@@ -1,4 +1,6 @@
-import type { ReactNode } from "react";
+"use client";
+
+import { useEffect, type ReactNode } from "react";
 
 import { Icon } from "../foundation/Icon";
 
@@ -12,6 +14,8 @@ export interface ModalProps {
   /** Footer buttons: one secondary and one primary, in that order. */
   actions?: ReactNode;
   onClose?: () => void;
+  /** 화면 전체를 덮는 오버레이로 띄운다. Esc로 닫히고 뒤 화면 스크롤이 잠긴다. */
+  floating?: boolean;
   className?: string;
 }
 
@@ -26,11 +30,30 @@ export function Modal({
   children,
   actions,
   onClose,
+  floating = false,
   className,
 }: ModalProps) {
+  useEffect(() => {
+    if (!floating) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose?.();
+    };
+    document.addEventListener("keydown", onKeyDown);
+
+    // 모달 뒤 화면이 같이 움직이면 어디를 만지는지 알 수 없다.
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = previous;
+    };
+  }, [floating, onClose]);
+
   return (
     <div
-      className="flex items-center justify-center p-6"
+      className={`flex items-center justify-center p-6 ${floating ? "fixed inset-0 z-50" : ""}`}
       style={{ backgroundColor: SCRIM }}
       onClick={onClose}
     >

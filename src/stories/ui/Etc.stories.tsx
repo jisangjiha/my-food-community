@@ -12,6 +12,7 @@ import { Gallery, Matrix, Specimen } from "../lib/Matrix";
 
 const BADGE_VARIANTS: BadgeVariant[] = [
   "neutral",
+  "brand",
   "success",
   "error",
   "info",
@@ -20,6 +21,7 @@ const BADGE_VARIANTS: BadgeVariant[] = [
 
 const BADGE_LABEL: Record<BadgeVariant, string> = {
   neutral: "기본",
+  brand: "예정",
   success: "완료",
   error: "실패",
   info: "안내",
@@ -108,6 +110,28 @@ export const Badges: Story = {
           </Badge>
         )}
       />
+    </Gallery>
+  ),
+};
+
+/**
+ * 톤 — `outline`은 design.pen `Badge`, `soft`는 결제·취소 내역의 상태 칩입니다.
+ * `brand`는 시안의 Badge 세트에는 없지만 `참여 예정` 칩이 이 조합입니다.
+ */
+export const BadgeTones: Story = {
+  render: () => (
+    <Gallery>
+      {(["outline", "soft"] as const).map((tone) => (
+        <Specimen key={tone} label={tone} description="lg (24)">
+          <div className="flex flex-wrap items-center gap-2">
+            {BADGE_VARIANTS.map((variant) => (
+              <Badge key={variant} variant={variant} tone={tone} size="lg">
+                {BADGE_LABEL[variant]}
+              </Badge>
+            ))}
+          </div>
+        </Specimen>
+      ))}
     </Gallery>
   ),
 };
