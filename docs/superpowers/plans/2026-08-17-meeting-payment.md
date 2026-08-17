@@ -297,6 +297,15 @@ git commit -m "feat: 환불 규정과 경계값 확인 스크립트
 
 ### Task 2: `meeting`·`payment` 스키마와 시드
 
+> **실행 중 변경(2026-08-18):** `seats_taken`을 computed column(definer 함수)으로 두면
+> `anon_security_definer_function_executable` 어드바이저에 걸린다. 실제로는
+> `meeting.seats_taken` 카운터 컬럼 + `sync_meeting_seats` 트리거로 적용했다
+> (마이그레이션 `replace_seats_taken_with_counter`). 스펙 결정 2 참고. 아래 SQL의
+> `seats_taken` 함수 부분은 그 마이그레이션이 대체한다. `MEETING_SELECT`가 읽는
+> 이름은 그대로라 Task 4 이후 코드는 영향받지 않는다.
+> 시드 3번째 모임은 오늘(8/18) 마감되지 않도록 `2026-08-20 19:00` 시작 /
+> `08-19 23:59` 마감으로 하루 밀었다.
+
 **Files:**
 - Supabase 마이그레이션 2개 (MCP `apply_migration`): `create_meeting_and_payment`, `seed_meetings`
 - Modify: `src/lib/supabase/database.types.ts` (재생성 결과로 덮어쓰기)

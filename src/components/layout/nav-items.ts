@@ -21,10 +21,22 @@ export const NAV_ITEMS: NavItem[] = [
   { key: "my", label: "MY", icon: "user", href: "/my" },
 ];
 
-/** Which nav item a pathname belongs to. `/restaurants/…` stays under 홈. */
+/**
+ * Which nav item a pathname belongs to. `/restaurants/…`와 `/meetings/…`는 홈에서
+ * 들어가는 화면이라 홈 밑이다. 결제 완료는 흐름의 끝이고 이어지는 곳이 마이
+ * 페이지의 결제 내역이라 MY 밑에 둔다.
+ */
 export function activeKey(pathname: string): string | null {
-  if (pathname === "/" || pathname.startsWith("/restaurants")) return "home";
+  if (
+    pathname === "/" ||
+    pathname.startsWith("/restaurants") ||
+    pathname.startsWith("/meetings")
+  ) {
+    return "home";
+  }
   if (pathname.startsWith("/register")) return "register";
-  if (pathname.startsWith("/my")) return "my";
+  if (pathname.startsWith("/my") || pathname.startsWith("/payments")) {
+    return "my";
+  }
   return null;
 }

@@ -55,14 +55,30 @@ SQL에 두면 오프라인에서 확인할 방법이 없다. 규정 문구가 �
 SQL은 소유권·상태·`환불액 <= 결제액`만 다시 확인한 뒤 기록한다. 브라우저는 Supabase에
 닿을 수 없으므로(publishable 키가 서버 전용) 이 인자는 서버가 만든 값이다.
 
-### 2. 남은 자리는 computed column으로 읽는다
+### 2. 남은 자리는 카운터 컬럼 + 트리거로 둔다
 
 `payment`는 RLS로 자기 행만 보인다. 그래서 목록·상세에서 `select sum(headcount)`을
-하면 남의 결제가 빠진 수를 정원으로 착각한다. 뷰로 우회하면
-`security_definer_view` 어드바이저에 걸린다. PostgREST의 computed column —
-`seats_taken(meeting) returns int`를 `stable security definer set search_path = ''`로
-선언하고 `select("id, title, ..., seats_taken")`으로 읽는다. 노출되는 것은 집계값
-하나뿐이고, 개별 결제 행은 여전히 RLS 뒤에 있다.
+하면 남의 결제가 빠진 수를 정원으로 착각한다.
+
+처음에는 PostgREST의 computed column(`seats_taken(meeting)`을 `security definer`로
+선언)으로 풀었는데, 그러면 같은 함수가 `/rest/v1/rpc/seats_taken`으로도 노출돼
+**로그인하지 않은 사용자가 definer 함수를 부를 수 있다**는 어드바이저 경고가 붙는다
+(`anon_security_definer_function_executable`). 팔린 자리는 원래 공개 정보지만
+노출면을 늘릴 이유가 없다.
+
+그래서 `meeting.seats_taken` 정수 컬럼을 두고 `payment`의 insert/update/delete마다
+트리거(`sync_meeting_seats`, definer — `meeting`에 update 정책이 없어 호출자 권한으로는
+RLS에 막힌다)가 더하고 뺀다. 읽기는 평범한 공개 컬럼이라 RLS와 무관하고, 운영자가
+SQL로 결제 행을 직접 넣어도 수가 어긋나지 않는다. 트리거 함수는 `returns trigger`라
+PostgREST가 부를 수 없다.
+
+`pay_meeting`은 모임 행을 `for update`로 잠근 뒤 이 컬럼을 읽으므로, 잠금이 풀릴
+때까지 남이 값을 바꿀 수 없다.
+
+남는 어드바이저 경고는 `pay_meeting`·`cancel_payment` 두 건
+(`authenticated_security_definer_function_executable`)이다. 로그인한 사용자가 부를 수
+있어야 하는 함수이고 둘 다 첫 줄에서 `auth.uid()`를 확인하므로 의도된 상태다.
+`anon`에게는 실행 권한을 주지 않는다.
 
 ### 3. 중복 결제는 유니크 인덱스가 막는다
 
@@ -157,6 +173,7 @@ Supabase를 아는 코드는 `lib/*/service.ts`까지다. 화면은 DTO만 받�
 | `starts_at`, `closes_at` | 모임 시작, 모집 마감 |
 | `status` | `on_sale` / `hidden` / `closed` |
 | `display_order` | 배너 정렬 |
+| `seats_taken` | 팔린 자리. 트리거가 유지한다 (결정 2) |
 
 `payment`
 
