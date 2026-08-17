@@ -23,6 +23,128 @@ export type Database = {
   }
   public: {
     Tables: {
+      meeting: {
+        Row: {
+          address: string
+          capacity: number
+          category_label: string
+          closes_at: string
+          created_at: string
+          description: string
+          display_order: number
+          id: string
+          image_url: string | null
+          lat: number | null
+          lng: number | null
+          max_per_person: number
+          price: number
+          seats_taken: number
+          starts_at: string
+          status: string
+          summary: string
+          title: string
+        }
+        Insert: {
+          address: string
+          capacity: number
+          category_label: string
+          closes_at: string
+          created_at?: string
+          description: string
+          display_order?: number
+          id?: string
+          image_url?: string | null
+          lat?: number | null
+          lng?: number | null
+          max_per_person?: number
+          price: number
+          seats_taken?: number
+          starts_at: string
+          status?: string
+          summary: string
+          title: string
+        }
+        Update: {
+          address?: string
+          capacity?: number
+          category_label?: string
+          closes_at?: string
+          created_at?: string
+          description?: string
+          display_order?: number
+          id?: string
+          image_url?: string | null
+          lat?: number | null
+          lng?: number | null
+          max_per_person?: number
+          price?: number
+          seats_taken?: number
+          starts_at?: string
+          status?: string
+          summary?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      payment: {
+        Row: {
+          amount: number
+          canceled_at: string | null
+          headcount: number
+          id: string
+          meeting_id: string
+          method: string
+          order_no: string
+          paid_at: string
+          refund_amount: number | null
+          refund_completes_at: string | null
+          refund_rate: number | null
+          refund_rule: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          canceled_at?: string | null
+          headcount: number
+          id?: string
+          meeting_id: string
+          method?: string
+          order_no: string
+          paid_at?: string
+          refund_amount?: number | null
+          refund_completes_at?: string | null
+          refund_rate?: number | null
+          refund_rule?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          canceled_at?: string | null
+          headcount?: number
+          id?: string
+          meeting_id?: string
+          method?: string
+          order_no?: string
+          paid_at?: string
+          refund_amount?: number | null
+          refund_completes_at?: string | null
+          refund_rate?: number | null
+          refund_rule?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_meeting_id_fkey"
+            columns: ["meeting_id"]
+            isOneToOne: false
+            referencedRelation: "meeting"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       place: {
         Row: {
           address: string
@@ -120,7 +242,19 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      cancel_payment: {
+        Args: {
+          p_payment_id: string
+          p_refund_amount: number
+          p_refund_rate: number
+          p_refund_rule: string
+        }
+        Returns: undefined
+      }
+      pay_meeting: {
+        Args: { p_headcount: number; p_meeting_id: string }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
