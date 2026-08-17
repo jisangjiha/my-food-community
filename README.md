@@ -1,36 +1,177 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Hidden Eats
 
-## Getting Started
+동네 사람들이 진짜 추천하는 로컬 맛집 커뮤니티.
 
-First, run the development server:
+포털 지도와 대형 리뷰 앱에는 광고성 맛집이 넘쳐서, 정작 "가볼 만한 진짜 좋은 곳"은
+찾기 어렵다. Hidden Eats는 실제로 가본 사람이 사진과 지도를 붙여 맛집을 올리고,
+이웃이 그것을 목록과 검색으로 발견하는 작은 커뮤니티다.
+
+구글 계정으로 로그인하고, 지도에서 위치를 찍어 맛집을 등록하고, 내가 올린 곳을
+관리한다. 자세한 제품 배경은 [`02-prd.md`](02-prd.md)에 있다.
+
+## 화면
+
+| 경로 | 하는 일 |
+| --- | --- |
+| `/` | 홈 피드. 등록된 맛집 카드 목록과 카테고리 칩 |
+| `/login` | 구글 로그인 |
+| `/register` | 맛집 등록 폼. 장소를 먼저 고른 뒤에 들어온다 |
+| `/register/place` | 지도에서 위치 확정. 지도를 움직이면 지번주소가 따라온다 |
+| `/register/place/search` | 네이버 지역검색으로 장소 찾기 |
+| `/restaurants/[id]` | 맛집 상세 |
+| `/restaurants/[id]/edit` | 맛집 수정 |
+| `/meetings/[id]` | 모임 상세. 일시·장소·정원·환불 규정과 하단 결제 바 |
+| `/meetings/[id]?pay=1` | 결제 바텀시트(인원 선택·동의·결제) |
+| `/payments/[orderNo]` | 결제 완료. 주문번호로 조회하므로 새로 고쳐도 재결제가 없다 |
+| `/my` | 내 프로필. `내가 쓴 글` · `결제 내역` · `취소 내역` 3탭 (`?tab=`) |
+| `/my/edit` | 프로필 수정 |
+
+## 기술 스택
+
+- **Next.js 16** (App Router, Turbopack) · **React 19** · **TypeScript**
+- **Tailwind CSS 4** — 디자인 토큰은 `src/tokens/*`
+- **Supabase** — 인증(구글 OAuth), Postgres, Storage
+- **네이버 지도 API** — 지도 표시, 지역검색, 리버스 지오코딩
+- **Storybook 10** — 디자인 시스템의 단일 진실 공급원(SSOT)
+
+## 실행 방법
+
+### 요구사항
+
+- **Node.js 22.6 이상.** Next 16 자체는 20.9면 되지만, 확인 스크립트가
+  `--experimental-strip-types`로 `.mts`를 직접 돌린다.
+- Supabase 프로젝트 하나
+- 네이버 클라우드 플랫폼(NCP) 계정 — 지도를 쓰려면 필요하다
+
+### 1. 설치
+
+```bash
+git clone git@github.com:jisangjiha/my-food-community.git
+cd my-food-community
+npm ci
+```
+
+### 2. 환경변수
+
+`.env.example`을 복사해 `.env.local`을 만들고 값을 채운다.
+
+```bash
+cp .env.example .env.local
+```
+
+| 변수 | 발급처 | 없으면 |
+| --- | --- | --- |
+| `SUPABASE_URL` | Supabase 대시보드 → Project Settings → API | 앱이 뜨지 않는다 |
+| `SUPABASE_PUBLISHABLE_KEY` | 위와 같은 화면 | 앱이 뜨지 않는다 |
+| `SUPABASE_STORAGE_URL` | `{SUPABASE_URL}/storage/v1/object/public` | 앱이 뜨지 않는다 |
+| `NAVER_MAP_CLIENT_ID` | NCP 콘솔 → Maps → Application | 지도 자리에 도식이 나온다 (앱은 정상) |
+| `NAVER_SEARCH_CLIENT_ID` | NCP 콘솔 → API Hub → Search | 장소 검색 화면이 500 |
+| `NAVER_SEARCH_CLIENT_SECRET` | 위와 같은 화면 | 장소 검색 화면이 500 |
+| `NAVER_GEOCODE_API_KEY_ID` | NCP 콘솔 → Maps (지역검색 키와 다르다) | 주소가 "불러오지 못했어요"에 머문다 |
+| `NAVER_GEOCODE_API_KEY` | 위와 같은 화면 | 주소가 "불러오지 못했어요"에 머문다 |
+
+네이버 키가 세 종류라는 점을 헷갈리기 쉽다. 지도 표시용(`NAVER_MAP_CLIENT_ID`),
+지역검색용(`NAVER_SEARCH_*`), 리버스 지오코딩용(`NAVER_GEOCODE_*`)이 전부 별개고
+호스트도 다르다. 각 변수의 자세한 설명은 `.env.example`의 주석에 있다.
+
+`NEXT_PUBLIC_` 접두사는 어디에도 붙이지 않는다. 모든 값은 서버에서만 읽는다.
+지도 키만 서버 컴포넌트가 prop으로 한 번 내려보내며, 그 키의 실제 방어선은
+NCP 콘솔에 등록하는 **Web 서비스 URL 허용목록**이다. 개발용 `http://localhost:3000`을
+꼭 등록해 둔다.
+
+### 3. Supabase 준비
+
+이 저장소에는 마이그레이션 파일이 없다. 스키마는 원격 Supabase 프로젝트에 직접
+적용되어 있고, 생성된 타입만 `src/lib/supabase/database.types.ts`로 들어와 있다.
+새 프로젝트에 처음 붙인다면 아래를 갖춰야 한다.
+
+- **테이블**: `place`, `place_image`, `profile`, `meeting`, `payment` — 컬럼 구조는
+  `database.types.ts` 참고
+- **함수**: `pay_meeting`, `cancel_payment`(둘 다 `security definer`, `authenticated`만
+  실행), `sync_meeting_seats`(트리거 — `payment` 변경을 `meeting.seats_taken`에 반영)
+- **모임 상품 등록**: 운영자 어드민 화면은 아직 없다. `meeting` 행을 SQL로 넣는다
+- **Storage 버킷**: `profile-image`, `place_image` (공개 읽기)
+- **RLS**: 모든 테이블에 켜고 정책까지 함께 넣는다. 정책 없는 RLS는 조용히 빈
+  목록이 된다. 읽기는 `using (true)`, 쓰기는 `to authenticated` +
+  `(select auth.uid()) = user_id`
+- **트리거**: 가입 시 프로필을 만드는 `handle_new_user()`
+- **인증**: Authentication → Providers에서 Google을 켜고, Redirect URLs에
+  `http://localhost:3000/auth/callback`을 추가한다
+
+스키마를 바꾸면 타입을 다시 뽑는다.
+
+```bash
+supabase gen types typescript --project-id <project-ref> > src/lib/supabase/database.types.ts
+```
+
+### 4. 개발 서버
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+[http://localhost:3000](http://localhost:3000)을 연다.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+디자인 시스템을 보려면 Storybook을 띄운다. UI 작업은 여기서 시작한다.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run storybook   # http://localhost:6006
+```
 
-## Learn More
+## npm 스크립트
 
-To learn more about Next.js, take a look at the following resources:
+| 명령 | 하는 일 |
+| --- | --- |
+| `npm run dev` | 개발 서버 |
+| `npm run build` | 프로덕션 빌드 |
+| `npm start` | 빌드 결과 실행 |
+| `npm run lint` | ESLint |
+| `npm run storybook` | Storybook 개발 서버 (6006) |
+| `npm run build-storybook` | Storybook 정적 빌드 |
+| `npm run check:parse` | 좌표·HTML 파싱 확인 (`src/lib/local-search/parse.ts`) |
+| `npm run check:refund` | 환불 비율 경계값 확인 (`src/lib/payments/refund.ts`) |
+| `npm run check:address` | 지번주소 조립 확인 (`src/lib/reverse-geocode/format.ts`) |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+테스트 러너는 없다. 대신 조용히 틀리기 쉬운 두 곳(좌표 파싱, 주소 조립)만
+`scripts/*.mts`로 확인한다. 지도는 계산이 틀려도 아무 불평 없이 엉뚱한 곳을 가리킨다.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 구조
 
-## Deploy on Vercel
+```
+src/
+  app/            라우트. 페이지와 Route Handler
+  components/
+    foundation/   Icon, Text — 원시 요소
+    ui/           디자인 시스템 컴포넌트
+    layout/       AppShell, PageContainer — 폭 규칙은 여기에만 있다
+    brand/        로고 등 브랜드 요소
+    places/       맛집 도메인 컴포넌트
+    profile/      프로필 도메인 컴포넌트
+  lib/
+    supabase/     Supabase 클라이언트 생성·타입 (유일한 접점)
+    auth/         세션, 로그인/로그아웃
+    api/          Route Handler 응답·에러 규약
+    places/       맛집 서비스·DTO
+    profile/      프로필 서비스·DTO
+    local-search/ 네이버 지역검색
+    reverse-geocode/ 네이버 리버스 지오코딩
+    maps/         지도 키·상수
+  stories/        Storybook 스토리
+  tokens/         색·타이포·아이콘·스페이싱 토큰
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 지켜야 할 규칙 세 가지
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+전체 규칙은 [`CLAUDE.md`](CLAUDE.md)에 있다. 요약하면:
+
+1. **Supabase는 반드시 서버(BFF)를 거친다.** 클라이언트 컴포넌트에서 Supabase SDK를
+   직접 부르지 않는다. 클라이언트가 만지는 표면은 Route Handler와 서버 액션뿐이고,
+   내려가는 것은 DB 행이 아니라 DTO다.
+2. **UI의 SSOT는 Storybook이다.** 새로 만들기 전에 `src/stories/**`를 먼저 본다.
+   색·타이포·간격은 `src/tokens/*`만 쓴다. 하드코딩하지 않는다.
+3. **폭 규칙은 `PageContainer` 한 곳에 있다.** 페이지에서 `max-w`나 좌우 패딩을
+   직접 쓰지 않는다. 최대 1280, 그리드는 1 → 2 → 3 → 4열.
+
+`globals.css`가 `--spacing-8/12/16/20/24/32`를 디자인 토큰으로 덮어쓴다는 점을
+주의한다. 이 숫자들은 Tailwind 스케일이 아니라 px 토큰이다 (`p-32`는 32px,
+`h-16`은 16px). 토큰이 아닌 길이는 `h-[64px]`처럼 임의값으로 쓴다.
