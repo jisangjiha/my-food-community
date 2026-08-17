@@ -9,6 +9,7 @@
     "lint": "eslint",
     "check:parse": "node --experimental-strip-types scripts/parse-check.mts",
     "check:address": "node --experimental-strip-types scripts/address-check.mts",
+    "check:refund": "node --experimental-strip-types scripts/refund-check.mts",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
