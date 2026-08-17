@@ -3,10 +3,14 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import { NotFoundError } from "@/lib/api/http";
 import { getCurrentUser } from "@/lib/auth/session";
 
+import { refundPlanFor } from "./refund";
 import {
+  applyCancellation,
   createPayment,
+  getMyPayment,
   PaymentError,
   type PaymentErrorCode,
 } from "./service";
@@ -77,4 +81,53 @@ export async function payMeeting(
 
   // redirect는 예외를 던진다. try 밖에서 불러야 위 catch에 걸리지 않는다.
   redirect(`/payments/${orderNo}`);
+}
+
+/**
+ * 결제를 취소한다.
+ *
+ * 환불 금액은 클라이언트가 보낸 값을 쓰지 않는다. 여기서 서버 시각으로 다시
+ * 계산하고, 모달이 보여 준 금액은 표시용이다(PRD 374).
+ */
+export async function cancelPayment(
+  _previous: PayFormState,
+  formData: FormData,
+): Promise<PayFormState> {
+  const paymentId = String(formData.get("paymentId") ?? "");
+  if (!paymentId) return { error: PAY_MESSAGES.NOT_FOUND };
+
+  const user = await getCurrentUser();
+  if (!user) {
+    redirect(`/login?next=${encodeURIComponent("/my?tab=payments")}`);
+  }
+
+  let meetingId: string;
+  try {
+    const payment = await getMyPayment(paymentId, user.id);
+    meetingId = payment.meeting.id;
+
+    if (payment.status !== "paid") {
+      return { error: PAY_MESSAGES.ALREADY_CANCELED };
+    }
+
+    const plan = refundPlanFor(payment.amount, payment.meeting.startsAt);
+    if (plan.rule.rate === 0) return { error: PAY_MESSAGES.NO_REFUND };
+
+    await applyCancellation(paymentId, plan);
+  } catch (reason) {
+    if (reason instanceof PaymentError) {
+      return { error: PAY_MESSAGES[reason.code] };
+    }
+    if (reason instanceof NotFoundError) {
+      return { error: PAY_MESSAGES.NOT_FOUND };
+    }
+    throw reason;
+  }
+
+  // 자리가 하나 돌아왔다. 배너와 상세의 남은 자리가 그대로면 마감된 것처럼 보인다.
+  revalidatePath("/");
+  revalidatePath(`/meetings/${meetingId}`);
+  revalidatePath("/my");
+
+  redirect("/my?tab=cancels");
 }

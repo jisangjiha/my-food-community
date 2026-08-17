@@ -4,7 +4,7 @@ import { NotFoundError } from "@/lib/api/http";
 import { createClient } from "@/lib/supabase/server";
 
 import type { PaymentDto } from "./dto";
-import type { RefundRuleKey } from "./refund";
+import type { RefundPlan, RefundRuleKey } from "./refund";
 
 /**
  * 결제 데이터 접근 계층.
@@ -210,4 +210,80 @@ export async function getPaymentByOrderNo(
   }
 
   return toPaymentDto(data as unknown as PaymentRow);
+}
+
+/**
+ * 내 결제 내역. `paid`는 결제 최신순, `canceled`는 취소 최신순(PRD 307, 322).
+ *
+ * RLS가 자기 행만 보여 주지만 `user_id` 조건을 함께 쓴다.
+ */
+export async function listMyPayments(
+  userId: string,
+  status: "paid" | "canceled",
+): Promise<PaymentDto[]> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("payment")
+    .select(PAYMENT_SELECT)
+    .eq("user_id", userId)
+    .eq("status", status)
+    .order(status === "paid" ? "paid_at" : "canceled_at", { ascending: false });
+
+  if (error) {
+    console.error("[payments] 내역 조회 실패", error);
+    throw new Error("결제 내역을 불러오지 못했습니다.");
+  }
+
+  return ((data ?? []) as unknown as PaymentRow[]).map(toPaymentDto);
+}
+
+/** 내 결제 한 건. 남의 것은 없는 것과 같이 404다. */
+export async function getMyPayment(
+  id: string,
+  userId: string,
+): Promise<PaymentDto> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("payment")
+    .select(PAYMENT_SELECT)
+    .eq("id", id)
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (error) {
+    console.error("[payments] 결제 조회 실패", error);
+    throw new Error("결제 정보를 불러오지 못했습니다.");
+  }
+  if (!data) {
+    throw new NotFoundError("결제 내역을 찾을 수 없습니다.");
+  }
+
+  return toPaymentDto(data as unknown as PaymentRow);
+}
+
+/**
+ * 취소를 적용한다.
+ *
+ * 비율은 서버가 `refund.ts`로 정하고, 함수는 원자성과 자격만 본다. 함수도 환불액이
+ * 결제액을 넘지 않는지 다시 확인하므로, 계산이 어긋나는 날 돈이 더 나가지 않는다.
+ */
+export async function applyCancellation(
+  paymentId: string,
+  plan: RefundPlan,
+): Promise<void> {
+  const supabase = await createClient();
+
+  const { error } = await supabase.rpc("cancel_payment", {
+    p_payment_id: paymentId,
+    p_refund_amount: plan.amount,
+    p_refund_rate: plan.rule.rate,
+    p_refund_rule: plan.rule.key,
+  });
+
+  if (error) {
+    console.error("[payments] 취소 실패", error);
+    throw toPaymentError(error);
+  }
 }
