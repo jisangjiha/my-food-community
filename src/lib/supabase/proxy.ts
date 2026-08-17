@@ -4,7 +4,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from "./env";
 
 /** 로그인해야만 열리는 경로. 나머지는 비로그인도 볼 수 있다. */
-const PROTECTED_PREFIXES = ["/my", "/register"];
+const PROTECTED_PREFIXES = ["/my", "/register", "/payments"];
 
 /**
  * 매 요청마다 Supabase 세션을 갱신하고, 새 토큰을 응답 쿠키에 실어 보낸다.

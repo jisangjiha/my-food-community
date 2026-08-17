@@ -6,6 +6,7 @@ import { AppShell } from "../../../components/layout/AppShell";
 import { FlowTopBar } from "../../../components/layout/FlowTopBar";
 import { PageContainer } from "../../../components/layout/PageContainer";
 import { MeetingInfoCard } from "../../../components/meetings/MeetingInfoCard";
+import { MeetingPaySheet } from "../../../components/meetings/MeetingPaySheet";
 import { RefundPolicyTable } from "../../../components/meetings/RefundPolicyTable";
 import { Button } from "../../../components/ui/Button";
 import { ButtonLink } from "../../../components/ui/ButtonLink";
@@ -32,10 +33,16 @@ export default async function MeetingDetailPage(
   props: PageProps<"/meetings/[id]">,
 ) {
   const { id } = await props.params;
+  const { pay } = await props.searchParams;
 
   const viewer = await getCurrentUser();
   const meeting = await loadMeeting(id);
   const paidId = viewer ? await findPaidPaymentId(meeting.id, viewer.id) : null;
+
+  // 결제할 수 없는 상태에서 쿼리만 붙여 들어오는 경우가 있다. 시트를 띄우기 전에
+  // 서버가 다시 판단한다 — 화면 상태를 URL이 정하게 두지 않는다.
+  const sheetOpen =
+    pay === "1" && Boolean(viewer) && !paidId && meeting.sale === "on_sale";
 
   return (
     <AppShell tabBar={false}>
@@ -122,6 +129,19 @@ export default async function MeetingDetailPage(
           />
         </PageContainer>
       </div>
+
+      {sheetOpen && (
+        <MeetingPaySheet
+          meetingId={meeting.id}
+          price={meeting.price}
+          seatsTaken={meeting.seatsTaken}
+          capacity={meeting.capacity}
+          seatsLeft={meeting.seatsLeft}
+          maxSelectable={meeting.maxSelectable}
+          maxPerPerson={meeting.maxPerPerson}
+          closeHref={`/meetings/${meeting.id}`}
+        />
+      )}
     </AppShell>
   );
 }

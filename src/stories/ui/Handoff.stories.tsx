@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { useState } from "react";
 
 import { ButtonLink } from "../../components/ui/ButtonLink";
+import { DetailRow } from "../../components/ui/DetailRow";
 import { MapCanvas } from "../../components/ui/MapCanvas";
 import { MapPreview } from "../../components/ui/MapPreview";
 import { NaverMap } from "../../components/ui/NaverMap";
@@ -330,3 +331,23 @@ function StepperDemo() {
     </Gallery>
   );
 }
+
+/**
+ * 라벨-값 한 줄입니다. 모임 정보 카드 · 결제 완료 카드 · 취소 모달이 같은 줄을
+ * 씁니다. 강조가 필요한 값은 `tone`으로 색만 바꿉니다.
+ */
+export const DetailRows: Story = {
+  render: () => (
+    <Gallery>
+      <Specimen label="기본 / 강조" description="카드 안 296px 기준">
+        <div className="flex w-[296px] flex-col gap-3 rounded-2xl border border-border-default bg-background-surface p-4">
+          <DetailRow label="결제 금액">50,000원</DetailRow>
+          <DetailRow label="참여 인원" tone="text-text-brand">
+            12명 / 최대 20명 · 남은 8석
+          </DetailRow>
+          <DetailRow label="적용 규정">모임 3~7일 전 (50%)</DetailRow>
+        </div>
+      </Specimen>
+    </Gallery>
+  ),
+};
