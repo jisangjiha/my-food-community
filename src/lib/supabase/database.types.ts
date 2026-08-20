@@ -23,127 +23,74 @@ export type Database = {
   }
   public: {
     Tables: {
-      meeting: {
-        Row: {
-          address: string
-          capacity: number
-          category_label: string
-          closes_at: string
-          created_at: string
-          description: string
-          display_order: number
-          id: string
-          image_url: string | null
-          lat: number | null
-          lng: number | null
-          max_per_person: number
-          price: number
-          seats_taken: number
-          starts_at: string
-          status: string
-          summary: string
-          title: string
-        }
-        Insert: {
-          address: string
-          capacity: number
-          category_label: string
-          closes_at: string
-          created_at?: string
-          description: string
-          display_order?: number
-          id?: string
-          image_url?: string | null
-          lat?: number | null
-          lng?: number | null
-          max_per_person?: number
-          price: number
-          seats_taken?: number
-          starts_at: string
-          status?: string
-          summary: string
-          title: string
-        }
-        Update: {
-          address?: string
-          capacity?: number
-          category_label?: string
-          closes_at?: string
-          created_at?: string
-          description?: string
-          display_order?: number
-          id?: string
-          image_url?: string | null
-          lat?: number | null
-          lng?: number | null
-          max_per_person?: number
-          price?: number
-          seats_taken?: number
-          starts_at?: string
-          status?: string
-          summary?: string
-          title?: string
-        }
-        Relationships: []
-      }
       payment: {
         Row: {
           amount: number
-          canceled_at: string | null
-          headcount: number
+          created_at: string
           id: string
-          meeting_id: string
-          method: string
-          order_no: string
-          paid_at: string
-          refund_amount: number | null
-          refund_completes_at: string | null
-          refund_rate: number | null
-          refund_rule: string | null
-          status: string
+          payment_snapshot_id: number | null
+          product_id: number | null
+          transaction_key: string
+          type: string
           user_id: string
         }
         Insert: {
           amount: number
-          canceled_at?: string | null
-          headcount: number
+          created_at?: string
           id?: string
-          meeting_id: string
-          method?: string
-          order_no: string
-          paid_at?: string
-          refund_amount?: number | null
-          refund_completes_at?: string | null
-          refund_rate?: number | null
-          refund_rule?: string | null
-          status?: string
+          payment_snapshot_id?: number | null
+          product_id?: number | null
+          transaction_key: string
+          type: string
           user_id: string
         }
         Update: {
           amount?: number
-          canceled_at?: string | null
-          headcount?: number
+          created_at?: string
           id?: string
-          meeting_id?: string
-          method?: string
-          order_no?: string
-          paid_at?: string
-          refund_amount?: number | null
-          refund_completes_at?: string | null
-          refund_rate?: number | null
-          refund_rule?: string | null
-          status?: string
+          payment_snapshot_id?: number | null
+          product_id?: number | null
+          transaction_key?: string
+          type?: string
           user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "payment_meeting_id_fkey"
-            columns: ["meeting_id"]
+            foreignKeyName: "payment_payment_snapshot_id_fkey"
+            columns: ["payment_snapshot_id"]
             isOneToOne: false
-            referencedRelation: "meeting"
+            referencedRelation: "payment_snapshot"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "product"
             referencedColumns: ["id"]
           },
         ]
+      }
+      payment_snapshot: {
+        Row: {
+          created_at: string
+          id: number
+          snapshot_payment: Json
+          snapshot_product: Json
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          snapshot_payment: Json
+          snapshot_product: Json
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          snapshot_payment?: Json
+          snapshot_product?: Json
+        }
+        Relationships: []
       }
       place: {
         Row: {
@@ -213,6 +160,54 @@ export type Database = {
           },
         ]
       }
+      product: {
+        Row: {
+          address: string | null
+          capacity: number | null
+          created_at: string
+          description: string | null
+          event_at: string | null
+          id: number
+          image_path_detail_lg: string | null
+          image_path_detail_md: string | null
+          image_path_main_lg: string | null
+          image_path_main_md: string | null
+          name: string | null
+          price: number | null
+          status: string | null
+        }
+        Insert: {
+          address?: string | null
+          capacity?: number | null
+          created_at?: string
+          description?: string | null
+          event_at?: string | null
+          id?: number
+          image_path_detail_lg?: string | null
+          image_path_detail_md?: string | null
+          image_path_main_lg?: string | null
+          image_path_main_md?: string | null
+          name?: string | null
+          price?: number | null
+          status?: string | null
+        }
+        Update: {
+          address?: string | null
+          capacity?: number | null
+          created_at?: string
+          description?: string | null
+          event_at?: string | null
+          id?: number
+          image_path_detail_lg?: string | null
+          image_path_detail_md?: string | null
+          image_path_main_lg?: string | null
+          image_path_main_md?: string | null
+          name?: string | null
+          price?: number | null
+          status?: string | null
+        }
+        Relationships: []
+      }
       profile: {
         Row: {
           created_at: string
@@ -242,17 +237,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      cancel_payment: {
+      record_payment: {
         Args: {
-          p_payment_id: string
-          p_refund_amount: number
-          p_refund_rate: number
-          p_refund_rule: string
+          p_amount: number
+          p_product_id: number
+          p_snapshot_payment: Json
+          p_snapshot_product: Json
+          p_transaction_key: string
+          p_user_id: string
         }
-        Returns: undefined
-      }
-      pay_meeting: {
-        Args: { p_headcount: number; p_meeting_id: string }
         Returns: string
       }
     }

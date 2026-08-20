@@ -25897,6 +25897,5409 @@
           ]
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "PIMD0",
+      "x": 3520,
+      "y": 5939,
+      "name": "01b Main Page - Banner",
+      "clip": true,
+      "width": 360,
+      "height": 780,
+      "fill": "$color-background-canvas",
+      "cornerRadius": 28,
+      "layout": "vertical",
+      "gap": "$spacing-16",
+      "padding": "$spacing-16",
+      "children": [
+        {
+          "type": "frame",
+          "id": "Fd3gG",
+          "name": "Main Header",
+          "width": "fill_container",
+          "padding": 4,
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "Llb5T",
+              "name": "Brand Block",
+              "layout": "vertical",
+              "gap": 1,
+              "children": [
+                {
+                  "id": "aREUU",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "Area Label",
+                  "content": "구로 숨은맛집",
+                  "fill": "$color-text-brand"
+                },
+                {
+                  "id": "Y81hA",
+                  "type": "ref",
+                  "ref": "l8l3K",
+                  "name": "Main Title",
+                  "content": "오늘 어디 갈까?",
+                  "fill": "$color-text-default"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "f7Swwo",
+              "name": "Header Actions",
+              "gap": "$spacing-8",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "sBV0q",
+                  "type": "ref",
+                  "ref": "ANJP4",
+                  "name": "Near Me Chip",
+                  "descendants": {
+                    "dNh3a": {
+                      "content": "반경 8km"
+                    }
+                  }
+                },
+                {
+                  "id": "N0HZKw",
+                  "type": "ref",
+                  "ref": "Y7Yw7",
+                  "name": "Bell Button",
+                  "width": 20,
+                  "height": 20,
+                  "descendants": {
+                    "h0ANu": {
+                      "id": "zud6N",
+                      "type": "ref",
+                      "ref": "kAINP",
+                      "name": "notification/20",
+                      "fill": "$color-text-brand-strong"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "veEFZ",
+          "name": "Meeting Banner",
+          "clip": true,
+          "width": "fill_container",
+          "height": 120,
+          "fill": "$color-background-brand",
+          "cornerRadius": 16,
+          "layout": "vertical",
+          "padding": 14,
+          "justifyContent": "space_between",
+          "children": [
+            {
+              "type": "frame",
+              "id": "ipvmR",
+              "name": "top",
+              "width": "fill_container",
+              "justifyContent": "space_between",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "u91QN",
+                  "name": "tag",
+                  "fill": "$color-background-surface",
+                  "cornerRadius": 100,
+                  "padding": [
+                    4,
+                    10
+                  ],
+                  "children": [
+                    {
+                      "id": "iGshp",
+                      "type": "ref",
+                      "ref": "nxVhv",
+                      "name": "label",
+                      "content": "이번 주 모임",
+                      "fill": "$color-text-brand-strong"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "G8FJi7",
+                  "name": "seat",
+                  "fill": "$color-background-surface",
+                  "cornerRadius": 100,
+                  "padding": [
+                    4,
+                    10
+                  ],
+                  "children": [
+                    {
+                      "id": "gwi5H",
+                      "type": "ref",
+                      "ref": "nxVhv",
+                      "name": "label",
+                      "content": "잔여 8석",
+                      "fill": "$color-text-error"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "f6jJc",
+              "name": "copy",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 4,
+              "children": [
+                {
+                  "id": "KL8Ns",
+                  "type": "ref",
+                  "ref": "G5Jfi8",
+                  "name": "title",
+                  "content": "구로 골목 맛집 투어",
+                  "fill": "$color-text-on-brand",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container"
+                },
+                {
+                  "id": "AwQ9K",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "meta",
+                  "content": "12/14 토 14:00 · 1인 25,000원",
+                  "fill": "$color-text-on-brand",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "HMk1c",
+          "name": "Banner Dots",
+          "width": "fill_container",
+          "gap": 5,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "rectangle",
+              "cornerRadius": 3,
+              "id": "j1K69l",
+              "name": "dot",
+              "fill": "$color-background-brand",
+              "width": 16,
+              "height": 6
+            },
+            {
+              "type": "rectangle",
+              "cornerRadius": 3,
+              "id": "s4qpex",
+              "name": "dot",
+              "fill": "$color-border-default",
+              "width": 6,
+              "height": 6
+            },
+            {
+              "type": "rectangle",
+              "cornerRadius": 3,
+              "id": "p5zzK",
+              "name": "dot",
+              "fill": "$color-border-default",
+              "width": 6,
+              "height": 6
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "GvoBN",
+          "name": "Featured Local Pick",
+          "width": "fill_container",
+          "height": 146,
+          "fill": "$color-background-brand-muted",
+          "cornerRadius": 16,
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#5B3A620F",
+            "offset": {
+              "x": 0,
+              "y": 3
+            },
+            "blur": 10
+          },
+          "layout": "vertical",
+          "gap": 8,
+          "padding": 12,
+          "children": [
+            {
+              "type": "frame",
+              "id": "WTD6r",
+              "name": "Hero Text Row",
+              "width": "fill_container",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "FkYVc",
+                  "name": "Hero Copy",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "id": "FNELK",
+                      "type": "ref",
+                      "ref": "nxVhv",
+                      "name": "Hero Badge",
+                      "content": "이번 주 이웃 추천",
+                      "fill": "$color-text-brand"
+                    },
+                    {
+                      "id": "fuRh4",
+                      "type": "ref",
+                      "ref": "G5Jfi8",
+                      "name": "Hero Title",
+                      "content": "차로 18분, 조용한 골목 파스타",
+                      "fill": "$color-text-default",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container"
+                    },
+                    {
+                      "id": "NJQhN",
+                      "type": "ref",
+                      "ref": "nxVhv",
+                      "name": "Hero Meta",
+                      "content": "항동 · 주차 가능 · 4.8",
+                      "fill": "$color-text-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "KXbRr",
+                  "name": "Hero Food Photo",
+                  "clip": true,
+                  "width": 78,
+                  "height": 66,
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "images/generated-1784861476088.png",
+                    "mode": "fill"
+                  },
+                  "cornerRadius": 16,
+                  "children": [
+                    {
+                      "id": "RA3aj",
+                      "type": "ref",
+                      "ref": "nxVhv",
+                      "name": "Photo Caption",
+                      "content": "hidden\nplate",
+                      "fill": "$color-text-on-brand"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "mdx9d",
+              "name": "Hero Action Row",
+              "width": "fill_container",
+              "gap": "$spacing-8",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "sMYsq",
+                  "type": "ref",
+                  "ref": "UN7pM",
+                  "name": "데이트 Chip",
+                  "descendants": {
+                    "KPoWX": {
+                      "content": "데이트"
+                    }
+                  }
+                },
+                {
+                  "id": "ukP2t",
+                  "type": "ref",
+                  "ref": "ANJP4",
+                  "name": "가족 Chip",
+                  "descendants": {
+                    "dNh3a": {
+                      "content": "가족"
+                    }
+                  }
+                },
+                {
+                  "id": "HgG00",
+                  "type": "ref",
+                  "ref": "ANJP4",
+                  "name": "주차 Chip",
+                  "descendants": {
+                    "dNh3a": {
+                      "content": "주차"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "fwT2f",
+          "type": "ref",
+          "ref": "eWfcQ",
+          "name": "Search Bar",
+          "width": "fill_container",
+          "descendants": {
+            "EIH4i": {
+              "enabled": false
+            },
+            "GaVaq": {
+              "content": "맛집 이름, 메뉴, 동네 검색"
+            },
+            "A1uKiA": {
+              "enabled": false
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "ywmdn",
+          "name": "Category Filter",
+          "width": "fill_container",
+          "gap": "$spacing-8",
+          "children": [
+            {
+              "id": "uPBRa",
+              "type": "ref",
+              "ref": "UN7pM",
+              "name": "전체 Chip",
+              "descendants": {
+                "KPoWX": {
+                  "content": "전체"
+                }
+              }
+            },
+            {
+              "id": "PeKbU",
+              "type": "ref",
+              "ref": "ANJP4",
+              "name": "한식 Chip",
+              "descendants": {
+                "dNh3a": {
+                  "content": "한식"
+                }
+              }
+            },
+            {
+              "id": "rTndS",
+              "type": "ref",
+              "ref": "ANJP4",
+              "name": "카페 Chip",
+              "descendants": {
+                "dNh3a": {
+                  "content": "카페"
+                }
+              }
+            },
+            {
+              "id": "zYQCr",
+              "type": "ref",
+              "ref": "ANJP4",
+              "name": "아이동반 Chip",
+              "descendants": {
+                "dNh3a": {
+                  "content": "아이동반"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "fbpwd",
+          "name": "Restaurant Feed",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": "$spacing-12",
+          "children": [
+            {
+              "type": "frame",
+              "id": "sY16Y",
+              "name": "Mango Table Card",
+              "width": "fill_container",
+              "fill": "$color-background-surface",
+              "cornerRadius": 16,
+              "gap": "$spacing-12",
+              "padding": 10,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Inxc0",
+                  "name": "Mango Table Thumbnail",
+                  "width": 58,
+                  "height": 58,
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "images/generated-1784861475969.png",
+                    "mode": "fill"
+                  },
+                  "cornerRadius": 14,
+                  "children": [
+                    {
+                      "id": "qTeuh",
+                      "type": "ref",
+                      "ref": "S4c9zs",
+                      "name": "Mango Table Utensils",
+                      "fill": "$color-text-on-brand"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "ENJ6L",
+                  "name": "Mango Table Copy",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "id": "IA04L",
+                      "type": "ref",
+                      "ref": "W2EKV",
+                      "name": "Mango Table Name",
+                      "content": "Mango Table",
+                      "fill": "$color-text-default",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container"
+                    },
+                    {
+                      "id": "SCdTx",
+                      "type": "ref",
+                      "ref": "nxVhv",
+                      "name": "Mango Table Desc",
+                      "content": "작은 마당이 있는 가정식",
+                      "fill": "$color-text-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container"
+                    },
+                    {
+                      "id": "gZ2MR",
+                      "type": "ref",
+                      "ref": "nxVhv",
+                      "name": "Mango Table Meta",
+                      "content": "오류동 · 12분 · 저장 38",
+                      "fill": "$color-text-brand",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container"
+                    }
+                  ]
+                },
+                {
+                  "id": "yhvXv",
+                  "type": "ref",
+                  "ref": "mPdoO",
+                  "name": "Mango Table Arrow",
+                  "fill": "$color-text-subtle"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "lVhtT",
+              "name": "오월식당 Card",
+              "width": "fill_container",
+              "fill": "$color-background-surface",
+              "cornerRadius": 16,
+              "gap": "$spacing-12",
+              "padding": 10,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "m6KSDf",
+                  "name": "오월식당 Thumbnail",
+                  "width": 58,
+                  "height": 58,
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "images/generated-1784861476287.png",
+                    "mode": "fill"
+                  },
+                  "cornerRadius": 14,
+                  "children": [
+                    {
+                      "id": "ZNg1L",
+                      "type": "ref",
+                      "ref": "S4c9zs",
+                      "name": "오월식당 Utensils",
+                      "fill": "$color-text-brand"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "irHKi",
+                  "name": "오월식당 Copy",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "id": "kDS0k",
+                      "type": "ref",
+                      "ref": "W2EKV",
+                      "name": "오월식당 Name",
+                      "content": "오월식당",
+                      "fill": "$color-text-default",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container"
+                    },
+                    {
+                      "id": "ErpOd",
+                      "type": "ref",
+                      "ref": "nxVhv",
+                      "name": "오월식당 Desc",
+                      "content": "예약해야 먹는 들깨칼국수",
+                      "fill": "$color-text-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container"
+                    },
+                    {
+                      "id": "zNsse",
+                      "type": "ref",
+                      "ref": "nxVhv",
+                      "name": "오월식당 Meta",
+                      "content": "개봉동 · 9분 · 저장 38",
+                      "fill": "$color-text-brand",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container"
+                    }
+                  ]
+                },
+                {
+                  "id": "BWpbZ",
+                  "type": "ref",
+                  "ref": "mPdoO",
+                  "name": "오월식당 Arrow",
+                  "fill": "$color-text-subtle"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "k6uALh",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 694,
+          "name": "Bottom Fixed Navigation",
+          "clip": true,
+          "width": 360,
+          "height": 86,
+          "fill": "$color-background-surface",
+          "cornerRadius": [
+            0,
+            0,
+            26,
+            26
+          ],
+          "stroke": "$color-border-default",
+          "strokeWidth": {
+            "top": 1
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#4A30540F",
+            "offset": {
+              "x": 0,
+              "y": -3
+            },
+            "blur": 12
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "frame",
+              "id": "S12luD",
+              "layoutPosition": "absolute",
+              "x": 22,
+              "y": 10,
+              "name": "Home Nav Item",
+              "width": 48,
+              "height": 46,
+              "fill": "$color-background-surface",
+              "layout": "vertical",
+              "gap": 3,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "nP9Sb",
+                  "type": "ref",
+                  "ref": "K7CsaZ",
+                  "name": "Home Icon",
+                  "fill": "$color-text-brand"
+                },
+                {
+                  "id": "JUo0y",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "Home Label",
+                  "content": "홈",
+                  "fill": "$color-text-brand"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "e68Gg",
+              "layoutPosition": "absolute",
+              "x": 88,
+              "y": 10,
+              "name": "Search Nav Item",
+              "width": 48,
+              "height": 46,
+              "fill": "$color-background-surface",
+              "layout": "vertical",
+              "gap": 3,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "SxVjY",
+                  "type": "ref",
+                  "ref": "NYNvY",
+                  "name": "Map Nav Icon",
+                  "fill": "$color-text-muted"
+                },
+                {
+                  "id": "wxxb6",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "Search Label",
+                  "content": "맛지도",
+                  "fill": "$color-text-muted"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "ZkLts",
+              "layoutPosition": "absolute",
+              "x": 154,
+              "y": 10,
+              "name": "Register Nav Item",
+              "width": 48,
+              "height": 46,
+              "fill": "$color-background-surface",
+              "layout": "vertical",
+              "gap": 3,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "w69ZUs",
+                  "type": "ref",
+                  "ref": "jywOu",
+                  "name": "Register Icon",
+                  "fill": "$color-text-muted"
+                },
+                {
+                  "id": "cqfk4",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "Register Label",
+                  "content": "등록",
+                  "fill": "$color-text-muted"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "xkhYa",
+              "layoutPosition": "absolute",
+              "x": 220,
+              "y": 10,
+              "name": "My Nav Item",
+              "width": 48,
+              "height": 46,
+              "fill": "$color-background-surface",
+              "layout": "vertical",
+              "gap": 3,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "XhaUh",
+                  "type": "ref",
+                  "ref": "YwoDo",
+                  "name": "My Icon",
+                  "fill": "$color-text-muted"
+                },
+                {
+                  "id": "fh6DW",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "My Label",
+                  "content": "MY",
+                  "fill": "$color-text-muted"
+                }
+              ]
+            },
+            {
+              "id": "DcTIB",
+              "type": "ref",
+              "ref": "ZSJID",
+              "name": "Create Plus Button",
+              "layoutPosition": "absolute",
+              "x": 276,
+              "y": 10,
+              "width": 48,
+              "height": 48,
+              "descendants": {
+                "r7ygx": {
+                  "id": "YmRN3",
+                  "type": "ref",
+                  "ref": "zbq6u",
+                  "name": "plus/32",
+                  "fill": "$color-text-on-brand"
+                }
+              }
+            },
+            {
+              "type": "rectangle",
+              "cornerRadius": 999,
+              "id": "a7tc1",
+              "layoutPosition": "absolute",
+              "x": 110,
+              "y": 72,
+              "name": "Home Indicator Bar",
+              "fill": "$color-text-default",
+              "width": 120,
+              "height": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "W2l7Ei",
+      "x": 3960,
+      "y": 5939,
+      "name": "06 Meeting Detail",
+      "clip": true,
+      "width": 360,
+      "height": 1148,
+      "fill": "$color-background-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "E6hNGu",
+          "name": "Top Bar",
+          "width": "fill_container",
+          "padding": 8,
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "id": "VMOvT",
+              "type": "ref",
+              "ref": "Y7Yw7",
+              "name": "Back",
+              "width": 40,
+              "height": 40,
+              "descendants": {
+                "h0ANu": {
+                  "id": "OH1P9",
+                  "type": "ref",
+                  "ref": "zFJaf",
+                  "name": "arrow-left/24",
+                  "fill": "$color-text-default"
+                }
+              }
+            },
+            {
+              "id": "hEFOe",
+              "type": "ref",
+              "ref": "G5Jfi8",
+              "name": "Bar Title",
+              "content": "모임 상세",
+              "fill": "$color-text-default"
+            },
+            {
+              "id": "TMNEh",
+              "type": "ref",
+              "ref": "Y7Yw7",
+              "name": "Share",
+              "width": 40,
+              "height": 40,
+              "descendants": {
+                "h0ANu": {
+                  "id": "Jbypa",
+                  "type": "ref",
+                  "ref": "HYe3r",
+                  "name": "share/24",
+                  "fill": "$color-text-default"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Lecg6",
+          "name": "Hero Image",
+          "metadata": {
+            "type": "unsplash",
+            "username": "mclee",
+            "link": "https://unsplash.com/@mclee",
+            "author": "MChe Lee"
+          },
+          "clip": true,
+          "width": "fill_container",
+          "height": 230,
+          "fill": {
+            "type": "image",
+            "enabled": true,
+            "url": "https://images.unsplash.com/photo-1769741331289-04a805b0d1b9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3ODY5NzE5ODV8&ixlib=rb-4.1.0&q=80&w=1080",
+            "mode": "fill"
+          },
+          "layout": "vertical",
+          "padding": 12,
+          "justifyContent": "end",
+          "children": [
+            {
+              "type": "frame",
+              "id": "AS2kU",
+              "name": "img-dots",
+              "width": "fill_container",
+              "gap": 5,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "rectangle",
+                  "cornerRadius": 3,
+                  "id": "HCGWz",
+                  "name": "dot",
+                  "fill": "$color-background-surface",
+                  "width": 16,
+                  "height": 6
+                },
+                {
+                  "type": "rectangle",
+                  "cornerRadius": 3,
+                  "id": "s6kn3",
+                  "name": "dot",
+                  "opacity": 0.6,
+                  "fill": "$color-background-surface",
+                  "width": 6,
+                  "height": 6
+                },
+                {
+                  "type": "rectangle",
+                  "cornerRadius": 3,
+                  "id": "GuKAK",
+                  "name": "dot",
+                  "opacity": 0.6,
+                  "fill": "$color-background-surface",
+                  "width": 6,
+                  "height": 6
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "IalJ3",
+          "name": "Head",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 6,
+          "padding": [
+            16,
+            16,
+            4,
+            16
+          ],
+          "children": [
+            {
+              "id": "tfaGt",
+              "type": "ref",
+              "ref": "nxVhv",
+              "name": "eyebrow",
+              "content": "이웃 모임 · 맛집 투어",
+              "fill": "$color-text-brand"
+            },
+            {
+              "id": "yp6gg",
+              "type": "ref",
+              "ref": "l8l3K",
+              "name": "title",
+              "content": "구로 골목 맛집 투어",
+              "fill": "$color-text-default",
+              "textGrowth": "fixed-width",
+              "width": "fill_container"
+            },
+            {
+              "id": "aqANN",
+              "type": "ref",
+              "ref": "vhhXj",
+              "name": "sub",
+              "content": "이웃과 함께 걷는 3시간, 숨은 골목 맛집 4곳",
+              "fill": "$color-text-muted",
+              "textGrowth": "fixed-width",
+              "width": "fill_container"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "fJNvV",
+          "name": "Content",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "padding": [
+            8,
+            16,
+            16,
+            16
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "K59bi4",
+              "name": "Info Card",
+              "width": "fill_container",
+              "fill": "$color-background-surface",
+              "cornerRadius": 16,
+              "stroke": "$color-border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 12,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "tEHXZ",
+                  "name": "r-일시",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "okswn",
+                      "type": "ref",
+                      "ref": "nxVhv",
+                      "name": "l",
+                      "content": "일시",
+                      "fill": "$color-text-muted"
+                    },
+                    {
+                      "id": "HSK6w",
+                      "type": "ref",
+                      "ref": "W2EKV",
+                      "name": "v",
+                      "content": "12월 14일 (토) 오후 2:00",
+                      "fill": "$color-text-default"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "e16dQ",
+                  "name": "r-장소",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "vK2C4",
+                      "type": "ref",
+                      "ref": "nxVhv",
+                      "name": "l",
+                      "content": "장소",
+                      "fill": "$color-text-muted"
+                    },
+                    {
+                      "id": "iEtvr",
+                      "type": "ref",
+                      "ref": "W2EKV",
+                      "name": "v",
+                      "content": "구로구 디지털로 300",
+                      "fill": "$color-text-default"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "a5tpxK",
+                  "name": "Map Mini",
+                  "clip": true,
+                  "width": "fill_container",
+                  "height": 120,
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "images/generated-1786971990153.png",
+                    "mode": "fill"
+                  },
+                  "cornerRadius": 12,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "f0fPL5",
+                      "name": "pin",
+                      "width": 26,
+                      "height": 26,
+                      "fill": "$color-background-brand",
+                      "cornerRadius": 999,
+                      "stroke": "$color-background-surface",
+                      "strokeWidth": 3,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "ellipse",
+                          "id": "rEoOS",
+                          "name": "dot",
+                          "fill": "$color-background-surface",
+                          "width": 8,
+                          "height": 8
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "rectangle",
+                  "id": "C8o4o",
+                  "name": "div",
+                  "fill": "$color-border-default",
+                  "width": "fill_container",
+                  "height": 1
+                },
+                {
+                  "type": "frame",
+                  "id": "syp9m",
+                  "name": "r-1인 가격",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "QXxYL",
+                      "type": "ref",
+                      "ref": "nxVhv",
+                      "name": "l",
+                      "content": "1인 가격",
+                      "fill": "$color-text-muted"
+                    },
+                    {
+                      "id": "vBzzy",
+                      "type": "ref",
+                      "ref": "W2EKV",
+                      "name": "v",
+                      "content": "25,000원",
+                      "fill": "$color-text-default"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "HOABl",
+                  "name": "r-참여 인원",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "mPDQL",
+                      "type": "ref",
+                      "ref": "nxVhv",
+                      "name": "l",
+                      "content": "참여 인원",
+                      "fill": "$color-text-muted"
+                    },
+                    {
+                      "id": "lDjxS",
+                      "type": "ref",
+                      "ref": "W2EKV",
+                      "name": "v",
+                      "content": "12명 / 최대 20명 · 남은 8석",
+                      "fill": "$color-text-brand"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "gYQGZ",
+                  "name": "r-모집 마감",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "BMAr8",
+                      "type": "ref",
+                      "ref": "nxVhv",
+                      "name": "l",
+                      "content": "모집 마감",
+                      "fill": "$color-text-muted"
+                    },
+                    {
+                      "id": "C2cLxN",
+                      "type": "ref",
+                      "ref": "W2EKV",
+                      "name": "v",
+                      "content": "12월 13일 (금) 23:59",
+                      "fill": "$color-text-default"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "x30rn",
+              "name": "Desc",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "id": "iaeOs",
+                  "type": "ref",
+                  "ref": "G5Jfi8",
+                  "name": "desc-h",
+                  "content": "모임 소개",
+                  "fill": "$color-text-default"
+                },
+                {
+                  "id": "aIkVV",
+                  "type": "ref",
+                  "ref": "vhhXj",
+                  "name": "desc-b",
+                  "content": "동네 이웃이 직접 안내하는 골목 맛집 투어입니다. 3시간 동안 숨은 골목 맛집 4곳을 함께 걸으며 맛보고, 사진도 남겨요. 아이 동반 가능하며 편한 신발을 준비해 주세요.",
+                  "fill": "$color-text-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "lineHeight": 1.5
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "CxMVt",
+              "name": "Refund",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "id": "Tpm6q",
+                  "type": "ref",
+                  "ref": "G5Jfi8",
+                  "name": "rf-h",
+                  "content": "환불 규정",
+                  "fill": "$color-text-default"
+                },
+                {
+                  "type": "frame",
+                  "id": "EWHjR",
+                  "name": "rf-table",
+                  "clip": true,
+                  "width": "fill_container",
+                  "fill": "$color-background-surface",
+                  "cornerRadius": 12,
+                  "stroke": "$color-border-default",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "IlFCR",
+                      "name": "tr",
+                      "width": "fill_container",
+                      "fill": "$color-background-subtle",
+                      "padding": [
+                        10,
+                        14
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "oKEqc",
+                          "type": "ref",
+                          "ref": "W2EKV",
+                          "name": "c1",
+                          "content": "취소 시점",
+                          "fill": "$color-text-default"
+                        },
+                        {
+                          "id": "pcYmy",
+                          "type": "ref",
+                          "ref": "W2EKV",
+                          "name": "c2",
+                          "content": "환불",
+                          "fill": "$color-text-default"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "ghYHO",
+                      "name": "d",
+                      "fill": "$color-border-default",
+                      "width": "fill_container",
+                      "height": 1
+                    },
+                    {
+                      "type": "frame",
+                      "id": "r84qsg",
+                      "name": "tr",
+                      "width": "fill_container",
+                      "fill": "$color-background-surface",
+                      "padding": [
+                        10,
+                        14
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "v9sbjT",
+                          "type": "ref",
+                          "ref": "vhhXj",
+                          "name": "c1",
+                          "content": "모임 7일 전까지",
+                          "fill": "$color-text-muted"
+                        },
+                        {
+                          "id": "lQ6qo",
+                          "type": "ref",
+                          "ref": "W2EKV",
+                          "name": "c2",
+                          "content": "100%",
+                          "fill": "$color-text-success"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "EM5So",
+                      "name": "tr",
+                      "width": "fill_container",
+                      "fill": "$color-background-surface",
+                      "padding": [
+                        10,
+                        14
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "Row63",
+                          "type": "ref",
+                          "ref": "vhhXj",
+                          "name": "c1",
+                          "content": "모임 3~7일 전",
+                          "fill": "$color-text-muted"
+                        },
+                        {
+                          "id": "VhOJY",
+                          "type": "ref",
+                          "ref": "W2EKV",
+                          "name": "c2",
+                          "content": "50%",
+                          "fill": "$color-text-default"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "tPrEQ",
+                      "name": "tr",
+                      "width": "fill_container",
+                      "fill": "$color-background-surface",
+                      "padding": [
+                        10,
+                        14
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "MP1hj",
+                          "type": "ref",
+                          "ref": "vhhXj",
+                          "name": "c1",
+                          "content": "모임 3일 이내",
+                          "fill": "$color-text-muted"
+                        },
+                        {
+                          "id": "P1zkt",
+                          "type": "ref",
+                          "ref": "W2EKV",
+                          "name": "c2",
+                          "content": "환불 불가",
+                          "fill": "$color-text-error"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "h8Lh5",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "rf-note",
+                  "content": "모임 시작 시각(KST) 기준으로 계산됩니다.",
+                  "fill": "$color-text-subtle"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "o3RNi",
+          "name": "Pay Bar",
+          "width": "fill_container",
+          "fill": "$color-background-surface",
+          "stroke": "$color-border-default",
+          "strokeWidth": {
+            "top": 1
+          },
+          "gap": 12,
+          "padding": 16,
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "AnSnU",
+              "name": "price",
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "Zbqby",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "pl",
+                  "content": "1인",
+                  "fill": "$color-text-muted"
+                },
+                {
+                  "id": "YdDW1",
+                  "type": "ref",
+                  "ref": "s3HfEI",
+                  "name": "pv",
+                  "content": "25,000원",
+                  "fill": "$color-text-default"
+                }
+              ]
+            },
+            {
+              "id": "PqP7t",
+              "type": "ref",
+              "ref": "KoSqw",
+              "name": "Pay Btn",
+              "height": 48,
+              "descendants": {
+                "sPQuA": {
+                  "enabled": false
+                },
+                "aBRtd": {
+                  "content": "결제하기"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "P7QTKc",
+      "x": 4400,
+      "y": 5939,
+      "name": "06b Payment Bottom Sheet",
+      "clip": true,
+      "width": 360,
+      "height": 780,
+      "fill": "$color-background-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "z5V1d",
+          "name": "Top Bar",
+          "width": "fill_container",
+          "padding": 8,
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "id": "W2rJEr",
+              "type": "ref",
+              "ref": "Y7Yw7",
+              "name": "Back",
+              "width": 40,
+              "height": 40,
+              "descendants": {
+                "h0ANu": {
+                  "id": "AuJJs",
+                  "type": "ref",
+                  "ref": "zFJaf",
+                  "name": "arrow-left/24",
+                  "fill": "$color-text-default"
+                }
+              }
+            },
+            {
+              "id": "W9gr9c",
+              "type": "ref",
+              "ref": "G5Jfi8",
+              "name": "Bar Title",
+              "content": "모임 상세",
+              "fill": "$color-text-default"
+            },
+            {
+              "id": "rJtit",
+              "type": "ref",
+              "ref": "Y7Yw7",
+              "name": "Share",
+              "width": 40,
+              "height": 40,
+              "descendants": {
+                "h0ANu": {
+                  "id": "cHG34",
+                  "type": "ref",
+                  "ref": "HYe3r",
+                  "name": "share/24",
+                  "fill": "$color-text-default"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "mIdPQ",
+          "name": "Hero Image",
+          "metadata": {
+            "type": "unsplash",
+            "username": "mclee",
+            "link": "https://unsplash.com/@mclee",
+            "author": "MChe Lee"
+          },
+          "clip": true,
+          "width": "fill_container",
+          "height": 230,
+          "fill": {
+            "type": "image",
+            "enabled": true,
+            "url": "https://images.unsplash.com/photo-1769741331289-04a805b0d1b9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3ODY5NzE5ODV8&ixlib=rb-4.1.0&q=80&w=1080",
+            "mode": "fill"
+          },
+          "layout": "vertical",
+          "padding": 12,
+          "justifyContent": "end",
+          "children": [
+            {
+              "type": "frame",
+              "id": "ilB8Q",
+              "name": "img-dots",
+              "width": "fill_container",
+              "gap": 5,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "rectangle",
+                  "cornerRadius": 3,
+                  "id": "s9uaXl",
+                  "name": "dot",
+                  "fill": "$color-background-surface",
+                  "width": 16,
+                  "height": 6
+                },
+                {
+                  "type": "rectangle",
+                  "cornerRadius": 3,
+                  "id": "N7Itn",
+                  "name": "dot",
+                  "opacity": 0.6,
+                  "fill": "$color-background-surface",
+                  "width": 6,
+                  "height": 6
+                },
+                {
+                  "type": "rectangle",
+                  "cornerRadius": 3,
+                  "id": "oWwCT",
+                  "name": "dot",
+                  "opacity": 0.6,
+                  "fill": "$color-background-surface",
+                  "width": 6,
+                  "height": 6
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "dVuvF",
+          "name": "Head",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 6,
+          "padding": [
+            16,
+            16,
+            4,
+            16
+          ],
+          "children": [
+            {
+              "id": "NgPca",
+              "type": "ref",
+              "ref": "nxVhv",
+              "name": "eyebrow",
+              "content": "이웃 모임 · 맛집 투어",
+              "fill": "$color-text-brand"
+            },
+            {
+              "id": "gbguK",
+              "type": "ref",
+              "ref": "l8l3K",
+              "name": "title",
+              "content": "구로 골목 맛집 투어",
+              "fill": "$color-text-default",
+              "textGrowth": "fixed-width",
+              "width": "fill_container"
+            },
+            {
+              "id": "bFbAv",
+              "type": "ref",
+              "ref": "vhhXj",
+              "name": "sub",
+              "content": "이웃과 함께 걷는 3시간, 숨은 골목 맛집 4곳",
+              "fill": "$color-text-muted",
+              "textGrowth": "fixed-width",
+              "width": "fill_container"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "IBaXa",
+          "name": "Content",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "padding": [
+            8,
+            16,
+            16,
+            16
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "D6KnV",
+              "name": "Info Card",
+              "width": "fill_container",
+              "fill": "$color-background-surface",
+              "cornerRadius": 16,
+              "stroke": "$color-border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 12,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "JbVwr",
+                  "name": "r-일시",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "ZbNSU",
+                      "type": "ref",
+                      "ref": "nxVhv",
+                      "name": "l",
+                      "content": "일시",
+                      "fill": "$color-text-muted"
+                    },
+                    {
+                      "id": "Jba38",
+                      "type": "ref",
+                      "ref": "W2EKV",
+                      "name": "v",
+                      "content": "12월 14일 (토) 오후 2:00",
+                      "fill": "$color-text-default"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "vEWjE",
+                  "name": "r-장소",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "oc1d0",
+                      "type": "ref",
+                      "ref": "nxVhv",
+                      "name": "l",
+                      "content": "장소",
+                      "fill": "$color-text-muted"
+                    },
+                    {
+                      "id": "XPpsx",
+                      "type": "ref",
+                      "ref": "W2EKV",
+                      "name": "v",
+                      "content": "구로구 디지털로 300",
+                      "fill": "$color-text-default"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "EYxBE",
+                  "name": "Map Mini",
+                  "clip": true,
+                  "width": "fill_container",
+                  "height": 120,
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "images/generated-1786971990153.png",
+                    "mode": "fill"
+                  },
+                  "cornerRadius": 12,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "b3I8Po",
+                      "name": "pin",
+                      "width": 26,
+                      "height": 26,
+                      "fill": "$color-background-brand",
+                      "cornerRadius": 999,
+                      "stroke": "$color-background-surface",
+                      "strokeWidth": 3,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "ellipse",
+                          "id": "XoteU",
+                          "name": "dot",
+                          "fill": "$color-background-surface",
+                          "width": 8,
+                          "height": 8
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "rectangle",
+                  "id": "rBMye",
+                  "name": "div",
+                  "fill": "$color-border-default",
+                  "width": "fill_container",
+                  "height": 1
+                },
+                {
+                  "type": "frame",
+                  "id": "q9hAh",
+                  "name": "r-1인 가격",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "F6FmkX",
+                      "type": "ref",
+                      "ref": "nxVhv",
+                      "name": "l",
+                      "content": "1인 가격",
+                      "fill": "$color-text-muted"
+                    },
+                    {
+                      "id": "VqP0o",
+                      "type": "ref",
+                      "ref": "W2EKV",
+                      "name": "v",
+                      "content": "25,000원",
+                      "fill": "$color-text-default"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "I1l100",
+                  "name": "r-참여 인원",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "wmkys",
+                      "type": "ref",
+                      "ref": "nxVhv",
+                      "name": "l",
+                      "content": "참여 인원",
+                      "fill": "$color-text-muted"
+                    },
+                    {
+                      "id": "QRrh3",
+                      "type": "ref",
+                      "ref": "W2EKV",
+                      "name": "v",
+                      "content": "12명 / 최대 20명 · 남은 8석",
+                      "fill": "$color-text-brand"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "zHw7y",
+                  "name": "r-모집 마감",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "K2J7ER",
+                      "type": "ref",
+                      "ref": "nxVhv",
+                      "name": "l",
+                      "content": "모집 마감",
+                      "fill": "$color-text-muted"
+                    },
+                    {
+                      "id": "qtDrT",
+                      "type": "ref",
+                      "ref": "W2EKV",
+                      "name": "v",
+                      "content": "12월 13일 (금) 23:59",
+                      "fill": "$color-text-default"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "e9DFJ",
+              "name": "Desc",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "id": "B56dZ",
+                  "type": "ref",
+                  "ref": "G5Jfi8",
+                  "name": "desc-h",
+                  "content": "모임 소개",
+                  "fill": "$color-text-default"
+                },
+                {
+                  "id": "E8nZ9v",
+                  "type": "ref",
+                  "ref": "vhhXj",
+                  "name": "desc-b",
+                  "content": "동네 이웃이 직접 안내하는 골목 맛집 투어입니다. 3시간 동안 숨은 골목 맛집 4곳을 함께 걸으며 맛보고, 사진도 남겨요. 아이 동반 가능하며 편한 신발을 준비해 주세요.",
+                  "fill": "$color-text-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "lineHeight": 1.5
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "bQP4Q",
+              "name": "Refund",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "id": "Vva05",
+                  "type": "ref",
+                  "ref": "G5Jfi8",
+                  "name": "rf-h",
+                  "content": "환불 규정",
+                  "fill": "$color-text-default"
+                },
+                {
+                  "type": "frame",
+                  "id": "C9ede",
+                  "name": "rf-table",
+                  "clip": true,
+                  "width": "fill_container",
+                  "fill": "$color-background-surface",
+                  "cornerRadius": 12,
+                  "stroke": "$color-border-default",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "qsaz6",
+                      "name": "tr",
+                      "width": "fill_container",
+                      "fill": "$color-background-subtle",
+                      "padding": [
+                        10,
+                        14
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "m8Vzf",
+                          "type": "ref",
+                          "ref": "W2EKV",
+                          "name": "c1",
+                          "content": "취소 시점",
+                          "fill": "$color-text-default"
+                        },
+                        {
+                          "id": "WIqnm",
+                          "type": "ref",
+                          "ref": "W2EKV",
+                          "name": "c2",
+                          "content": "환불",
+                          "fill": "$color-text-default"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "r3Yw7",
+                      "name": "d",
+                      "fill": "$color-border-default",
+                      "width": "fill_container",
+                      "height": 1
+                    },
+                    {
+                      "type": "frame",
+                      "id": "d5nKJi",
+                      "name": "tr",
+                      "width": "fill_container",
+                      "fill": "$color-background-surface",
+                      "padding": [
+                        10,
+                        14
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "Vcp5C",
+                          "type": "ref",
+                          "ref": "vhhXj",
+                          "name": "c1",
+                          "content": "모임 7일 전까지",
+                          "fill": "$color-text-muted"
+                        },
+                        {
+                          "id": "fW8hb",
+                          "type": "ref",
+                          "ref": "W2EKV",
+                          "name": "c2",
+                          "content": "100%",
+                          "fill": "$color-text-success"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "KtPRN",
+                      "name": "tr",
+                      "width": "fill_container",
+                      "fill": "$color-background-surface",
+                      "padding": [
+                        10,
+                        14
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "X22S6",
+                          "type": "ref",
+                          "ref": "vhhXj",
+                          "name": "c1",
+                          "content": "모임 3~7일 전",
+                          "fill": "$color-text-muted"
+                        },
+                        {
+                          "id": "IIuAy",
+                          "type": "ref",
+                          "ref": "W2EKV",
+                          "name": "c2",
+                          "content": "50%",
+                          "fill": "$color-text-default"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "nCxY3",
+                      "name": "tr",
+                      "width": "fill_container",
+                      "fill": "$color-background-surface",
+                      "padding": [
+                        10,
+                        14
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "n6NMK",
+                          "type": "ref",
+                          "ref": "vhhXj",
+                          "name": "c1",
+                          "content": "모임 3일 이내",
+                          "fill": "$color-text-muted"
+                        },
+                        {
+                          "id": "H4NG5m",
+                          "type": "ref",
+                          "ref": "W2EKV",
+                          "name": "c2",
+                          "content": "환불 불가",
+                          "fill": "$color-text-error"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "GCTAl",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "rf-note",
+                  "content": "모임 시작 시각(KST) 기준으로 계산됩니다.",
+                  "fill": "$color-text-subtle"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "a9Cs1Q",
+          "name": "Pay Bar",
+          "width": "fill_container",
+          "fill": "$color-background-surface",
+          "stroke": "$color-border-default",
+          "strokeWidth": {
+            "top": 1
+          },
+          "gap": 12,
+          "padding": 16,
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "w4SdPA",
+              "name": "price",
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "GjObd",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "pl",
+                  "content": "1인",
+                  "fill": "$color-text-muted"
+                },
+                {
+                  "id": "gF1Ts",
+                  "type": "ref",
+                  "ref": "s3HfEI",
+                  "name": "pv",
+                  "content": "25,000원",
+                  "fill": "$color-text-default"
+                }
+              ]
+            },
+            {
+              "id": "d0i6J",
+              "type": "ref",
+              "ref": "KoSqw",
+              "name": "Pay Btn",
+              "height": 48,
+              "descendants": {
+                "sPQuA": {
+                  "enabled": false
+                },
+                "aBRtd": {
+                  "content": "결제하기"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "rectangle",
+          "id": "yjGVX",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 0,
+          "name": "Scrim",
+          "opacity": 0.7,
+          "fill": "$color-background-overlay",
+          "width": 360,
+          "height": 780
+        },
+        {
+          "type": "frame",
+          "id": "OQqXe",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 450,
+          "name": "Payment Sheet",
+          "width": 360,
+          "fill": "$color-background-surface",
+          "cornerRadius": [
+            16,
+            16,
+            0,
+            0
+          ],
+          "layout": "vertical",
+          "gap": 14,
+          "padding": [
+            10,
+            16,
+            20,
+            16
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "O5Pc3",
+              "name": "handle",
+              "width": "fill_container",
+              "padding": [
+                0,
+                0,
+                4,
+                0
+              ],
+              "justifyContent": "center",
+              "children": [
+                {
+                  "type": "rectangle",
+                  "cornerRadius": 2,
+                  "id": "z2WD4",
+                  "name": "h",
+                  "fill": "$color-border-strong",
+                  "width": 36,
+                  "height": 4
+                }
+              ]
+            },
+            {
+              "id": "bV3nd",
+              "type": "ref",
+              "ref": "G5Jfi8",
+              "name": "Sheet Title",
+              "content": "결제하기",
+              "fill": "$color-text-default"
+            },
+            {
+              "id": "vwzY9",
+              "type": "ref",
+              "ref": "nxVhv",
+              "name": "cap",
+              "content": "참여 12명 / 최대 20명 · 남은 8석",
+              "fill": "$color-text-muted"
+            },
+            {
+              "type": "frame",
+              "id": "WZpU5",
+              "name": "stepper-row",
+              "width": "fill_container",
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "ZNrvI",
+                  "type": "ref",
+                  "ref": "W2EKV",
+                  "name": "lbl",
+                  "content": "참여 인원",
+                  "fill": "$color-text-default"
+                },
+                {
+                  "type": "frame",
+                  "id": "u8T6Iw",
+                  "name": "stepper",
+                  "gap": 14,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "TWf91",
+                      "name": "b-−",
+                      "width": 32,
+                      "height": 32,
+                      "cornerRadius": 8,
+                      "stroke": "$color-border-strong",
+                      "strokeWidth": 1,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "o1U2iC",
+                          "type": "ref",
+                          "ref": "s3HfEI",
+                          "name": "t",
+                          "content": "−",
+                          "fill": "$color-text-default"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "xxkrT",
+                      "type": "ref",
+                      "ref": "s3HfEI",
+                      "name": "num",
+                      "content": "2",
+                      "fill": "$color-text-default"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "LTnPF",
+                      "name": "b-+",
+                      "width": 32,
+                      "height": 32,
+                      "cornerRadius": 8,
+                      "stroke": "$color-border-strong",
+                      "strokeWidth": 1,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "i4Xh5",
+                          "type": "ref",
+                          "ref": "s3HfEI",
+                          "name": "t",
+                          "content": "+",
+                          "fill": "$color-text-default"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tFzfC",
+              "type": "ref",
+              "ref": "nxVhv",
+              "name": "hint",
+              "content": "최대 4명까지 신청할 수 있어요",
+              "fill": "$color-text-subtle"
+            },
+            {
+              "type": "rectangle",
+              "id": "P7shKJ",
+              "name": "div",
+              "fill": "$color-border-default",
+              "width": "fill_container",
+              "height": 1
+            },
+            {
+              "type": "frame",
+              "id": "W7S85A",
+              "name": "price-row",
+              "width": "fill_container",
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "sOBKa",
+                  "type": "ref",
+                  "ref": "vhhXj",
+                  "name": "pl",
+                  "content": "1인 25,000원 × 2명",
+                  "fill": "$color-text-muted"
+                },
+                {
+                  "id": "dvAbc",
+                  "type": "ref",
+                  "ref": "s3HfEI",
+                  "name": "pv",
+                  "content": "50,000원",
+                  "fill": "$color-text-default"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "M5Et5x",
+              "name": "agree",
+              "width": "fill_container",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "DsMt1",
+                  "type": "ref",
+                  "ref": "qLVLP",
+                  "name": "chk"
+                },
+                {
+                  "id": "jFXfm",
+                  "type": "ref",
+                  "ref": "vhhXj",
+                  "name": "agree-l",
+                  "content": "환불 규정을 확인했습니다",
+                  "fill": "$color-text-default"
+                }
+              ]
+            },
+            {
+              "id": "FmTzk",
+              "type": "ref",
+              "ref": "KoSqw",
+              "name": "Pay",
+              "width": "fill_container",
+              "height": 50,
+              "descendants": {
+                "sPQuA": {
+                  "enabled": false
+                },
+                "aBRtd": {
+                  "content": "50,000원 결제하기"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "R4Zpw",
+      "x": 4840,
+      "y": 5939,
+      "name": "07 Payment Complete",
+      "clip": true,
+      "width": 360,
+      "height": 682,
+      "fill": "$color-background-canvas",
+      "layout": "vertical",
+      "gap": 16,
+      "padding": [
+        24,
+        16,
+        16,
+        16
+      ],
+      "children": [
+        {
+          "type": "frame",
+          "id": "CgTrv",
+          "name": "Success",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 10,
+          "padding": [
+            16,
+            0,
+            8,
+            0
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "KV6Ft",
+              "name": "circle",
+              "width": 72,
+              "height": 72,
+              "fill": "$color-background-success",
+              "cornerRadius": 999,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "t3ZoD",
+                  "type": "ref",
+                  "ref": "MaUYp",
+                  "name": "check",
+                  "fill": "$color-text-success"
+                }
+              ]
+            },
+            {
+              "id": "S0m2z",
+              "type": "ref",
+              "ref": "l8l3K",
+              "name": "h",
+              "content": "결제가 완료되었어요",
+              "fill": "$color-text-default"
+            },
+            {
+              "id": "xQNB1",
+              "type": "ref",
+              "ref": "vhhXj",
+              "name": "s",
+              "content": "구로 골목 맛집 투어 신청이 확정되었어요.",
+              "fill": "$color-text-muted",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "textAlign": "center"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "azkyT",
+          "name": "Order Card",
+          "width": "fill_container",
+          "fill": "$color-background-surface",
+          "cornerRadius": 16,
+          "stroke": "$color-border-default",
+          "strokeWidth": 1,
+          "layout": "vertical",
+          "gap": 12,
+          "padding": 16,
+          "children": [
+            {
+              "type": "frame",
+              "id": "pM4Mj",
+              "name": "r-주문번호",
+              "width": "fill_container",
+              "gap": 12,
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "LyZ8C",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "l",
+                  "content": "주문번호",
+                  "fill": "$color-text-muted"
+                },
+                {
+                  "id": "qwQnd",
+                  "type": "ref",
+                  "ref": "W2EKV",
+                  "name": "v",
+                  "content": "PMT-20261213-0421",
+                  "fill": "$color-text-default"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "E8u5Yj",
+              "name": "r-모임",
+              "width": "fill_container",
+              "gap": 12,
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "DSqY9",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "l",
+                  "content": "모임",
+                  "fill": "$color-text-muted"
+                },
+                {
+                  "id": "cxKbq",
+                  "type": "ref",
+                  "ref": "W2EKV",
+                  "name": "v",
+                  "content": "구로 골목 맛집 투어",
+                  "fill": "$color-text-default"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "XRYXt",
+              "name": "r-일시",
+              "width": "fill_container",
+              "gap": 12,
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "RXT9y",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "l",
+                  "content": "일시",
+                  "fill": "$color-text-muted"
+                },
+                {
+                  "id": "wfPcj",
+                  "type": "ref",
+                  "ref": "W2EKV",
+                  "name": "v",
+                  "content": "12월 14일 (토) 오후 2:00",
+                  "fill": "$color-text-default"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "O0c9I3",
+              "name": "r-장소",
+              "width": "fill_container",
+              "gap": 12,
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "f5v1uI",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "l",
+                  "content": "장소",
+                  "fill": "$color-text-muted"
+                },
+                {
+                  "id": "smfeq",
+                  "type": "ref",
+                  "ref": "W2EKV",
+                  "name": "v",
+                  "content": "구로구 디지털로 300",
+                  "fill": "$color-text-default"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "HhqIu",
+              "name": "r-참여 인원",
+              "width": "fill_container",
+              "gap": 12,
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "NdttD",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "l",
+                  "content": "참여 인원",
+                  "fill": "$color-text-muted"
+                },
+                {
+                  "id": "D78NBr",
+                  "type": "ref",
+                  "ref": "W2EKV",
+                  "name": "v",
+                  "content": "2명",
+                  "fill": "$color-text-default"
+                }
+              ]
+            },
+            {
+              "type": "rectangle",
+              "id": "HCpym",
+              "name": "d",
+              "fill": "$color-border-default",
+              "width": "fill_container",
+              "height": 1
+            },
+            {
+              "type": "frame",
+              "id": "M9zn8",
+              "name": "r-결제 금액",
+              "width": "fill_container",
+              "gap": 12,
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "BPUhP",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "l",
+                  "content": "결제 금액",
+                  "fill": "$color-text-muted"
+                },
+                {
+                  "id": "Sqhd9",
+                  "type": "ref",
+                  "ref": "W2EKV",
+                  "name": "v",
+                  "content": "50,000원",
+                  "fill": "$color-text-brand"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "adioS",
+              "name": "r-결제 수단",
+              "width": "fill_container",
+              "gap": 12,
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "Y880v",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "l",
+                  "content": "결제 수단",
+                  "fill": "$color-text-muted"
+                },
+                {
+                  "id": "DJySd",
+                  "type": "ref",
+                  "ref": "W2EKV",
+                  "name": "v",
+                  "content": "카드 · 신한",
+                  "fill": "$color-text-default"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "MX4XP",
+              "name": "r-결제 일시",
+              "width": "fill_container",
+              "gap": 12,
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "TP9Ee",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "l",
+                  "content": "결제 일시",
+                  "fill": "$color-text-muted"
+                },
+                {
+                  "id": "b47BLc",
+                  "type": "ref",
+                  "ref": "W2EKV",
+                  "name": "v",
+                  "content": "2026.12.13 21:04",
+                  "fill": "$color-text-default"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "vljJB",
+          "type": "ref",
+          "ref": "nxVhv",
+          "name": "note",
+          "content": "결제 내역은 마이 페이지 > 결제 내역에서 확인할 수 있어요. 모임 3일 전까지 취소 시 차등 환불됩니다.",
+          "fill": "$color-text-subtle",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "lineHeight": 1.5
+        },
+        {
+          "type": "frame",
+          "id": "TlqFI",
+          "name": "btns",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 8,
+          "children": [
+            {
+              "id": "s8j3E",
+              "type": "ref",
+              "ref": "KoSqw",
+              "name": "b1",
+              "width": "fill_container",
+              "height": 48,
+              "descendants": {
+                "sPQuA": {
+                  "enabled": false
+                },
+                "aBRtd": {
+                  "content": "결제 내역 보기"
+                }
+              }
+            },
+            {
+              "id": "eAdjV",
+              "type": "ref",
+              "ref": "DtK1F",
+              "name": "b2",
+              "width": "fill_container",
+              "height": 48,
+              "descendants": {
+                "PIKqz": {
+                  "enabled": false
+                },
+                "x3hg6l": {
+                  "content": "메인으로 돌아가기"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "n9ROBu",
+      "x": 5280,
+      "y": 5939,
+      "name": "05b My Page - Payments",
+      "clip": true,
+      "width": 360,
+      "height": 780,
+      "fill": "$color-background-canvas",
+      "cornerRadius": 28,
+      "layout": "vertical",
+      "gap": "$spacing-16",
+      "padding": "$spacing-16",
+      "children": [
+        {
+          "type": "frame",
+          "id": "BsNTb",
+          "name": "My Header",
+          "width": "fill_container",
+          "padding": 4,
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "SP3px",
+              "name": "Brand Block",
+              "layout": "vertical",
+              "gap": 1,
+              "children": [
+                {
+                  "id": "NYjF9",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "Area Label",
+                  "content": "내 활동",
+                  "fill": "$color-text-brand"
+                },
+                {
+                  "id": "AVWzQ",
+                  "type": "ref",
+                  "ref": "l8l3K",
+                  "name": "Page Title",
+                  "content": "마이 페이지",
+                  "fill": "$color-text-default"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "soaYO",
+              "name": "Header Actions",
+              "gap": "$spacing-8",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "TmSF8",
+                  "type": "ref",
+                  "ref": "Y7Yw7",
+                  "name": "Settings Button",
+                  "width": 20,
+                  "height": 20,
+                  "descendants": {
+                    "h0ANu": {
+                      "id": "iaitg",
+                      "type": "ref",
+                      "ref": "i0xvq",
+                      "name": "settings/20",
+                      "fill": "$color-text-brand-strong"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "ETFFG",
+          "name": "Profile Card",
+          "width": "fill_container",
+          "fill": "$color-background-surface",
+          "cornerRadius": 16,
+          "gap": "$spacing-12",
+          "padding": 12,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "X0HIi",
+              "name": "Avatar",
+              "width": 56,
+              "height": 56,
+              "fill": "$color-background-brand-muted",
+              "cornerRadius": 28,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "t0u1Ea",
+                  "type": "ref",
+                  "ref": "t0FWq",
+                  "name": "user/32",
+                  "fill": "$color-text-brand"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "v8rfK",
+              "name": "Profile Copy",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 4,
+              "children": [
+                {
+                  "id": "FIgcd",
+                  "type": "ref",
+                  "ref": "G5Jfi8",
+                  "name": "Profile Name",
+                  "content": "홍지상",
+                  "fill": "$color-text-default",
+                  "width": "fill_container",
+                  "textGrowth": "fixed-width"
+                },
+                {
+                  "id": "YdgtM",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "Profile Handle",
+                  "content": "guro_hidden_03 · 구로동",
+                  "fill": "$color-text-muted",
+                  "width": "fill_container",
+                  "textGrowth": "fixed-width"
+                }
+              ]
+            },
+            {
+              "id": "ISsrO",
+              "type": "ref",
+              "ref": "Y7Yw7",
+              "name": "Edit Profile Button",
+              "width": 40,
+              "height": 40,
+              "descendants": {
+                "h0ANu": {
+                  "id": "PkrRO",
+                  "type": "ref",
+                  "ref": "xFXzF",
+                  "name": "edit/20",
+                  "fill": "$color-text-brand-strong"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "GnOEK",
+          "name": "Stats Row",
+          "width": "fill_container",
+          "gap": "$spacing-8",
+          "children": [
+            {
+              "type": "frame",
+              "id": "X56hv",
+              "name": "등록 Stat",
+              "width": "fill_container",
+              "fill": "$color-background-surface",
+              "cornerRadius": 14,
+              "layout": "vertical",
+              "gap": 2,
+              "padding": [
+                10,
+                12
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "Hjrb9",
+                  "type": "ref",
+                  "ref": "s3HfEI",
+                  "name": "등록 Value",
+                  "content": "12",
+                  "fill": "$color-text-default"
+                },
+                {
+                  "id": "z7KWi",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "등록 Label",
+                  "content": "등록",
+                  "fill": "$color-text-muted"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "JrCRu",
+              "name": "저장 Stat",
+              "width": "fill_container",
+              "fill": "$color-background-surface",
+              "cornerRadius": 14,
+              "layout": "vertical",
+              "gap": 2,
+              "padding": [
+                10,
+                12
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "GdRZF",
+                  "type": "ref",
+                  "ref": "s3HfEI",
+                  "name": "저장 Value",
+                  "content": "38",
+                  "fill": "$color-text-default"
+                },
+                {
+                  "id": "eNv8j",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "저장 Label",
+                  "content": "저장",
+                  "fill": "$color-text-muted"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "R9uPfz",
+              "name": "후기 Stat",
+              "width": "fill_container",
+              "fill": "$color-background-surface",
+              "cornerRadius": 14,
+              "layout": "vertical",
+              "gap": 2,
+              "padding": [
+                10,
+                12
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "TIEOl",
+                  "type": "ref",
+                  "ref": "s3HfEI",
+                  "name": "후기 Value",
+                  "content": "5",
+                  "fill": "$color-text-default"
+                },
+                {
+                  "id": "GnE8b",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "후기 Label",
+                  "content": "후기",
+                  "fill": "$color-text-muted"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "YNn2L",
+          "name": "My Tabs",
+          "width": "fill_container",
+          "stroke": "$color-border-default",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "gap": 24,
+          "alignItems": "end",
+          "children": [
+            {
+              "type": "frame",
+              "id": "yYt20",
+              "name": "t-내가 쓴 글",
+              "layout": "vertical",
+              "gap": 8,
+              "padding": [
+                0,
+                0,
+                10,
+                0
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "EiCa5",
+                  "type": "ref",
+                  "ref": "W2EKV",
+                  "name": "l",
+                  "content": "내가 쓴 글",
+                  "fill": "$color-text-muted"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "S6Nru",
+              "name": "t-결제 내역",
+              "stroke": "$color-background-brand",
+              "strokeWidth": {
+                "bottom": 2
+              },
+              "layout": "vertical",
+              "gap": 8,
+              "padding": [
+                0,
+                0,
+                10,
+                0
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "Jz4cR",
+                  "type": "ref",
+                  "ref": "W2EKV",
+                  "name": "l",
+                  "content": "결제 내역",
+                  "fill": "$color-text-brand"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "RJsOY",
+              "name": "t-취소 내역",
+              "layout": "vertical",
+              "gap": 8,
+              "padding": [
+                0,
+                0,
+                10,
+                0
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "asYQk",
+                  "type": "ref",
+                  "ref": "W2EKV",
+                  "name": "l",
+                  "content": "취소 내역",
+                  "fill": "$color-text-muted"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "i5650d",
+          "name": "My Post Feed",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 12,
+          "children": [
+            {
+              "type": "frame",
+              "id": "HXsSf",
+              "name": "pay-구로 골목 맛집 투어",
+              "width": "fill_container",
+              "fill": "$color-background-surface",
+              "cornerRadius": 16,
+              "stroke": "$color-border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 10,
+              "padding": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "N11MGn",
+                  "name": "top",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "YFIhz",
+                      "name": "thumb",
+                      "width": 56,
+                      "height": 56,
+                      "fill": "$color-background-brand-subtle",
+                      "cornerRadius": 10,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "j8zmzH",
+                          "type": "ref",
+                          "ref": "S4c9zs",
+                          "name": "img",
+                          "fill": "$color-text-subtle"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "rLzPK",
+                      "name": "body",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 3,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "EwZUM",
+                          "name": "r1",
+                          "width": "fill_container",
+                          "gap": 6,
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "id": "jNZxs",
+                              "type": "ref",
+                              "ref": "W2EKV",
+                              "name": "nm",
+                              "content": "구로 골목 맛집 투어",
+                              "fill": "$color-text-default",
+                              "width": "fill_container",
+                              "textGrowth": "fixed-width"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "zK7cn",
+                              "name": "st",
+                              "fill": "$color-background-brand-subtle",
+                              "cornerRadius": 100,
+                              "padding": [
+                                3,
+                                8
+                              ],
+                              "children": [
+                                {
+                                  "id": "NKyGR",
+                                  "type": "ref",
+                                  "ref": "nxVhv",
+                                  "name": "stl",
+                                  "content": "참여 예정",
+                                  "fill": "$color-text-brand"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "id": "H2mJj",
+                          "type": "ref",
+                          "ref": "nxVhv",
+                          "name": "m1",
+                          "content": "12/14 토 14:00 · 2명",
+                          "fill": "$color-text-muted"
+                        },
+                        {
+                          "id": "dvBHo",
+                          "type": "ref",
+                          "ref": "nxVhv",
+                          "name": "m2",
+                          "content": "50,000원 · 12/13 결제",
+                          "fill": "$color-text-muted"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "aixJ4",
+                  "name": "act",
+                  "width": "fill_container",
+                  "justifyContent": "end",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "QuSL3",
+                      "type": "ref",
+                      "ref": "DtK1F",
+                      "name": "cancel",
+                      "height": 32,
+                      "descendants": {
+                        "PIKqz": {
+                          "enabled": false
+                        },
+                        "x3hg6l": {
+                          "content": "결제 취소"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "mFNOr",
+              "name": "pay-사진 잘 찍는 법 클래스",
+              "width": "fill_container",
+              "fill": "$color-background-surface",
+              "cornerRadius": 16,
+              "stroke": "$color-border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 10,
+              "padding": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "y6aypB",
+                  "name": "top",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "oRLRs",
+                      "name": "thumb",
+                      "width": 56,
+                      "height": 56,
+                      "fill": "$color-background-brand-subtle",
+                      "cornerRadius": 10,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "uPt9Z",
+                          "type": "ref",
+                          "ref": "S4c9zs",
+                          "name": "img",
+                          "fill": "$color-text-subtle"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "K5hev",
+                      "name": "body",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 3,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "edor8",
+                          "name": "r1",
+                          "width": "fill_container",
+                          "gap": 6,
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "id": "oFaa9",
+                              "type": "ref",
+                              "ref": "W2EKV",
+                              "name": "nm",
+                              "content": "사진 잘 찍는 법 클래스",
+                              "fill": "$color-text-default",
+                              "width": "fill_container",
+                              "textGrowth": "fixed-width"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "ncrbQ",
+                              "name": "st",
+                              "fill": "$color-background-subtle",
+                              "cornerRadius": 100,
+                              "padding": [
+                                3,
+                                8
+                              ],
+                              "children": [
+                                {
+                                  "id": "yr1ZY",
+                                  "type": "ref",
+                                  "ref": "nxVhv",
+                                  "name": "stl",
+                                  "content": "참여 완료",
+                                  "fill": "$color-text-muted"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "id": "feP37",
+                          "type": "ref",
+                          "ref": "nxVhv",
+                          "name": "m1",
+                          "content": "11/30 토 15:00 · 1명",
+                          "fill": "$color-text-muted"
+                        },
+                        {
+                          "id": "qyj8a",
+                          "type": "ref",
+                          "ref": "nxVhv",
+                          "name": "m2",
+                          "content": "30,000원 · 11/28 결제",
+                          "fill": "$color-text-muted"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "vB7tK",
+                  "name": "act",
+                  "width": "fill_container",
+                  "justifyContent": "end",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "OCsP6",
+                      "type": "ref",
+                      "ref": "nxVhv",
+                      "name": "ended",
+                      "content": "종료된 모임",
+                      "fill": "$color-text-subtle"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "QQxqu",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 694,
+          "name": "Bottom Fixed Navigation",
+          "clip": true,
+          "width": 360,
+          "height": 86,
+          "fill": "$color-background-surface",
+          "cornerRadius": [
+            0,
+            0,
+            26,
+            26
+          ],
+          "stroke": "$color-border-default",
+          "strokeWidth": {
+            "top": 1
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#4A30540F",
+            "offset": {
+              "x": 0,
+              "y": -3
+            },
+            "blur": 12
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "frame",
+              "id": "p9wRi4",
+              "layoutPosition": "absolute",
+              "x": 22,
+              "y": 10,
+              "name": "Home Nav Item",
+              "width": 48,
+              "height": 46,
+              "fill": "$color-background-surface",
+              "layout": "vertical",
+              "gap": 3,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "F30Hk",
+                  "type": "ref",
+                  "ref": "K7CsaZ",
+                  "fill": "$color-text-muted",
+                  "name": "Home Icon"
+                },
+                {
+                  "id": "lhUEw",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "fill": "$color-text-muted",
+                  "name": "Home Label",
+                  "content": "홈"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "OOKlc",
+              "layoutPosition": "absolute",
+              "x": 88,
+              "y": 10,
+              "name": "Search Nav Item",
+              "width": 48,
+              "height": 46,
+              "fill": "$color-background-surface",
+              "layout": "vertical",
+              "gap": 3,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "KQ7uz",
+                  "type": "ref",
+                  "ref": "NYNvY",
+                  "name": "Map Nav Icon",
+                  "fill": "$color-text-muted"
+                },
+                {
+                  "id": "p6mKm",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "Search Label",
+                  "content": "맛지도",
+                  "fill": "$color-text-muted"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "WY8gf",
+              "layoutPosition": "absolute",
+              "x": 154,
+              "y": 10,
+              "name": "Register Nav Item",
+              "width": 48,
+              "height": 46,
+              "fill": "$color-background-surface",
+              "layout": "vertical",
+              "gap": 3,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "zeFOB",
+                  "type": "ref",
+                  "ref": "jywOu",
+                  "name": "Register Icon",
+                  "fill": "$color-text-muted"
+                },
+                {
+                  "id": "wzaCX",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "Register Label",
+                  "content": "등록",
+                  "fill": "$color-text-muted"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "x7fFdH",
+              "layoutPosition": "absolute",
+              "x": 220,
+              "y": 10,
+              "name": "My Nav Item",
+              "width": 48,
+              "height": 46,
+              "fill": "$color-background-surface",
+              "layout": "vertical",
+              "gap": 3,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "d6o98",
+                  "type": "ref",
+                  "ref": "YwoDo",
+                  "fill": "$color-text-brand",
+                  "name": "My Icon"
+                },
+                {
+                  "id": "OjHgN",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "fill": "$color-text-brand",
+                  "name": "My Label",
+                  "content": "MY"
+                }
+              ]
+            },
+            {
+              "id": "HSFjL",
+              "type": "ref",
+              "ref": "ZSJID",
+              "name": "Create Plus Button",
+              "layoutPosition": "absolute",
+              "x": 276,
+              "y": 10,
+              "width": 48,
+              "height": 48,
+              "descendants": {
+                "r7ygx": {
+                  "id": "xvXlz",
+                  "type": "ref",
+                  "ref": "zbq6u",
+                  "name": "plus/32",
+                  "fill": "$color-text-on-brand"
+                }
+              }
+            },
+            {
+              "type": "rectangle",
+              "cornerRadius": 999,
+              "id": "EBHwe",
+              "layoutPosition": "absolute",
+              "x": 110,
+              "y": 72,
+              "name": "Home Indicator Bar",
+              "fill": "$color-text-default",
+              "width": 120,
+              "height": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "JAeZM",
+      "x": 5720,
+      "y": 5939,
+      "name": "05c My Page - Cancellations",
+      "clip": true,
+      "width": 360,
+      "height": 780,
+      "fill": "$color-background-canvas",
+      "cornerRadius": 28,
+      "layout": "vertical",
+      "gap": "$spacing-16",
+      "padding": "$spacing-16",
+      "children": [
+        {
+          "type": "frame",
+          "id": "BBTcI",
+          "name": "My Header",
+          "width": "fill_container",
+          "padding": 4,
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "R2FBb",
+              "name": "Brand Block",
+              "layout": "vertical",
+              "gap": 1,
+              "children": [
+                {
+                  "id": "FWKlW",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "Area Label",
+                  "content": "내 활동",
+                  "fill": "$color-text-brand"
+                },
+                {
+                  "id": "HdcWy",
+                  "type": "ref",
+                  "ref": "l8l3K",
+                  "name": "Page Title",
+                  "content": "마이 페이지",
+                  "fill": "$color-text-default"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "K2ZwIT",
+              "name": "Header Actions",
+              "gap": "$spacing-8",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "xRnqs",
+                  "type": "ref",
+                  "ref": "Y7Yw7",
+                  "name": "Settings Button",
+                  "width": 20,
+                  "height": 20,
+                  "descendants": {
+                    "h0ANu": {
+                      "id": "r5VTV",
+                      "type": "ref",
+                      "ref": "i0xvq",
+                      "name": "settings/20",
+                      "fill": "$color-text-brand-strong"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "PvN2h",
+          "name": "Profile Card",
+          "width": "fill_container",
+          "fill": "$color-background-surface",
+          "cornerRadius": 16,
+          "gap": "$spacing-12",
+          "padding": 12,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "q6xKa",
+              "name": "Avatar",
+              "width": 56,
+              "height": 56,
+              "fill": "$color-background-brand-muted",
+              "cornerRadius": 28,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "Yc2B2",
+                  "type": "ref",
+                  "ref": "t0FWq",
+                  "name": "user/32",
+                  "fill": "$color-text-brand"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "a9O0b",
+              "name": "Profile Copy",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 4,
+              "children": [
+                {
+                  "id": "eNhFZ",
+                  "type": "ref",
+                  "ref": "G5Jfi8",
+                  "name": "Profile Name",
+                  "content": "홍지상",
+                  "fill": "$color-text-default",
+                  "width": "fill_container",
+                  "textGrowth": "fixed-width"
+                },
+                {
+                  "id": "mIWhm",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "Profile Handle",
+                  "content": "guro_hidden_03 · 구로동",
+                  "fill": "$color-text-muted",
+                  "width": "fill_container",
+                  "textGrowth": "fixed-width"
+                }
+              ]
+            },
+            {
+              "id": "YjU0M",
+              "type": "ref",
+              "ref": "Y7Yw7",
+              "name": "Edit Profile Button",
+              "width": 40,
+              "height": 40,
+              "descendants": {
+                "h0ANu": {
+                  "id": "U61wW",
+                  "type": "ref",
+                  "ref": "xFXzF",
+                  "name": "edit/20",
+                  "fill": "$color-text-brand-strong"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Xn4dQ",
+          "name": "Stats Row",
+          "width": "fill_container",
+          "gap": "$spacing-8",
+          "children": [
+            {
+              "type": "frame",
+              "id": "rxDnx",
+              "name": "등록 Stat",
+              "width": "fill_container",
+              "fill": "$color-background-surface",
+              "cornerRadius": 14,
+              "layout": "vertical",
+              "gap": 2,
+              "padding": [
+                10,
+                12
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "gzInL",
+                  "type": "ref",
+                  "ref": "s3HfEI",
+                  "name": "등록 Value",
+                  "content": "12",
+                  "fill": "$color-text-default"
+                },
+                {
+                  "id": "M24ZM",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "등록 Label",
+                  "content": "등록",
+                  "fill": "$color-text-muted"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "zGvHc",
+              "name": "저장 Stat",
+              "width": "fill_container",
+              "fill": "$color-background-surface",
+              "cornerRadius": 14,
+              "layout": "vertical",
+              "gap": 2,
+              "padding": [
+                10,
+                12
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "OCk6q",
+                  "type": "ref",
+                  "ref": "s3HfEI",
+                  "name": "저장 Value",
+                  "content": "38",
+                  "fill": "$color-text-default"
+                },
+                {
+                  "id": "TviNQ",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "저장 Label",
+                  "content": "저장",
+                  "fill": "$color-text-muted"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "lLFBC",
+              "name": "후기 Stat",
+              "width": "fill_container",
+              "fill": "$color-background-surface",
+              "cornerRadius": 14,
+              "layout": "vertical",
+              "gap": 2,
+              "padding": [
+                10,
+                12
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "dAhu2",
+                  "type": "ref",
+                  "ref": "s3HfEI",
+                  "name": "후기 Value",
+                  "content": "5",
+                  "fill": "$color-text-default"
+                },
+                {
+                  "id": "zt6lr",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "후기 Label",
+                  "content": "후기",
+                  "fill": "$color-text-muted"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "wA7Do",
+          "name": "My Tabs",
+          "width": "fill_container",
+          "stroke": "$color-border-default",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "gap": 24,
+          "alignItems": "end",
+          "children": [
+            {
+              "type": "frame",
+              "id": "hUZSm",
+              "name": "t-내가 쓴 글",
+              "layout": "vertical",
+              "gap": 8,
+              "padding": [
+                0,
+                0,
+                10,
+                0
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "lQZIJ",
+                  "type": "ref",
+                  "ref": "W2EKV",
+                  "name": "l",
+                  "content": "내가 쓴 글",
+                  "fill": "$color-text-muted"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "wkZX7",
+              "name": "t-결제 내역",
+              "stroke": "$color-border-default",
+              "layout": "vertical",
+              "gap": 8,
+              "padding": [
+                0,
+                0,
+                10,
+                0
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "sxrCC",
+                  "type": "ref",
+                  "ref": "W2EKV",
+                  "name": "l",
+                  "content": "결제 내역",
+                  "fill": "$color-text-muted"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "l00o7",
+              "name": "t-취소 내역",
+              "stroke": "$color-background-brand",
+              "strokeWidth": {
+                "bottom": 2
+              },
+              "layout": "vertical",
+              "gap": 8,
+              "padding": [
+                0,
+                0,
+                10,
+                0
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "rQE6y",
+                  "type": "ref",
+                  "ref": "W2EKV",
+                  "name": "l",
+                  "content": "취소 내역",
+                  "fill": "$color-text-brand"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "M0cb4",
+          "name": "My Post Feed",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 12,
+          "children": [
+            {
+              "type": "frame",
+              "id": "p96A5",
+              "name": "refund-note",
+              "width": "fill_container",
+              "fill": "$color-background-subtle",
+              "cornerRadius": 10,
+              "gap": 8,
+              "padding": [
+                10,
+                12
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "BRJZZ",
+                  "type": "ref",
+                  "ref": "t4SqcG",
+                  "name": "i",
+                  "fill": "$color-text-muted"
+                },
+                {
+                  "id": "nUmgR",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "t",
+                  "content": "카드 환불은 카드사 사정으로 3~5일 걸릴 수 있어요.",
+                  "fill": "$color-text-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "FcSGk",
+              "name": "cx-사진 잘 찍는 법 클래스",
+              "width": "fill_container",
+              "fill": "$color-background-surface",
+              "cornerRadius": 16,
+              "stroke": "$color-border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "tJRB4",
+                  "name": "top",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "yybEF",
+                      "name": "thumb",
+                      "width": 56,
+                      "height": 56,
+                      "fill": "$color-background-brand-subtle",
+                      "cornerRadius": 10,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "Uq18k",
+                          "type": "ref",
+                          "ref": "S4c9zs",
+                          "name": "img",
+                          "fill": "$color-text-subtle"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "BDI4d",
+                      "name": "body",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 3,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "y9A0Z",
+                          "name": "r1",
+                          "width": "fill_container",
+                          "gap": 6,
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "id": "tmEFI",
+                              "type": "ref",
+                              "ref": "W2EKV",
+                              "name": "nm",
+                              "content": "사진 잘 찍는 법 클래스",
+                              "fill": "$color-text-default",
+                              "width": "fill_container",
+                              "textGrowth": "fixed-width"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "fj68F",
+                              "name": "st",
+                              "fill": "$color-background-success",
+                              "cornerRadius": 100,
+                              "padding": [
+                                3,
+                                8
+                              ],
+                              "children": [
+                                {
+                                  "id": "lxxvn",
+                                  "type": "ref",
+                                  "ref": "nxVhv",
+                                  "name": "stl",
+                                  "content": "환불 완료",
+                                  "fill": "$color-text-success"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "id": "JCaeX",
+                          "type": "ref",
+                          "ref": "nxVhv",
+                          "name": "a",
+                          "content": "결제 30,000원 · 환불 30,000원",
+                          "fill": "$color-text-muted"
+                        },
+                        {
+                          "id": "q7kFO1",
+                          "type": "ref",
+                          "ref": "nxVhv",
+                          "name": "r",
+                          "content": "적용 규정: 7일 전 취소 (100%)",
+                          "fill": "$color-text-muted"
+                        },
+                        {
+                          "id": "OdOGN",
+                          "type": "ref",
+                          "ref": "nxVhv",
+                          "name": "d",
+                          "content": "12/05 취소",
+                          "fill": "$color-text-subtle"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "mvEqi",
+              "name": "cx-원데이 베이킹 클래스",
+              "width": "fill_container",
+              "fill": "$color-background-surface",
+              "cornerRadius": 16,
+              "stroke": "$color-border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "g55mS",
+                  "name": "top",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "iJvxZ",
+                      "name": "thumb",
+                      "width": 56,
+                      "height": 56,
+                      "fill": "$color-background-brand-subtle",
+                      "cornerRadius": 10,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "d8aBl",
+                          "type": "ref",
+                          "ref": "S4c9zs",
+                          "name": "img",
+                          "fill": "$color-text-subtle"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "SBu6q",
+                      "name": "body",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 3,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "Ksvxj",
+                          "name": "r1",
+                          "width": "fill_container",
+                          "gap": 6,
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "id": "bLiHz",
+                              "type": "ref",
+                              "ref": "W2EKV",
+                              "name": "nm",
+                              "content": "원데이 베이킹 클래스",
+                              "fill": "$color-text-default",
+                              "width": "fill_container",
+                              "textGrowth": "fixed-width"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "WNIR9",
+                              "name": "st",
+                              "fill": "$color-background-warning",
+                              "cornerRadius": 100,
+                              "padding": [
+                                3,
+                                8
+                              ],
+                              "children": [
+                                {
+                                  "id": "gVLo5",
+                                  "type": "ref",
+                                  "ref": "nxVhv",
+                                  "name": "stl",
+                                  "content": "환불 처리 중",
+                                  "fill": "$color-text-warning"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "id": "SQzo0",
+                          "type": "ref",
+                          "ref": "nxVhv",
+                          "name": "a",
+                          "content": "결제 40,000원 · 환불 20,000원",
+                          "fill": "$color-text-muted"
+                        },
+                        {
+                          "id": "HQf8h",
+                          "type": "ref",
+                          "ref": "nxVhv",
+                          "name": "r",
+                          "content": "적용 규정: 3~7일 전 취소 (50%)",
+                          "fill": "$color-text-muted"
+                        },
+                        {
+                          "id": "QYytC",
+                          "type": "ref",
+                          "ref": "nxVhv",
+                          "name": "d",
+                          "content": "12/11 취소",
+                          "fill": "$color-text-subtle"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "jtXbK",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 694,
+          "name": "Bottom Fixed Navigation",
+          "clip": true,
+          "width": 360,
+          "height": 86,
+          "fill": "$color-background-surface",
+          "cornerRadius": [
+            0,
+            0,
+            26,
+            26
+          ],
+          "stroke": "$color-border-default",
+          "strokeWidth": {
+            "top": 1
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#4A30540F",
+            "offset": {
+              "x": 0,
+              "y": -3
+            },
+            "blur": 12
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "frame",
+              "id": "fHPRp",
+              "layoutPosition": "absolute",
+              "x": 22,
+              "y": 10,
+              "name": "Home Nav Item",
+              "width": 48,
+              "height": 46,
+              "fill": "$color-background-surface",
+              "layout": "vertical",
+              "gap": 3,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "Kxrw2",
+                  "type": "ref",
+                  "ref": "K7CsaZ",
+                  "fill": "$color-text-muted",
+                  "name": "Home Icon"
+                },
+                {
+                  "id": "b4NaN",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "fill": "$color-text-muted",
+                  "name": "Home Label",
+                  "content": "홈"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "lEpXL",
+              "layoutPosition": "absolute",
+              "x": 88,
+              "y": 10,
+              "name": "Search Nav Item",
+              "width": 48,
+              "height": 46,
+              "fill": "$color-background-surface",
+              "layout": "vertical",
+              "gap": 3,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "yylOF",
+                  "type": "ref",
+                  "ref": "NYNvY",
+                  "name": "Map Nav Icon",
+                  "fill": "$color-text-muted"
+                },
+                {
+                  "id": "BcNOL",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "Search Label",
+                  "content": "맛지도",
+                  "fill": "$color-text-muted"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "K7WJm",
+              "layoutPosition": "absolute",
+              "x": 154,
+              "y": 10,
+              "name": "Register Nav Item",
+              "width": 48,
+              "height": 46,
+              "fill": "$color-background-surface",
+              "layout": "vertical",
+              "gap": 3,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "thV4S",
+                  "type": "ref",
+                  "ref": "jywOu",
+                  "name": "Register Icon",
+                  "fill": "$color-text-muted"
+                },
+                {
+                  "id": "cOYQk",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "Register Label",
+                  "content": "등록",
+                  "fill": "$color-text-muted"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "NTVQq",
+              "layoutPosition": "absolute",
+              "x": 220,
+              "y": 10,
+              "name": "My Nav Item",
+              "width": 48,
+              "height": 46,
+              "fill": "$color-background-surface",
+              "layout": "vertical",
+              "gap": 3,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "d3eBAx",
+                  "type": "ref",
+                  "ref": "YwoDo",
+                  "fill": "$color-text-brand",
+                  "name": "My Icon"
+                },
+                {
+                  "id": "upHg5",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "fill": "$color-text-brand",
+                  "name": "My Label",
+                  "content": "MY"
+                }
+              ]
+            },
+            {
+              "id": "H4uTxg",
+              "type": "ref",
+              "ref": "ZSJID",
+              "name": "Create Plus Button",
+              "layoutPosition": "absolute",
+              "x": 276,
+              "y": 10,
+              "width": 48,
+              "height": 48,
+              "descendants": {
+                "r7ygx": {
+                  "id": "fIxMh",
+                  "type": "ref",
+                  "ref": "zbq6u",
+                  "name": "plus/32",
+                  "fill": "$color-text-on-brand"
+                }
+              }
+            },
+            {
+              "type": "rectangle",
+              "cornerRadius": 999,
+              "id": "Y0SSo7",
+              "layoutPosition": "absolute",
+              "x": 110,
+              "y": 72,
+              "name": "Home Indicator Bar",
+              "fill": "$color-text-default",
+              "width": 120,
+              "height": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "L1GGQ3",
+      "x": 6160,
+      "y": 5939,
+      "name": "05d My Page - Cancel Confirm",
+      "clip": true,
+      "width": 360,
+      "height": 780,
+      "fill": "$color-background-canvas",
+      "cornerRadius": 28,
+      "layout": "vertical",
+      "gap": "$spacing-16",
+      "padding": "$spacing-16",
+      "children": [
+        {
+          "type": "frame",
+          "id": "ADSbr",
+          "name": "My Header",
+          "width": "fill_container",
+          "padding": 4,
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "yoIDC",
+              "name": "Brand Block",
+              "layout": "vertical",
+              "gap": 1,
+              "children": [
+                {
+                  "id": "T45ZoV",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "Area Label",
+                  "content": "내 활동",
+                  "fill": "$color-text-brand"
+                },
+                {
+                  "id": "hqcIG",
+                  "type": "ref",
+                  "ref": "l8l3K",
+                  "name": "Page Title",
+                  "content": "마이 페이지",
+                  "fill": "$color-text-default"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "P9uyAd",
+              "name": "Header Actions",
+              "gap": "$spacing-8",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "ujaDz",
+                  "type": "ref",
+                  "ref": "Y7Yw7",
+                  "name": "Settings Button",
+                  "width": 20,
+                  "height": 20,
+                  "descendants": {
+                    "h0ANu": {
+                      "id": "QpkhN",
+                      "type": "ref",
+                      "ref": "i0xvq",
+                      "name": "settings/20",
+                      "fill": "$color-text-brand-strong"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "ZS0Q7",
+          "name": "Profile Card",
+          "width": "fill_container",
+          "fill": "$color-background-surface",
+          "cornerRadius": 16,
+          "gap": "$spacing-12",
+          "padding": 12,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "Z7n4M",
+              "name": "Avatar",
+              "width": 56,
+              "height": 56,
+              "fill": "$color-background-brand-muted",
+              "cornerRadius": 28,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "xAihb",
+                  "type": "ref",
+                  "ref": "t0FWq",
+                  "name": "user/32",
+                  "fill": "$color-text-brand"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "rtMkk",
+              "name": "Profile Copy",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 4,
+              "children": [
+                {
+                  "id": "cdgtw",
+                  "type": "ref",
+                  "ref": "G5Jfi8",
+                  "name": "Profile Name",
+                  "content": "홍지상",
+                  "fill": "$color-text-default",
+                  "width": "fill_container",
+                  "textGrowth": "fixed-width"
+                },
+                {
+                  "id": "G7Xljl",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "Profile Handle",
+                  "content": "guro_hidden_03 · 구로동",
+                  "fill": "$color-text-muted",
+                  "width": "fill_container",
+                  "textGrowth": "fixed-width"
+                }
+              ]
+            },
+            {
+              "id": "AEUwA",
+              "type": "ref",
+              "ref": "Y7Yw7",
+              "name": "Edit Profile Button",
+              "width": 40,
+              "height": 40,
+              "descendants": {
+                "h0ANu": {
+                  "id": "Voost",
+                  "type": "ref",
+                  "ref": "xFXzF",
+                  "name": "edit/20",
+                  "fill": "$color-text-brand-strong"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "OavjR",
+          "name": "Stats Row",
+          "width": "fill_container",
+          "gap": "$spacing-8",
+          "children": [
+            {
+              "type": "frame",
+              "id": "vc6h4",
+              "name": "등록 Stat",
+              "width": "fill_container",
+              "fill": "$color-background-surface",
+              "cornerRadius": 14,
+              "layout": "vertical",
+              "gap": 2,
+              "padding": [
+                10,
+                12
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "nPFwd",
+                  "type": "ref",
+                  "ref": "s3HfEI",
+                  "name": "등록 Value",
+                  "content": "12",
+                  "fill": "$color-text-default"
+                },
+                {
+                  "id": "EyjPn",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "등록 Label",
+                  "content": "등록",
+                  "fill": "$color-text-muted"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "OtkzQ",
+              "name": "저장 Stat",
+              "width": "fill_container",
+              "fill": "$color-background-surface",
+              "cornerRadius": 14,
+              "layout": "vertical",
+              "gap": 2,
+              "padding": [
+                10,
+                12
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "aRfnt",
+                  "type": "ref",
+                  "ref": "s3HfEI",
+                  "name": "저장 Value",
+                  "content": "38",
+                  "fill": "$color-text-default"
+                },
+                {
+                  "id": "XK8sm",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "저장 Label",
+                  "content": "저장",
+                  "fill": "$color-text-muted"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "q1vT2q",
+              "name": "후기 Stat",
+              "width": "fill_container",
+              "fill": "$color-background-surface",
+              "cornerRadius": 14,
+              "layout": "vertical",
+              "gap": 2,
+              "padding": [
+                10,
+                12
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "ftdJD",
+                  "type": "ref",
+                  "ref": "s3HfEI",
+                  "name": "후기 Value",
+                  "content": "5",
+                  "fill": "$color-text-default"
+                },
+                {
+                  "id": "FQlEg",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "후기 Label",
+                  "content": "후기",
+                  "fill": "$color-text-muted"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "hg3aj",
+          "name": "My Tabs",
+          "width": "fill_container",
+          "stroke": "$color-border-default",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "gap": 24,
+          "alignItems": "end",
+          "children": [
+            {
+              "type": "frame",
+              "id": "BYwb1",
+              "name": "t-내가 쓴 글",
+              "layout": "vertical",
+              "gap": 8,
+              "padding": [
+                0,
+                0,
+                10,
+                0
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "OYtp2",
+                  "type": "ref",
+                  "ref": "W2EKV",
+                  "name": "l",
+                  "content": "내가 쓴 글",
+                  "fill": "$color-text-muted"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "kYN9v",
+              "name": "t-결제 내역",
+              "stroke": "$color-background-brand",
+              "strokeWidth": {
+                "bottom": 2
+              },
+              "layout": "vertical",
+              "gap": 8,
+              "padding": [
+                0,
+                0,
+                10,
+                0
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "zA8Q5",
+                  "type": "ref",
+                  "ref": "W2EKV",
+                  "name": "l",
+                  "content": "결제 내역",
+                  "fill": "$color-text-brand"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "quZJC",
+              "name": "t-취소 내역",
+              "layout": "vertical",
+              "gap": 8,
+              "padding": [
+                0,
+                0,
+                10,
+                0
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "RqwmF",
+                  "type": "ref",
+                  "ref": "W2EKV",
+                  "name": "l",
+                  "content": "취소 내역",
+                  "fill": "$color-text-muted"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "hslW4",
+          "name": "My Post Feed",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 12,
+          "children": [
+            {
+              "type": "frame",
+              "id": "AhBBf",
+              "name": "pay-구로 골목 맛집 투어",
+              "width": "fill_container",
+              "fill": "$color-background-surface",
+              "cornerRadius": 16,
+              "stroke": "$color-border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 10,
+              "padding": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "y5JYtZ",
+                  "name": "top",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "YRlJy",
+                      "name": "thumb",
+                      "width": 56,
+                      "height": 56,
+                      "fill": "$color-background-brand-subtle",
+                      "cornerRadius": 10,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "GqiNw",
+                          "type": "ref",
+                          "ref": "S4c9zs",
+                          "name": "img",
+                          "fill": "$color-text-subtle"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "bHcZl",
+                      "name": "body",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 3,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "FKquF",
+                          "name": "r1",
+                          "width": "fill_container",
+                          "gap": 6,
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "id": "thEBv",
+                              "type": "ref",
+                              "ref": "W2EKV",
+                              "name": "nm",
+                              "content": "구로 골목 맛집 투어",
+                              "fill": "$color-text-default",
+                              "width": "fill_container",
+                              "textGrowth": "fixed-width"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "t0PYDz",
+                              "name": "st",
+                              "fill": "$color-background-brand-subtle",
+                              "cornerRadius": 100,
+                              "padding": [
+                                3,
+                                8
+                              ],
+                              "children": [
+                                {
+                                  "id": "zUrnz",
+                                  "type": "ref",
+                                  "ref": "nxVhv",
+                                  "name": "stl",
+                                  "content": "참여 예정",
+                                  "fill": "$color-text-brand"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "id": "h91n0",
+                          "type": "ref",
+                          "ref": "nxVhv",
+                          "name": "m1",
+                          "content": "12/14 토 14:00 · 2명",
+                          "fill": "$color-text-muted"
+                        },
+                        {
+                          "id": "ErCaZ",
+                          "type": "ref",
+                          "ref": "nxVhv",
+                          "name": "m2",
+                          "content": "50,000원 · 12/13 결제",
+                          "fill": "$color-text-muted"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "xY8an",
+                  "name": "act",
+                  "width": "fill_container",
+                  "justifyContent": "end",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "D1KG9",
+                      "type": "ref",
+                      "ref": "DtK1F",
+                      "name": "cancel",
+                      "height": 32,
+                      "descendants": {
+                        "PIKqz": {
+                          "enabled": false
+                        },
+                        "x3hg6l": {
+                          "content": "결제 취소"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Q4p814",
+              "name": "pay-사진 잘 찍는 법 클래스",
+              "width": "fill_container",
+              "fill": "$color-background-surface",
+              "cornerRadius": 16,
+              "stroke": "$color-border-default",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 10,
+              "padding": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "S8mgpX",
+                  "name": "top",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "d9bbmy",
+                      "name": "thumb",
+                      "width": 56,
+                      "height": 56,
+                      "fill": "$color-background-brand-subtle",
+                      "cornerRadius": 10,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "Gzkk3",
+                          "type": "ref",
+                          "ref": "S4c9zs",
+                          "name": "img",
+                          "fill": "$color-text-subtle"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "VW1Cw",
+                      "name": "body",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 3,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "sdoKj",
+                          "name": "r1",
+                          "width": "fill_container",
+                          "gap": 6,
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "id": "wY4Ja",
+                              "type": "ref",
+                              "ref": "W2EKV",
+                              "name": "nm",
+                              "content": "사진 잘 찍는 법 클래스",
+                              "fill": "$color-text-default",
+                              "width": "fill_container",
+                              "textGrowth": "fixed-width"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "GoPXt",
+                              "name": "st",
+                              "fill": "$color-background-subtle",
+                              "cornerRadius": 100,
+                              "padding": [
+                                3,
+                                8
+                              ],
+                              "children": [
+                                {
+                                  "id": "Aq7En",
+                                  "type": "ref",
+                                  "ref": "nxVhv",
+                                  "name": "stl",
+                                  "content": "참여 완료",
+                                  "fill": "$color-text-muted"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "id": "o386x",
+                          "type": "ref",
+                          "ref": "nxVhv",
+                          "name": "m1",
+                          "content": "11/30 토 15:00 · 1명",
+                          "fill": "$color-text-muted"
+                        },
+                        {
+                          "id": "gcaJ8",
+                          "type": "ref",
+                          "ref": "nxVhv",
+                          "name": "m2",
+                          "content": "30,000원 · 11/28 결제",
+                          "fill": "$color-text-muted"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "WE4Tw",
+                  "name": "act",
+                  "width": "fill_container",
+                  "justifyContent": "end",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "wEuzj",
+                      "type": "ref",
+                      "ref": "nxVhv",
+                      "name": "ended",
+                      "content": "종료된 모임",
+                      "fill": "$color-text-subtle"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "BvGqP",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 694,
+          "name": "Bottom Fixed Navigation",
+          "clip": true,
+          "width": 360,
+          "height": 86,
+          "fill": "$color-background-surface",
+          "cornerRadius": [
+            0,
+            0,
+            26,
+            26
+          ],
+          "stroke": "$color-border-default",
+          "strokeWidth": {
+            "top": 1
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#4A30540F",
+            "offset": {
+              "x": 0,
+              "y": -3
+            },
+            "blur": 12
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "frame",
+              "id": "lc1aj",
+              "layoutPosition": "absolute",
+              "x": 22,
+              "y": 10,
+              "name": "Home Nav Item",
+              "width": 48,
+              "height": 46,
+              "fill": "$color-background-surface",
+              "layout": "vertical",
+              "gap": 3,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "AjFBz",
+                  "type": "ref",
+                  "ref": "K7CsaZ",
+                  "fill": "$color-text-muted",
+                  "name": "Home Icon"
+                },
+                {
+                  "id": "cdY0X",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "fill": "$color-text-muted",
+                  "name": "Home Label",
+                  "content": "홈"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "t0yOZ",
+              "layoutPosition": "absolute",
+              "x": 88,
+              "y": 10,
+              "name": "Search Nav Item",
+              "width": 48,
+              "height": 46,
+              "fill": "$color-background-surface",
+              "layout": "vertical",
+              "gap": 3,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "EJOYg",
+                  "type": "ref",
+                  "ref": "NYNvY",
+                  "name": "Map Nav Icon",
+                  "fill": "$color-text-muted"
+                },
+                {
+                  "id": "M6WOw",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "Search Label",
+                  "content": "맛지도",
+                  "fill": "$color-text-muted"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "qNqLA",
+              "layoutPosition": "absolute",
+              "x": 154,
+              "y": 10,
+              "name": "Register Nav Item",
+              "width": 48,
+              "height": 46,
+              "fill": "$color-background-surface",
+              "layout": "vertical",
+              "gap": 3,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "L2bgD",
+                  "type": "ref",
+                  "ref": "jywOu",
+                  "name": "Register Icon",
+                  "fill": "$color-text-muted"
+                },
+                {
+                  "id": "jnNuH",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "name": "Register Label",
+                  "content": "등록",
+                  "fill": "$color-text-muted"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "ZjL3i",
+              "layoutPosition": "absolute",
+              "x": 220,
+              "y": 10,
+              "name": "My Nav Item",
+              "width": 48,
+              "height": 46,
+              "fill": "$color-background-surface",
+              "layout": "vertical",
+              "gap": 3,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "xdbj0",
+                  "type": "ref",
+                  "ref": "YwoDo",
+                  "fill": "$color-text-brand",
+                  "name": "My Icon"
+                },
+                {
+                  "id": "Tepk9",
+                  "type": "ref",
+                  "ref": "nxVhv",
+                  "fill": "$color-text-brand",
+                  "name": "My Label",
+                  "content": "MY"
+                }
+              ]
+            },
+            {
+              "id": "wqodB",
+              "type": "ref",
+              "ref": "ZSJID",
+              "name": "Create Plus Button",
+              "layoutPosition": "absolute",
+              "x": 276,
+              "y": 10,
+              "width": 48,
+              "height": 48,
+              "descendants": {
+                "r7ygx": {
+                  "id": "W9ctbC",
+                  "type": "ref",
+                  "ref": "zbq6u",
+                  "name": "plus/32",
+                  "fill": "$color-text-on-brand"
+                }
+              }
+            },
+            {
+              "type": "rectangle",
+              "cornerRadius": 999,
+              "id": "f5dq2",
+              "layoutPosition": "absolute",
+              "x": 110,
+              "y": 72,
+              "name": "Home Indicator Bar",
+              "fill": "$color-text-default",
+              "width": 120,
+              "height": 4
+            }
+          ]
+        },
+        {
+          "type": "rectangle",
+          "id": "VbllF",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 0,
+          "name": "Scrim",
+          "opacity": 0.7,
+          "fill": "$color-background-overlay",
+          "width": 360,
+          "height": 780
+        },
+        {
+          "type": "frame",
+          "id": "BtYry",
+          "layoutPosition": "absolute",
+          "x": 24,
+          "y": 214,
+          "name": "Cancel Modal",
+          "width": 312,
+          "fill": "$color-background-surface",
+          "cornerRadius": 16,
+          "layout": "vertical",
+          "gap": 16,
+          "padding": 20,
+          "children": [
+            {
+              "id": "ng5jQ",
+              "type": "ref",
+              "ref": "s3HfEI",
+              "name": "m-title",
+              "content": "결제를 취소할까요?",
+              "fill": "$color-text-default"
+            },
+            {
+              "id": "pbjVV",
+              "type": "ref",
+              "ref": "vhhXj",
+              "name": "m-sub",
+              "content": "구로 골목 맛집 투어 · 2명",
+              "fill": "$color-text-muted",
+              "textGrowth": "fixed-width",
+              "width": "fill_container"
+            },
+            {
+              "type": "frame",
+              "id": "jbzJM",
+              "name": "amount-box",
+              "width": "fill_container",
+              "fill": "$color-background-subtle",
+              "cornerRadius": 12,
+              "layout": "vertical",
+              "gap": 10,
+              "padding": 14,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "K7TVnW",
+                  "name": "r-결제 금액",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "eXS3I",
+                      "type": "ref",
+                      "ref": "nxVhv",
+                      "name": "l",
+                      "content": "결제 금액",
+                      "fill": "$color-text-muted"
+                    },
+                    {
+                      "id": "i4iumt",
+                      "type": "ref",
+                      "ref": "W2EKV",
+                      "name": "v",
+                      "content": "50,000원",
+                      "fill": "$color-text-default"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "cv3bW",
+                  "name": "r-적용 규정",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "Y8F0or",
+                      "type": "ref",
+                      "ref": "nxVhv",
+                      "name": "l",
+                      "content": "적용 규정",
+                      "fill": "$color-text-muted"
+                    },
+                    {
+                      "id": "XXjyz",
+                      "type": "ref",
+                      "ref": "W2EKV",
+                      "name": "v",
+                      "content": "모임 3~7일 전 (50%)",
+                      "fill": "$color-text-default"
+                    }
+                  ]
+                },
+                {
+                  "type": "rectangle",
+                  "id": "NMfNW",
+                  "name": "d",
+                  "fill": "$color-border-default",
+                  "width": "fill_container",
+                  "height": 1
+                },
+                {
+                  "type": "frame",
+                  "id": "d5hRwP",
+                  "name": "r-환불 예정 금액",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "mm6Te",
+                      "type": "ref",
+                      "ref": "nxVhv",
+                      "name": "l",
+                      "content": "환불 예정 금액",
+                      "fill": "$color-text-muted"
+                    },
+                    {
+                      "id": "lj7G0",
+                      "type": "ref",
+                      "ref": "s3HfEI",
+                      "name": "v",
+                      "content": "25,000원",
+                      "fill": "$color-text-brand"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "BldRp",
+              "type": "ref",
+              "ref": "nxVhv",
+              "name": "m-note",
+              "content": "환불 규정에 따라 일부 금액만 환불돼요. 취소 후에는 되돌릴 수 없어요.",
+              "fill": "$color-text-subtle",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "lineHeight": 1.5
+            },
+            {
+              "type": "frame",
+              "id": "h6OKB",
+              "name": "acts",
+              "width": "fill_container",
+              "gap": 8,
+              "children": [
+                {
+                  "id": "NTJZl",
+                  "type": "ref",
+                  "ref": "DtK1F",
+                  "name": "back",
+                  "width": "fill_container",
+                  "height": 46,
+                  "descendants": {
+                    "PIKqz": {
+                      "enabled": false
+                    },
+                    "x3hg6l": {
+                      "content": "돌아가기"
+                    }
+                  }
+                },
+                {
+                  "id": "Owieg",
+                  "type": "ref",
+                  "ref": "c6wVFO",
+                  "name": "confirm",
+                  "width": "fill_container",
+                  "height": 46,
+                  "descendants": {
+                    "sJJJx": {
+                      "enabled": false
+                    },
+                    "aDlVq": {
+                      "content": "결제 취소"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "variables": {

@@ -9,11 +9,12 @@
     "lint": "eslint",
     "check:parse": "node --experimental-strip-types scripts/parse-check.mts",
     "check:address": "node --experimental-strip-types scripts/address-check.mts",
-    "check:refund": "node --experimental-strip-types scripts/refund-check.mts",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@portone/browser-sdk": "^0.1.9",
+    "@portone/server-sdk": "^0.19.0",
     "@supabase/ssr": "^0.12.4",
     "@supabase/supabase-js": "^2.112.0",
     "lucide-react": "^1.27.0",

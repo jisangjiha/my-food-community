@@ -4,16 +4,16 @@ import Link from "next/link";
 import { Icon } from "../components/foundation/Icon";
 import { AppShell } from "../components/layout/AppShell";
 import { PageContainer } from "../components/layout/PageContainer";
-import { MeetingBanner } from "../components/meetings/MeetingBanner";
+import { ProductBanner } from "../components/products/ProductBanner";
 import { Chip } from "../components/ui/Chip";
 import { Empty } from "../components/ui/Empty";
 import { RestaurantCard } from "../components/ui/RestaurantCard";
 import { TextField } from "../components/ui/TextField";
-import { toBannerItem } from "../lib/meetings/dto";
-import { listMeetings } from "../lib/meetings/service";
 import { PLACE_PENDING_ADDRESS } from "../lib/places/dto";
 import { formatPlaceDate } from "../lib/places/format";
 import { listPlaces } from "../lib/places/service";
+import { toBannerItem } from "../lib/products/dto";
+import { listBannerProducts } from "../lib/products/service";
 import { categories, featured } from "../lib/restaurants";
 
 /**
@@ -26,8 +26,11 @@ import { categories, featured } from "../lib/restaurants";
  */
 export default async function MainPage() {
   // 두 목록은 서로를 기다리지 않는다.
-  const [places, meetings] = await Promise.all([listPlaces(), listMeetings()]);
-  // 배너는 가장 최근 글을 세운다. 목록이 최신순이라 첫 칸이 그것이다.
+  const [places, banners] = await Promise.all([
+    listPlaces(),
+    listBannerProducts(),
+  ]);
+  // 추천 배너는 가장 최근 글을 세운다. 목록이 최신순이라 첫 칸이 그것이다.
   // 그 글은 아래 목록에도 그대로 남는다. 빼면 글이 한 개일 때 목록이 비어 버린다.
   const latest = places[0];
 
@@ -53,11 +56,11 @@ export default async function MainPage() {
         </h1>
 
         {/*
-          모임 배너 — design.pen `01b Main Page - Banner`. 목록 맨 위에 있고 스크롤과
-          함께 밀려 올라간다(고정 아님, PRD 254). 상품이 없으면 컴포넌트가 아무것도
-          그리지 않는다.
+          상품 배너 — design.pen `01b Main Page - Banner`. 목록 맨 위에 있고 스크롤과
+          함께 밀려 올라간다(고정 아님). `/products`로 가는 유일한 입구이기도 하다.
+          세울 상품이 없으면 컴포넌트가 아무것도 그리지 않는다.
         */}
-        <MeetingBanner meetings={meetings.map(toBannerItem)} />
+        <ProductBanner products={banners.map(toBannerItem)} />
 
         {/*
           Featured — side by side on phones, a wide banner from md.

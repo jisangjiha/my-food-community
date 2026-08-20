@@ -37,3 +37,15 @@ export const SUPABASE_STORAGE_URL = required(
   "SUPABASE_STORAGE_URL",
   process.env.SUPABASE_STORAGE_URL,
 );
+
+/**
+ * 서비스 롤 키. RLS를 통째로 우회하므로 위의 값들과 성격이 다르다 — 진짜 비밀값이다.
+ *
+ * 위와 달리 모듈 최상단에서 읽지 않고 함수로 감싼다. 최상단에서 던지면 이 키가
+ * 없는 환경에서 `next build`가 이 모듈을 훑는 것만으로 실패한다. 이 키가 필요한
+ * 곳은 세션 없이 도는 결제 웹훅 한 곳뿐이라, 나머지 화면까지 볼모로 잡을 이유가
+ * 없다.
+ */
+export function supabaseSecretKey(): string {
+  return required("SUPABASE_SECRET_KEY", process.env.SUPABASE_SECRET_KEY);
+}

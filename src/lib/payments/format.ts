@@ -1,78 +1,37 @@
-import type { BadgeVariant } from "../../components/ui/Badge";
-import {
-  formatMeetingShort,
-  formatMonthDay,
-  formatWon,
-} from "../meetings/format";
-import {
-  attendanceStateOf,
-  refundStateOf,
-  type AttendanceState,
-  type PaymentDto,
-  type RefundState,
-} from "./dto";
-import { refundRuleByKey, refundRuleLabel } from "./refund";
-
 /**
- * 결제·취소 내역 카드의 문구.
+ * 결제 화면의 일시 표기.
  *
- * 서버 전용이 아니다. 카드는 서버 컴포넌트지만 모달(클라이언트)도 같은 문구를 쓴다.
+ * 금액은 `products/format.ts`의 `formatWon`을 그대로 쓴다. 같은 금액이 상품
+ * 상세와 결제 완료에서 다르게 보이면 사용자는 둘 중 무엇이 맞는지 알 수 없다.
+ *
+ * 날짜 표기는 상품 쪽과 일부러 다르다. 상품의 `8월 29일 (토)`는 "언제 가는가"라
+ * 연도가 필요 없지만, 결제 일시는 영수증이라 연도가 빠지면 지난해 결제와 올해
+ * 결제를 구분할 수 없다.
+ *
+ * 시각은 Asia/Seoul로 고정한다. 서버 타임존에 따라 자정 근처의 결제가 하루 전날
+ * 것으로 보이면 안 된다.
  */
 
-/** `12/14 토 14:00 · 2명`. */
-export function paymentScheduleLine(payment: PaymentDto): string {
-  return `${formatMeetingShort(payment.meeting.startsAt)} · ${payment.headcount}명`;
+const PARTS = new Intl.DateTimeFormat("ko-KR", {
+  timeZone: "Asia/Seoul",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: false,
+});
+
+/** 결제 일시 — `2026년 8월 19일 오후 2:10`. */
+export function formatPaidAt(iso: string): string {
+  const collected: Record<string, string> = {};
+  for (const part of PARTS.formatToParts(new Date(iso))) {
+    collected[part.type] = part.value;
+  }
+
+  const hour = Number(collected.hour ?? "0");
+  const meridiem = hour < 12 ? "오전" : "오후";
+  const hour12 = hour % 12 === 0 ? 12 : hour % 12;
+
+  return `${collected.year}년 ${Number(collected.month)}월 ${Number(collected.day)}일 ${meridiem} ${hour12}:${collected.minute}`;
 }
-
-/** `50,000원 · 12/13 결제`. */
-export function paymentAmountLine(payment: PaymentDto): string {
-  return `${formatWon(payment.amount)} · ${formatMonthDay(payment.paidAt)} 결제`;
-}
-
-/** `결제 30,000원 · 환불 30,000원`. */
-export function cancellationAmountLine(payment: PaymentDto): string {
-  return `결제 ${formatWon(payment.amount)} · 환불 ${formatWon(payment.refundAmount ?? 0)}`;
-}
-
-/**
- * `적용 규정: 모임 3~7일 전 (50%)`.
- *
- * 저장된 규정 키로 문구를 다시 만든다. 시안은 이 자리에만 `3~7일 전 취소` 표현을
- * 쓰지만, 네 화면이 같은 문구를 써야 하므로 규정 표와 같은 표현으로 통일한다.
- */
-export function cancellationRuleLine(payment: PaymentDto): string {
-  if (!payment.refundRule) return "적용 규정 확인 중";
-  return `적용 규정: ${refundRuleLabel(refundRuleByKey(payment.refundRule))}`;
-}
-
-/** `12/05 취소`. */
-export function cancellationDateLine(payment: PaymentDto): string {
-  return payment.canceledAt ? `${formatMonthDay(payment.canceledAt)} 취소` : "";
-}
-
-export interface StatusBadge {
-  label: string;
-  variant: BadgeVariant;
-}
-
-const ATTENDANCE_BADGES: Record<AttendanceState, StatusBadge> = {
-  upcoming: { label: "참여 예정", variant: "brand" },
-  done: { label: "참여 완료", variant: "neutral" },
-};
-
-const REFUND_BADGES: Record<RefundState, StatusBadge> = {
-  processing: { label: "환불 처리 중", variant: "warning" },
-  done: { label: "환불 완료", variant: "success" },
-};
-
-export function attendanceBadge(payment: PaymentDto, now?: Date): StatusBadge {
-  return ATTENDANCE_BADGES[attendanceStateOf(payment, now)];
-}
-
-export function refundBadge(payment: PaymentDto, now?: Date): StatusBadge {
-  return REFUND_BADGES[refundStateOf(payment, now)];
-}
-
-/** 취소 내역 탭 상단 고정 안내(PRD 324). */
-export const REFUND_DELAY_NOTE =
-  "카드 환불은 카드사 사정으로 3~5일 걸릴 수 있어요.";

@@ -13,17 +13,18 @@
 
 | 경로 | 하는 일 |
 | --- | --- |
-| `/` | 홈 피드. 등록된 맛집 카드 목록과 카테고리 칩 |
+| `/` | 홈 피드. 상단 상품 배너, 등록된 맛집 카드 목록과 카테고리 칩 |
 | `/login` | 구글 로그인 |
 | `/register` | 맛집 등록 폼. 장소를 먼저 고른 뒤에 들어온다 |
 | `/register/place` | 지도에서 위치 확정. 지도를 움직이면 지번주소가 따라온다 |
 | `/register/place/search` | 네이버 지역검색으로 장소 찾기 |
 | `/restaurants/[id]` | 맛집 상세 |
 | `/restaurants/[id]/edit` | 맛집 수정 |
-| `/meetings/[id]` | 모임 상세. 일시·장소·정원·환불 규정과 하단 결제 바 |
-| `/meetings/[id]?pay=1` | 결제 바텀시트(인원 선택·동의·결제) |
-| `/payments/[orderNo]` | 결제 완료. 주문번호로 조회하므로 새로 고쳐도 재결제가 없다 |
-| `/my` | 내 프로필. `내가 쓴 글` · `결제 내역` · `취소 내역` 3탭 (`?tab=`) |
+| `/products` | 상품 목록. 모임·클래스 카드 그리드 |
+| `/products/[id]` | 상품 상세. 배너·정보 카드·소개·상세 이미지, 하단 결제 바 |
+| `/payments/[paymentId]` | 결제 완료. 조회만 하는 화면이라 새로고침해도 안전하다 |
+| `/payments/failed` | 결제 실패. 사유별 안내 (로그인 없이 열린다) |
+| `/my` | 내 프로필과 내가 쓴 글 |
 | `/my/edit` | 프로필 수정 |
 
 ## 기술 스택
@@ -32,6 +33,7 @@
 - **Tailwind CSS 4** — 디자인 토큰은 `src/tokens/*`
 - **Supabase** — 인증(구글 OAuth), Postgres, Storage
 - **네이버 지도 API** — 지도 표시, 지역검색, 리버스 지오코딩
+- **포트원(PortOne) V2** — 카드 결제와 결제 웹훅. 규칙은 `rules/payment.md`가 SSOT다
 - **Storybook 10** — 디자인 시스템의 단일 진실 공급원(SSOT)
 
 ## 실행 방법
@@ -64,11 +66,17 @@ cp .env.example .env.local
 | `SUPABASE_URL` | Supabase 대시보드 → Project Settings → API | 앱이 뜨지 않는다 |
 | `SUPABASE_PUBLISHABLE_KEY` | 위와 같은 화면 | 앱이 뜨지 않는다 |
 | `SUPABASE_STORAGE_URL` | `{SUPABASE_URL}/storage/v1/object/public` | 앱이 뜨지 않는다 |
+| `UNSPLASH_IMAGE_URL` | `https://images.unsplash.com` (고정) | 상품 화면이 500 |
 | `NAVER_MAP_CLIENT_ID` | NCP 콘솔 → Maps → Application | 지도 자리에 도식이 나온다 (앱은 정상) |
 | `NAVER_SEARCH_CLIENT_ID` | NCP 콘솔 → API Hub → Search | 장소 검색 화면이 500 |
 | `NAVER_SEARCH_CLIENT_SECRET` | 위와 같은 화면 | 장소 검색 화면이 500 |
 | `NAVER_GEOCODE_API_KEY_ID` | NCP 콘솔 → Maps (지역검색 키와 다르다) | 주소가 "불러오지 못했어요"에 머문다 |
 | `NAVER_GEOCODE_API_KEY` | 위와 같은 화면 | 주소가 "불러오지 못했어요"에 머문다 |
+| `PORTONE_STORE_ID` | 포트원 콘솔 → 결제연동 | 결제 버튼만 잠긴다 (상세는 정상) |
+| `PORTONE_CHANNEL_KEY` | 위와 같은 화면 | 위와 같음 |
+| `PORTONE_API_SECRET` | 위와 같은 화면 → V2 API Secret | 결제 확정이 실패한다 |
+| `PORTONE_WEBHOOK_SECRET` | 포트원 콘솔 → 결제연동 → 결제알림(Webhook) 관리 | 웹훅이 500 (포트원이 재전송한다) |
+| `SUPABASE_SECRET_KEY` | Supabase 대시보드 → Project Settings → API | 위와 같음 (리다이렉트 결제 확정은 정상) |
 
 네이버 키가 세 종류라는 점을 헷갈리기 쉽다. 지도 표시용(`NAVER_MAP_CLIENT_ID`),
 지역검색용(`NAVER_SEARCH_*`), 리버스 지오코딩용(`NAVER_GEOCODE_*`)이 전부 별개고
@@ -85,12 +93,11 @@ NCP 콘솔에 등록하는 **Web 서비스 URL 허용목록**이다. 개발용 `
 적용되어 있고, 생성된 타입만 `src/lib/supabase/database.types.ts`로 들어와 있다.
 새 프로젝트에 처음 붙인다면 아래를 갖춰야 한다.
 
-- **테이블**: `place`, `place_image`, `profile`, `meeting`, `payment` — 컬럼 구조는
-  `database.types.ts` 참고
-- **함수**: `pay_meeting`, `cancel_payment`(둘 다 `security definer`, `authenticated`만
-  실행), `sync_meeting_seats`(트리거 — `payment` 변경을 `meeting.seats_taken`에 반영)
-- **모임 상품 등록**: 운영자 어드민 화면은 아직 없다. `meeting` 행을 SQL로 넣는다
-- **Storage 버킷**: `profile-image`, `place_image` (공개 읽기)
+- **테이블**: `place`, `place_image`, `profile`, `product`, `payment`,
+  `payment_snapshot` — 컬럼 구조는 `database.types.ts` 참고
+- **상품 등록**: 운영자 어드민 화면은 아직 없다. `product` 행을 SQL로 넣고,
+  `status`를 `Public`으로 둬야 목록에 나온다. 정책은 읽기 전용이라 앱은 쓰지 않는다
+- **Storage 버킷**: `profile-image`, `place_image`, `product-image` (모두 공개 읽기)
 - **RLS**: 모든 테이블에 켜고 정책까지 함께 넣는다. 정책 없는 RLS는 조용히 빈
   목록이 된다. 읽기는 `using (true)`, 쓰기는 `to authenticated` +
   `(select auth.uid()) = user_id`
@@ -129,7 +136,6 @@ npm run storybook   # http://localhost:6006
 | `npm run storybook` | Storybook 개발 서버 (6006) |
 | `npm run build-storybook` | Storybook 정적 빌드 |
 | `npm run check:parse` | 좌표·HTML 파싱 확인 (`src/lib/local-search/parse.ts`) |
-| `npm run check:refund` | 환불 비율 경계값 확인 (`src/lib/payments/refund.ts`) |
 | `npm run check:address` | 지번주소 조립 확인 (`src/lib/reverse-geocode/format.ts`) |
 
 테스트 러너는 없다. 대신 조용히 틀리기 쉬운 두 곳(좌표 파싱, 주소 조립)만

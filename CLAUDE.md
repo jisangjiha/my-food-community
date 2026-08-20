@@ -1,5 +1,14 @@
 @AGENTS.md
 
+# 결제 SSOT: rules/payment.md
+
+@rules/payment.md
+
+- 결제·웹훅·취소·환불 관련 작업은 위 문서를 단일 기준으로 삼는다. 코드보다 문서가 먼저다.
+- PG는 포트원(PortOne) **V2**다. V1 문서를 참고하지 않는다.
+- 포트원 코드를 쓰기 전에 PortOne MCP로 현재 스펙을 확인한다: `listPortoneDocs` → `readPortoneV2FrontendCode` / `readPortoneV2BackendCode`.
+- 규칙과 코드가 어긋나면 둘 중 하나를 고친다. 어긋난 채로 두지 않는다.
+
 # 디자인 SSOT: Storybook
 
 - 모든 UI 작업은 Storybook을 SSOT로 삼는다.

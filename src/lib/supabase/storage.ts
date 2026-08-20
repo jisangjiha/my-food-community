@@ -12,6 +12,7 @@ import { SUPABASE_STORAGE_URL } from "./env";
 
 export const PROFILE_IMAGE_BUCKET = "profile-image";
 export const PLACE_IMAGE_BUCKET = "place_image";
+export const PRODUCT_IMAGE_BUCKET = "product-image";
 
 export function publicStorageUrl(bucket: string, path: string): string {
   // 경로 구분자는 살리고 각 조각만 인코딩한다. 파일명이 uuid라 지금은 인코딩할

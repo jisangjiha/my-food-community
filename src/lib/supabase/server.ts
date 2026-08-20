@@ -1,10 +1,15 @@
 import "server-only";
 
 import { createServerClient } from "@supabase/ssr";
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 
 import type { Database } from "./database.types";
-import { SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from "./env";
+import {
+  SUPABASE_PUBLISHABLE_KEY,
+  SUPABASE_URL,
+  supabaseSecretKey,
+} from "./env";
 
 /**
  * 프로젝트에서 Supabase 클라이언트를 만드는 유일한 곳.
@@ -41,4 +46,27 @@ export async function createClient() {
       },
     },
   );
+}
+
+/**
+ * 세션이 없는 서버 간 호출 전용 클라이언트. RLS를 우회한다.
+ *
+ * 지금 이것을 쓰는 곳은 결제 웹훅 하나다. 웹훅은 포트원 서버가 부르는 것이라
+ * 쿠키도 세션도 없고, 그래서 `auth.uid()`가 없다. 사용자를 대신해 결제 원장에
+ * 행을 남기려면 RLS 바깥에서 `security definer` 함수를 부르는 수밖에 없다.
+ *
+ * 대신 두 가지를 지킨다.
+ *
+ * - 이 클라이언트로 테이블을 직접 쓰지 않는다. 쓰기는 `record_payment`처럼
+ *   안에서 다시 검사하는 함수만 지난다.
+ * - 이 문을 여는 조건은 포트원 웹훅 서명 검증 통과 + 결제 재조회 통과다.
+ *   그 둘을 지나기 전에는 이 클라이언트를 만들지 않는다.
+ *
+ * 쿠키를 읽지 않으므로 `async`가 아니다. 세션 저장·갱신도 끈다 — 서버 간
+ * 호출에 붙일 세션이 없고, 켜 두면 요청 사이에 상태가 남는다.
+ */
+export function createServiceClient() {
+  return createSupabaseClient<Database>(SUPABASE_URL, supabaseSecretKey(), {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
 }

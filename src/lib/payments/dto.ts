@@ -1,94 +1,70 @@
-import { refundPlanFor, type RefundPlan, type RefundRuleKey } from "./refund";
-
 /**
  * 결제 DTO — BFF가 화면으로 내려보내는 유일한 모양.
  *
- * 서버 전용이 아니다. 시트와 취소 모달(클라이언트)이 타입을 쓴다.
+ * `payment` 테이블의 Row가 아니고, 포트원 응답도 아니다. 둘 다 화면이 알아야 할
+ * 것보다 훨씬 많은 것을 담고 있다.
  *
- * 취소 관련 값들은 `status === "canceled"`일 때만 채워진다. DB에도 같은 조건이
- * 체크 제약으로 들어 있어, 반쪽만 채워진 행은 애초에 저장되지 않는다.
+ * 서버 전용이 아니다. 결제 버튼(클라이언트 컴포넌트)이 `PaymentCheckoutDto`를,
+ * 결제 완료 화면이 `PaymentDto`를 쓴다.
  */
+
+/**
+ * 결제 통화. 원화만 판다.
+ *
+ * 포트원 SDK와 REST 응답이 같은 문자열을 쓰므로, 요청에 실을 때와 응답을 검증할
+ * 때 이 상수 하나를 양쪽에서 쓴다.
+ */
+export const PAYMENT_CURRENCY = "KRW";
+
+/**
+ * 결제 수단. 카드만 받는다.
+ *
+ * 채널이 카드 하나라 화면에 고를 것이 없다. 수단이 늘면 이 값이 사용자 선택으로
+ * 바뀌고, 그때 `payment.type`이 아니라 별도 컬럼이 필요해진다.
+ */
+export const PAYMENT_PAY_METHOD = "CARD";
+
+/**
+ * `payment.type` 값.
+ *
+ * DB가 자유 텍스트라 값을 강제하지 않는다. 결제와 취소가 같은 테이블에 쌓이므로
+ * 문자열을 여기 한 번만 적어 둔다.
+ */
+export const PAYMENT_TYPE_PAYMENT = "PAYMENT";
+export const PAYMENT_TYPE_CANCEL = "CANCEL";
+
+/**
+ * 결제창을 여는 데 필요한 것 전부.
+ *
+ * 금액과 주문명이 여기 들어 있는 이유는 결제창이 그것을 요구하기 때문이지, 이
+ * 값이 신뢰의 근거이기 때문이 아니다. 브라우저를 지난 값은 전부 조작될 수 있다.
+ * 진짜 판단은 결제 후 서버가 포트원에 다시 물어서 한다(`service.ts`의
+ * `confirmPayment`).
+ *
+ * `paymentId`는 여기 없다. 브라우저가 결제를 누르는 순간 만든다 — 화면을 열어
+ * 두기만 하고 결제하지 않은 사용자에게까지 결제 건 ID를 미리 나눠 줄 이유가 없다.
+ */
+export interface PaymentCheckoutDto {
+  storeId: string;
+  channelKey: string;
+  orderName: string;
+  totalAmount: number;
+  currency: typeof PAYMENT_CURRENCY;
+  payMethod: typeof PAYMENT_PAY_METHOD;
+  /** 결제창이 `customData`에 실어 보낼 값. 서버가 되받아 교차검증한다. */
+  productId: string;
+  userId: string;
+}
+
+/** 결제 완료 화면이 쓰는 모양. 확정되어 DB에 적힌 것만 담는다. */
 export interface PaymentDto {
+  /** 포트원 결제 건 ID이자 우리 주문번호. */
   id: string;
-  /** 사용자에게 보여 주는 식별자. 결제 완료 화면이 이걸로 조회한다. */
-  orderNo: string;
-  headcount: number;
+  /** 검증된 실결제 금액(원). */
   amount: number;
-  method: string;
-  status: "paid" | "canceled";
+  /** ISO 8601. */
   paidAt: string;
-  canceledAt: string | null;
-  refundAmount: number | null;
-  refundRate: number | null;
-  refundRule: RefundRuleKey | null;
-  refundCompletesAt: string | null;
-  meeting: {
-    id: string;
-    title: string;
-    startsAt: string;
-    address: string;
-    imageUrl: string | null;
-  };
+  /** 결제한 상품. 상품이 나중에 지워져도 결제 내역은 남아야 하므로 스냅샷에서 읽는다. */
+  productId: string | null;
+  productName: string;
 }
-
-/**
- * 아래 파생 함수들이 여기 있는 이유: 화면마다 `startsAt > now`를 다시 비교하면
- * 한 곳만 규칙이 바뀌는 날이 온다. 배지·버튼·모달이 같은 판단을 공유한다.
- */
-
-/** 결제 내역 배지 — 모임이 아직 안 열렸으면 `참여 예정`, 지났으면 `참여 완료`. */
-export type AttendanceState = "upcoming" | "done";
-
-export function attendanceStateOf(
-  payment: PaymentDto,
-  now: Date = new Date(),
-): AttendanceState {
-  return new Date(payment.meeting.startsAt) > now ? "upcoming" : "done";
-}
-
-/**
- * 취소 내역 배지.
- *
- * 모의 결제라 환불이 즉시 끝나지만, 그러면 `환불 처리 중`이 화면에 영원히 나타나지
- * 않고 "카드 환불은 3~5일 걸릴 수 있어요" 안내가 거짓이 된다. 취소할 때 적어 둔
- * 완료 예정 시각(취소 + 3일)을 지나면 완료로 읽는다.
- */
-export type RefundState = "processing" | "done";
-
-export function refundStateOf(
-  payment: PaymentDto,
-  now: Date = new Date(),
-): RefundState {
-  if (!payment.refundCompletesAt) return "done";
-  return new Date(payment.refundCompletesAt) <= now ? "done" : "processing";
-}
-
-/** 취소 버튼을 못 내보내는 사유(PRD 310). */
-export type CancelBlock = "ended" | "no_refund";
-
-export interface Cancelability {
-  cancelable: boolean;
-  blocked: CancelBlock | null;
-  /** 지금 취소하면 적용될 규정과 환불액. 서버 시각 기준. */
-  plan: RefundPlan;
-}
-
-export function cancelabilityOf(
-  payment: PaymentDto,
-  now: Date = new Date(),
-): Cancelability {
-  const plan = refundPlanFor(payment.amount, payment.meeting.startsAt, now);
-
-  if (new Date(payment.meeting.startsAt) <= now) {
-    return { cancelable: false, blocked: "ended", plan };
-  }
-  if (plan.rule.rate === 0) {
-    return { cancelable: false, blocked: "no_refund", plan };
-  }
-  return { cancelable: true, blocked: null, plan };
-}
-
-export const CANCEL_BLOCK_LABELS: Record<CancelBlock, string> = {
-  ended: "종료된 모임",
-  no_refund: "환불 기간 종료",
-};

@@ -7,6 +7,15 @@ import { SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from "./env";
 const PROTECTED_PREFIXES = ["/my", "/register", "/payments"];
 
 /**
+ * 위 접두사 안쪽이지만 로그인 없이 열려야 하는 경로.
+ *
+ * `/payments/failed`가 그렇다. 결제 실패 사유 중에는 "결제하는 사이 세션이
+ * 끊겼다"가 있는데, 이 화면까지 로그인을 요구하면 바로 그 사용자에게만 사유를
+ * 못 보여 준다. 안내 문구뿐이라 감출 것도 없다.
+ */
+const PUBLIC_EXCEPTIONS = ["/payments/failed"];
+
+/**
  * 매 요청마다 Supabase 세션을 갱신하고, 새 토큰을 응답 쿠키에 실어 보낸다.
  *
  * 이게 없으면 액세스 토큰이 만료돼도 서버가 갱신하지 못해 사용자가 임의로
@@ -47,9 +56,11 @@ export async function updateSession(request: NextRequest) {
   const claims = data?.claims;
 
   const { pathname } = request.nextUrl;
-  const isProtected = PROTECTED_PREFIXES.some(
-    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
-  );
+  const matches = (prefix: string) =>
+    pathname === prefix || pathname.startsWith(`${prefix}/`);
+
+  const isProtected =
+    PROTECTED_PREFIXES.some(matches) && !PUBLIC_EXCEPTIONS.some(matches);
 
   if (!claims && isProtected) {
     const url = request.nextUrl.clone();
