@@ -1,6 +1,7 @@
 import { UnauthorizedError } from "@/lib/auth/session";
 import {
   confirmPayment,
+  isPaymentFailureCode,
   PaymentError,
   type PaymentFailureCode,
 } from "@/lib/payments/service";
@@ -49,7 +50,15 @@ export async function GET(request: Request): Promise<Response> {
 }
 
 function toFailureReason(reason: unknown): PaymentFailureCode {
-  if (reason instanceof PaymentError) return reason.code;
+  /*
+    `PaymentError`의 코드는 결제와 취소가 나눠 쓰는 어휘라 결제 실패 화면이 모르는
+    값이 섞여 있다. 실제로 `confirmPayment`가 던지는 것은 결제 쪽 코드뿐이지만,
+    그 사실을 여기서 확인하고 넘긴다 — 화면이 모르는 코드가 주소창 쿼리로 나가면
+    사용자는 아무 문구도 없는 실패 화면을 본다.
+  */
+  if (reason instanceof PaymentError && isPaymentFailureCode(reason.code)) {
+    return reason.code;
+  }
   // 세션이 끊긴 채 돌아온 경우. 결제는 됐는데 우리가 누구인지 모르는 상태다.
   if (reason instanceof UnauthorizedError) return "unauthorized";
 

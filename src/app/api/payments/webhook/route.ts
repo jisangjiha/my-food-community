@@ -1,15 +1,21 @@
-import { PaymentError, recordWebhookPayment } from "@/lib/payments/service";
+import {
+  PaymentError,
+  recordWebhookCancellation,
+  recordWebhookPayment,
+} from "@/lib/payments/service";
 import {
   readPaymentWebhook,
   WebhookVerificationError,
 } from "@/lib/payments/webhook";
 
 /**
- * 포트원 결제 웹훅 — 포트원 서버가 직접 부르는 자리.
+ * 포트원 웹훅 — 포트원 서버가 직접 부르는 자리. 결제와 취소가 같은 문으로 온다.
  *
- * 리다이렉트(`/api/payments/complete`)가 도달하지 못한 결제를 건져 낸다.
- * 브라우저를 닫았든 네트워크가 끊겼든 결제는 이미 일어났고, 그 사실은 기록되어야
- * 한다. 두 경로가 같은 건을 동시에 확정하려 들 수 있으므로 기록은 멱등하다.
+ * 결제는 리다이렉트(`/api/payments/complete`)가 도달하지 못한 건을 건져 내고,
+ * 취소는 우리 화면을 거치지 않은 취소(콘솔 취소, 기록에 실패한 취소, PG가
+ * 비동기로 뒤늦게 끝낸 취소)를 건져 낸다. 어느 쪽이든 일은 이미 일어났고 그
+ * 사실은 기록되어야 한다. 두 경로가 같은 건을 동시에 확정하려 들 수 있으므로
+ * 기록은 멱등하다.
  *
  * `withRoute`로 감싸지 않는다. 그 래퍼는 사용자에게 보여 줄 JSON 에러를
  * 만들지만, 여기서 상태 코드는 사용자가 아니라 **포트원에게 하는 말**이다 —
@@ -44,20 +50,20 @@ export async function POST(request: Request): Promise<Response> {
   }
 
   /*
-    결제 완료만 처리한다. 취소 웹훅(`Transaction.Cancelled` /
-    `Transaction.PartialCancelled`)은 아직 붙이지 않았다 — 취소 원장 행을 쓰는
-    경로가 없는 채로 웹훅만 받으면, 취소를 받았다는 착각만 남는다.
-
     모르는 이벤트는 조용히 200으로 닫는다. 포트원은 예고 없이 새 `type`을
     추가하고, 그때마다 500을 뱉으면 재전송이 다섯 번씩 몰린다.
   */
-  if (event.kind !== "paid") {
+  if (event.kind === "ignored") {
     console.info(`[payments] 처리하지 않는 웹훅 type=${event.type}`);
     return new Response(null, { status: 200 });
   }
 
   try {
-    await recordWebhookPayment(event.paymentId);
+    if (event.kind === "paid") {
+      await recordWebhookPayment(event.paymentId);
+    } else {
+      await recordWebhookCancellation(event.paymentId, event.cancellationId);
+    }
   } catch (reason) {
     return failureResponse(event.paymentId, reason);
   }
@@ -68,17 +74,20 @@ export async function POST(request: Request): Promise<Response> {
 /**
  * 실패를 "다시 보내라"와 "그만 보내라"로 가른다.
  *
- * 검증에서 어긋난 건(`mismatch`)이나 소유자를 알 수 없는 건(`unauthorized`)은
- * 몇 번을 다시 받아도 같은 결론이다. 재전송을 받아 봐야 로그만 다섯 배가 된다.
+ * 검증에서 어긋난 건(`mismatch`), 소유자를 알 수 없는 건(`unauthorized`), 이미
+ * 취소로 처리된 건(`already_canceled`)은 몇 번을 다시 받아도 같은 결론이다.
+ * 재전송을 받아 봐야 로그만 다섯 배가 된다.
  *
- * 반대로 승인이 아직 안 끝났거나(`not_paid`) 포트원 조회·DB 기록이 실패한 것은
- * 잠시 후 성공할 수 있다. 이런 건 반드시 재전송을 받아야 한다 — 여기서 놓치면
- * 돈은 받았는데 주문이 없는 상태가 그대로 굳는다.
+ * 반대로 승인이나 취소가 아직 안 끝났거나(`not_paid`·`not_canceled`) 포트원
+ * 조회·DB 기록이 실패한 것은 잠시 후 성공할 수 있다. 이런 건 반드시 재전송을
+ * 받아야 한다 — 여기서 놓치면 돈은 오갔는데 원장에는 없는 상태가 그대로 굳는다.
  */
 function failureResponse(paymentId: string, reason: unknown): Response {
   if (
     reason instanceof PaymentError &&
-    (reason.code === "mismatch" || reason.code === "unauthorized")
+    (reason.code === "mismatch" ||
+      reason.code === "unauthorized" ||
+      reason.code === "already_canceled")
   ) {
     console.error(
       `[payments] 웹훅 처리 중단 paymentId=${paymentId} code=${reason.code}`,

@@ -5,17 +5,40 @@ import { redirect } from "next/navigation";
 import { Icon } from "../../components/foundation/Icon";
 import { AppShell } from "../../components/layout/AppShell";
 import { PageContainer, WIDTHS } from "../../components/layout/PageContainer";
+import { CancellationCard } from "../../components/payments/CancellationCard";
+import { PaymentHistoryCard } from "../../components/payments/PaymentHistoryCard";
 import { Button } from "../../components/ui/Button";
+import { ButtonLink } from "../../components/ui/ButtonLink";
 import { Empty } from "../../components/ui/Empty";
+import { TabNavigation } from "../../components/ui/Navigation";
 import { RestaurantCard } from "../../components/ui/RestaurantCard";
 import { StatTile } from "../../components/ui/StatTile";
 import { DeletePlaceButton } from "./DeletePlaceButton";
 import { signOut } from "../../lib/auth/actions";
 import { getCurrentUser } from "../../lib/auth/session";
+import { REFUND_DELAY_NOTE } from "../../lib/payments/dto";
+import {
+  listMyCancellations,
+  listMyPayments,
+} from "../../lib/payments/service";
 import { PLACE_PENDING_ADDRESS } from "../../lib/places/dto";
 import { formatPlaceDate } from "../../lib/places/format";
 import { listPlaces } from "../../lib/places/service";
 import { getMyProfile } from "../../lib/profile/service";
+
+/** 마이 페이지의 세 탭. 순서가 화면 순서다. */
+const MY_TABS = [
+  { key: "posts", label: "내가 쓴 글", href: "/my" },
+  { key: "payments", label: "결제 내역", href: "/my?tab=payments" },
+  { key: "cancels", label: "취소 내역", href: "/my?tab=cancels" },
+] as const;
+
+type MyTabKey = (typeof MY_TABS)[number]["key"];
+
+function toTabKey(value: string | string[] | undefined): MyTabKey {
+  const key = Array.isArray(value) ? value[0] : value;
+  return MY_TABS.some((tab) => tab.key === key) ? (key as MyTabKey) : "posts";
+}
 
 /**
  * 마이 페이지.
@@ -28,19 +51,29 @@ import { getMyProfile } from "../../lib/profile/service";
  * 인가를 프록시 한 겹에만 기대지 않는다. 여기서 예외를 던지면 500이 되므로,
  * 프록시와 같은 곳으로 보낸다.
  *
- * 탭은 없다. `결제 내역`·`취소 내역` 두 탭은 `meeting` 기반 결제 기능과 함께
- * 걷어냈다. 새 결제 모델이 정해지면 그때 다시 붙인다 — 남은 것이 `내가 쓴 글`
- * 하나뿐인데 탭 줄만 남겨 두면 누를 곳 없는 장식이 된다.
+ * 탭 전환은 `?tab=`으로 서버에서 한다. 세 탭의 데이터 출처가 모두 달라(글 / 결제 /
+ * 취소) 클라이언트에서 전환하면 안 보는 목록까지 매번 내려보내야 한다.
+ *
+ * 이 화면은 읽기만 한다. 결제 취소는 카드 안의 클라이언트 조각이 BFF 라우트를
+ * 부르고, 끝나면 `router.refresh()`로 이 화면이 다시 그려진다.
  */
-export default async function MyPage() {
+export default async function MyPage(props: PageProps<"/my">) {
+  const { tab } = await props.searchParams;
+  const activeTab = toTabKey(tab);
+
   const user = await getCurrentUser();
   if (!user) {
     redirect(`/login?next=${encodeURIComponent("/my")}`);
   }
 
-  const [profile, posts] = await Promise.all([
+  // 활성 탭의 것만 읽는다. 세 목록을 다 읽으면 안 보는 것까지 매번 조회한다.
+  const [profile, posts, payments, cancellations] = await Promise.all([
     getMyProfile(user),
-    listPlaces({ viewerId: user.id, authorId: user.id }),
+    activeTab === "posts"
+      ? listPlaces({ viewerId: user.id, authorId: user.id })
+      : Promise.resolve([]),
+    activeTab === "payments" ? listMyPayments() : Promise.resolve([]),
+    activeTab === "cancels" ? listMyCancellations() : Promise.resolve([]),
   ]);
 
   const stats = [
@@ -127,35 +160,99 @@ export default async function MyPage() {
             ))}
           </section>
 
+          <TabNavigation
+            variant="inline"
+            value={MY_TABS.findIndex((item) => item.key === activeTab)}
+            tabs={MY_TABS.map((item) => ({
+              label: item.label,
+              href: item.href,
+            }))}
+          />
         </div>
 
-        <section aria-label="내가 쓴 글">
-          {posts.length === 0 ? (
-            <Empty
-              icon="edit"
-              title="아직 등록한 곳이 없어요"
-              description="다녀온 곳을 올리면 이웃이 찾아갑니다."
-            />
-          ) : (
-            <ul className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {posts.map((place) => (
-                // 삭제 버튼을 카드 위에 겹치기 위한 기준점. 카드 자체는 링크라
-                // 안에 버튼을 넣을 수 없다.
-                <li key={place.id} className="relative flex">
-                  <DeletePlaceButton id={place.id} title={place.title} />
-                  <RestaurantCard
-                    href={`/restaurants/${place.id}`}
-                    name={place.title}
-                    summary={place.content}
-                    meta={`${place.location?.address ?? PLACE_PENDING_ADDRESS} · ${formatPlaceDate(place.createdAt)}`}
-                    image={place.images[0]?.url ?? "/images/mango-table.png"}
-                    className="w-full"
+        {activeTab === "posts" && (
+          <section aria-label="내가 쓴 글">
+            {posts.length === 0 ? (
+              <Empty
+                icon="edit"
+                title="아직 등록한 곳이 없어요"
+                description="다녀온 곳을 올리면 이웃이 찾아갑니다."
+              />
+            ) : (
+              <ul className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {posts.map((place) => (
+                  // 삭제 버튼을 카드 위에 겹치기 위한 기준점. 카드 자체는 링크라
+                  // 안에 버튼을 넣을 수 없다.
+                  <li key={place.id} className="relative flex">
+                    <DeletePlaceButton id={place.id} title={place.title} />
+                    <RestaurantCard
+                      href={`/restaurants/${place.id}`}
+                      name={place.title}
+                      summary={place.content}
+                      meta={`${place.location?.address ?? PLACE_PENDING_ADDRESS} · ${formatPlaceDate(place.createdAt)}`}
+                      image={place.images[0]?.url ?? "/images/mango-table.png"}
+                      className="w-full"
+                    />
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        )}
+
+        {activeTab === "payments" && (
+          // 읽는 목록이라 800에서 멈춘다. 숫자를 다시 적지 않도록 PageContainer의
+          // 폭 표를 쓴다 — 폭 규칙은 한 곳에만 있어야 한다.
+          <section aria-label="결제 내역" className={`w-full ${WIDTHS.article}`}>
+            {payments.length === 0 ? (
+              <Empty
+                icon="calendar"
+                title="아직 결제한 상품이 없어요"
+                description="상품 목록에서 이번 달 모임을 볼 수 있어요."
+                actions={
+                  <ButtonLink href="/products" variant="secondary" size="md">
+                    상품 보러 가기
+                  </ButtonLink>
+                }
+              />
+            ) : (
+              <ul className="flex flex-col gap-3">
+                {payments.map((payment) => (
+                  <PaymentHistoryCard key={payment.id} payment={payment} />
+                ))}
+              </ul>
+            )}
+          </section>
+        )}
+
+        {activeTab === "cancels" && (
+          <section
+            aria-label="취소 내역"
+            className={`flex w-full flex-col gap-3 ${WIDTHS.article}`}
+          >
+            {/* 탭 상단 고정 안내. 목록이 비어도 보인다. */}
+            <p className="type-label-md flex items-center gap-2 rounded-[10px] bg-background-subtle px-3 py-2.5 text-text-muted">
+              <Icon name="info" size={20} />
+              {REFUND_DELAY_NOTE}
+            </p>
+            {cancellations.length === 0 ? (
+              <Empty
+                icon="refresh"
+                title="취소한 내역이 없어요"
+                description="결제한 상품을 취소하면 여기에 남아요."
+              />
+            ) : (
+              <ul className="flex flex-col gap-3">
+                {cancellations.map((cancellation) => (
+                  <CancellationCard
+                    key={cancellation.id}
+                    cancellation={cancellation}
                   />
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
+                ))}
+              </ul>
+            )}
+          </section>
+        )}
       </PageContainer>
     </AppShell>
   );

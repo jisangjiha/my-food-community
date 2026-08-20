@@ -1,12 +1,12 @@
 /**
- * 결제 화면의 일시 표기.
+ * 결제·취소 화면의 일시 표기.
  *
  * 금액은 `products/format.ts`의 `formatWon`을 그대로 쓴다. 같은 금액이 상품
  * 상세와 결제 완료에서 다르게 보이면 사용자는 둘 중 무엇이 맞는지 알 수 없다.
  *
  * 날짜 표기는 상품 쪽과 일부러 다르다. 상품의 `8월 29일 (토)`는 "언제 가는가"라
- * 연도가 필요 없지만, 결제 일시는 영수증이라 연도가 빠지면 지난해 결제와 올해
- * 결제를 구분할 수 없다.
+ * 연도가 필요 없지만, 결제·취소 일시는 영수증이라 연도가 빠지면 지난해 것과 올해
+ * 것을 구분할 수 없다.
  *
  * 시각은 Asia/Seoul로 고정한다. 서버 타임존에 따라 자정 근처의 결제가 하루 전날
  * 것으로 보이면 안 된다.
@@ -22,8 +22,13 @@ const PARTS = new Intl.DateTimeFormat("ko-KR", {
   hour12: false,
 });
 
-/** 결제 일시 — `2026년 8월 19일 오후 2:10`. */
-export function formatPaidAt(iso: string): string {
+/**
+ * 원장 시각 — `2026년 8월 19일 오후 2:10`.
+ *
+ * 결제 일시와 취소 일시가 같은 모양을 쓴다. 둘이 나란히 보이는 화면(마이 페이지)이
+ * 있어서, 표기가 다르면 같은 종류의 값으로 읽히지 않는다.
+ */
+export function formatPaymentDateTime(iso: string): string {
   const collected: Record<string, string> = {};
   for (const part of PARTS.formatToParts(new Date(iso))) {
     collected[part.type] = part.value;

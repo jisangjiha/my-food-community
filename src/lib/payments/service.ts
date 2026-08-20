@@ -11,31 +11,50 @@ import type { Database, Json } from "@/lib/supabase/database.types";
 import { createClient, createServiceClient } from "@/lib/supabase/server";
 
 import {
+  PAYMENT_CANCEL_REASON,
   PAYMENT_CURRENCY,
   PAYMENT_PAY_METHOD,
+  PAYMENT_TYPE_CANCEL,
   PAYMENT_TYPE_PAYMENT,
+  type CancellationDto,
+  type PaymentCancelResultDto,
   type PaymentCheckoutDto,
   type PaymentDto,
 } from "./dto";
 import { portoneCheckoutKeys } from "./env";
-import { getPortOnePayment, PortOneApiError } from "./portone";
+import {
+  cancelPortOnePayment,
+  getPortOnePayment,
+  PortOneApiError,
+  type PortOnePayment,
+} from "./portone";
 
 /**
  * 결제 데이터 접근·검증 계층.
  *
  * Supabase와 포트원을 아는 코드는 여기까지다. 라우트와 화면은 DTO만 받는다.
  *
- * 결제 확정으로 들어오는 문이 둘이다. 하나는 결제창이 돌아오는 리다이렉트
- * (`confirmPayment`), 하나는 포트원이 직접 부르는 웹훅(`recordWebhookPayment`).
- * 둘은 소유자를 정하는 방법만 다르고, 그 앞의 검증(`verifyPaidPayment`)과 뒤의
- * 기록(`record_payment`)은 완전히 같은 것을 쓴다. 두 벌로 갈라 두면 한쪽에만
- * 검사를 추가하는 날이 반드시 온다.
+ * 문이 넷이고 둘씩 짝을 이룬다.
  *
- * 두 문이 같은 건을 동시에 확정하려 들 수 있다. 그래서 기록은 멱등하다 —
- * 최종 보장은 `payment` 테이블의 부분 unique 인덱스(그룹키당 PAYMENT 행 하나)다.
+ * - 결제 확정: 결제창이 돌아오는 리다이렉트(`confirmPayment`)와 포트원 웹훅
+ *   (`recordWebhookPayment`)
+ * - 취소 확정: 사용자의 취소 요청(`cancelMyPayment`)과 포트원 취소 웹훅
+ *   (`recordWebhookCancellation`)
+ *
+ * 각 짝은 **소유자를 정하는 방법만** 다르고, 그 앞의 검증과 뒤의 기록은 완전히
+ * 같은 것을 쓴다. 두 벌로 갈라 두면 한쪽에만 검사를 추가하는 날이 반드시 온다.
+ * 네 문의 §5 교차검증도 `crossCheckPayment` 하나를 공유한다 — 결제와 취소가
+ * 다른 것은 "포트원이 말하는 상태" 한 줄뿐이다.
+ *
+ * 같은 건이 두 문으로 동시에 들어올 수 있다. 그래서 기록은 멱등하다 — 최종
+ * 보장은 `payment` 테이블의 부분 unique 인덱스다(그룹키당 PAYMENT 행 하나,
+ * 취소 내역 아이디당 CANCEL 행 하나).
  */
 
 type Db = SupabaseClient<Database>;
+
+/** 상품 행이 지워져도 결제 내역은 남는다. 그때 이름 자리에 들어갈 값. */
+const DELETED_PRODUCT_NAME = "삭제된 상품";
 
 /**
  * 결제 확정에 실패한 이유.
@@ -45,16 +64,44 @@ type Db = SupabaseClient<Database>;
  * 사유를 자세히 알려 주지 않는 이유는 조작을 시도하는 쪽에게 "무엇이 걸렸는지"를
  * 가르쳐 주지 않기 위해서다 — 로그에는 전부 남는다.
  */
-export type PaymentFailureCode =
-  | "canceled"
-  | "not_paid"
+export const PAYMENT_FAILURE_CODES = [
+  "canceled",
+  "not_paid",
+  "mismatch",
+  "unauthorized",
+  "unavailable",
+] as const;
+
+export type PaymentFailureCode = (typeof PAYMENT_FAILURE_CODES)[number];
+
+/** 결제 실패 화면이 아는 어휘인지. 취소 쪽 코드가 섞여 오는 것을 여기서 막는다. */
+export function isPaymentFailureCode(
+  value: string,
+): value is PaymentFailureCode {
+  return (PAYMENT_FAILURE_CODES as readonly string[]).includes(value);
+}
+
+/**
+ * 취소에 실패한 이유. 결제와 셋(`mismatch`·`unauthorized`·`unavailable`)을
+ * 공유하고 둘이 다르다.
+ *
+ * 어휘를 결제와 합치지 않은 이유는 결제 실패 화면 때문이다. 그 화면은 코드마다
+ * 문구를 하나씩 가진 표를 들고 있는데, 거기에 절대 도달하지 않는 취소 코드까지
+ * 섞으면 쓰이지 않는 문구가 쌓인다.
+ *
+ * - `already_canceled` — 이미 취소된 건. 자기 결제 건의 상태라 알려 줘도 안전하다.
+ * - `not_canceled` — 포트원이 아직 취소를 끝내지 않았다. 재시도가 의미 있다.
+ */
+export type CancelFailureCode =
+  | "already_canceled"
+  | "not_canceled"
   | "mismatch"
   | "unauthorized"
   | "unavailable";
 
 export class PaymentError extends Error {
   constructor(
-    readonly code: PaymentFailureCode,
+    readonly code: PaymentFailureCode | CancelFailureCode,
     message: string,
   ) {
     super(message);
@@ -128,7 +175,7 @@ export async function confirmPayment(paymentId: string): Promise<void> {
  *
  * 세션이 없다. 그래서 소유자를 `auth.uid()`로 정할 수 없고, 검증을 통과한
  * 결제 건의 `customData.userId`를 쓴다. 그 값이 임의로 바뀔 수 없는 이유는
- * `verifyPaidPayment`의 교차검증 때문이다 — `userId`를 바꾸면 그 사람이 그
+ * `crossCheckPayment`의 교차검증 때문이다 — `userId`를 바꾸면 그 사람이 그
  * 상품을 그 금액에 결제한 건이어야 하는데, 금액·주문명·채널이 전부 함께 맞아야
  * 통과한다.
  */
@@ -140,6 +187,74 @@ export async function recordWebhookPayment(paymentId: string): Promise<void> {
   // 리다이렉트가 이미 적었는지 여기서 따로 묻지 않는다. `record_payment`가
   // 멱등하고(그룹키당 PAYMENT 행 하나), 웹훅은 이미 §5의 재조회를 지나왔다.
   await recordPayment(createServiceClient(), verified);
+}
+
+/**
+ * 결제 취소 — 사용자 요청 경로.
+ *
+ * 순서가 전부다. **먼저 포트원에 취소하고, 그 결과를 다시 조회해 확인한 뒤에만
+ * 원장에 적는다.** DB만 바꾸고 포트원에 알리지 않는 "취소"는 만들지 않는다.
+ *
+ * 포트원 취소가 성공한 뒤의 실패는 취소의 실패가 아니라 **기록의 실패**다. 돈은
+ * 이미 돌아갔으므로 "취소하지 못했다"고 답하면 사용자가 다시 누르고 포트원은
+ * 거절한다. 그래서 그 뒤로는 무엇이 실패하든 `pending`으로 답하고, 원장은 취소
+ * 웹훅이 마저 적는다(멱등하므로 두 번 적히지 않는다).
+ */
+export async function cancelMyPayment(
+  paymentId: string,
+): Promise<PaymentCancelResultDto> {
+  const user = await requireUser();
+
+  // 내 결제 건인지 먼저 확인한다. 남의 건과 없는 건은 똑같이 404다 — 구분해
+  // 알려 주면 주문번호를 넣어 보는 것만으로 그 번호의 실재를 알 수 있다.
+  const payment = await findPayment(paymentId);
+  if (!payment) {
+    throw new NotFoundError("결제 내역을 찾을 수 없습니다.");
+  }
+  if (payment.status === "canceled") {
+    throw new PaymentError("already_canceled", "이미 취소된 결제입니다.");
+  }
+
+  const cancellation = await requestCancel(paymentId);
+
+  try {
+    const verified = await verifyCancellation(paymentId, cancellation.id);
+
+    // customData가 가리키는 사람과 지금 로그인한 사람이 같은지. 여기까지 왔다면
+    // 원장이 이미 내 건이라고 말했지만, 기록에 쓸 소유자는 검증을 통과한 값이다.
+    if (verified.userId !== user.id) {
+      throw new PaymentError("unauthorized", "본인의 결제 건이 아닙니다.");
+    }
+
+    await recordCancellation(await createClient(), verified);
+  } catch (reason) {
+    console.error(
+      `[payments] 취소 기록 실패 paymentId=${paymentId} cancellationId=${cancellation.id}`,
+      reason,
+    );
+    return { status: "pending" };
+  }
+
+  return { status: "canceled" };
+}
+
+/**
+ * 결제 취소 — 포트원 취소 웹훅 경로.
+ *
+ * 우리 화면을 거치지 않은 취소가 여기로 온다. 포트원 콘솔에서 관리자가 취소한
+ * 건, 사용자 요청 경로가 기록에 실패한 건, PG가 비동기로 뒤늦게 끝낸 건이 전부
+ * 이 문으로 들어온다.
+ *
+ * 세션이 없어 소유자를 `auth.uid()`로 정할 수 없다. 결제 경로와 같은 이유로
+ * `customData.userId`를 쓰고, 그 위에 `record_cancellation`이 한 겹 더 확인한다 —
+ * 그 함수는 취소 행의 소유자와 상품을 인자가 아니라 **원 결제 행에서 복사**한다.
+ */
+export async function recordWebhookCancellation(
+  paymentId: string,
+  cancellationId: string,
+): Promise<void> {
+  const verified = await verifyCancellation(paymentId, cancellationId);
+  await recordCancellation(createServiceClient(), verified);
 }
 
 /** 결제 완료 화면이 쓰는 조회. 남의 건은 RLS가 걸러 `null`이다. */
@@ -154,27 +269,23 @@ export async function findPayment(
 
   const { data, error } = await supabase
     .from("payment")
-    .select("transaction_key, amount, created_at, product_id, product(name)")
+    .select(LEDGER_SELECT)
     // `id`가 아니라 그룹키로 찾는다. 원장은 행마다 새 `id`를 채번하고, 결제와
     // 그에 딸린 취소들을 `transaction_key` 하나로 묶는다. 사용자가 부르는
     // 주문번호는 그 그룹키다.
-    .eq("transaction_key", paymentId)
-    .eq("type", PAYMENT_TYPE_PAYMENT)
-    .maybeSingle();
+    .eq("transaction_key", paymentId);
 
   if (error) {
     console.error("[payments] 결제 조회 실패", error);
     throw new Error("결제 정보를 불러오지 못했습니다.");
   }
-  if (!data) return null;
 
-  return {
-    id: data.transaction_key,
-    amount: Number(data.amount ?? 0),
-    paidAt: data.created_at,
-    productId: data.product_id === null ? null : String(data.product_id),
-    productName: data.product?.name ?? "삭제된 상품",
-  };
+  const group = groupLedger((data ?? []) as unknown as LedgerRow[]).get(
+    paymentId,
+  );
+  if (!group?.payment) return null;
+
+  return toPaymentDto(group);
 }
 
 /** 결제 완료 화면용. 없으면 404다. */
@@ -186,6 +297,80 @@ export async function getPayment(paymentId: string): Promise<PaymentDto> {
     throw new NotFoundError("결제 내역을 찾을 수 없습니다.");
   }
   return payment;
+}
+
+/**
+ * 마이 페이지 결제 내역 — 내 결제 건 전부, 최신 결제순.
+ *
+ * 취소된 건도 뺀 목록이 아니다. 원장은 결제를 지우지 않으므로 취소된 결제도
+ * 결제 내역에 남고, 상태와 취소 금액이 함께 내려간다.
+ *
+ * `user_id` 조건을 쓰지 않는다. `payment`의 select 정책이 `auth.uid() = user_id`
+ * 하나뿐이라 남의 행은 애초에 오지 않는다. 여기서 조건을 한 번 더 쓰면 진짜
+ * 방어선이 어디인지 흐려진다.
+ */
+export async function listMyPayments(): Promise<PaymentDto[]> {
+  const groups = groupLedger(await readMyLedger());
+
+  return [...groups.values()]
+    .filter((group) => group.payment !== null)
+    .map(toPaymentDto)
+    .sort((left, right) => right.paidAt.localeCompare(left.paidAt));
+}
+
+/**
+ * 마이 페이지 취소 내역 — 내 취소 행 전부, 최신 취소순.
+ *
+ * 목록의 단위가 결제가 아니라 **취소 행 하나**다. 한 결제 건에 취소가 여러 번
+ * 달릴 수 있어서(지금은 전액 취소만 하지만) 결제 단위로 묶으면 부분 취소를
+ * 붙이는 날 목록의 뜻이 바뀐다.
+ */
+export async function listMyCancellations(): Promise<CancellationDto[]> {
+  const rows = await readMyLedger();
+  const groups = groupLedger(rows);
+
+  return rows
+    .filter((row) => row.type === PAYMENT_TYPE_CANCEL)
+    .map((row) => ({
+      id: row.id,
+      paymentId: row.transaction_key,
+      // 원장에는 음수로 쌓여 있다. 화면에 보여 줄 때 부호를 뗀다.
+      amount: Math.abs(Number(row.amount ?? 0)),
+      canceledAt: row.created_at,
+      paymentAmount: Number(
+        groups.get(row.transaction_key)?.payment?.amount ?? 0,
+      ),
+      productId: row.product_id === null ? null : String(row.product_id),
+      productName: row.product?.name ?? DELETED_PRODUCT_NAME,
+    }));
+}
+
+/**
+ * 포트원에 전액 취소를 요청한다. 여기서부터 돈이 실제로 움직인다.
+ *
+ * 포트원이 거절한 이유를 상태 코드로만 갈라 받는다. 404는 없는 결제 건,
+ * 409는 이미 취소되었거나 취소할 수 없는 상태다. 원장은 결제라고 말하는데
+ * 포트원은 이미 취소라고 답하는 상태(콘솔에서 취소했고 웹훅이 아직 안 들어온
+ * 경우)가 409로 온다 — 이때도 사용자에게는 "이미 취소된 결제"가 맞는 답이다.
+ */
+async function requestCancel(paymentId: string) {
+  try {
+    return await cancelPortOnePayment(paymentId, PAYMENT_CANCEL_REASON);
+  } catch (reason) {
+    if (reason instanceof PortOneApiError) {
+      if (reason.status === 404) {
+        throw new NotFoundError("결제 내역을 찾을 수 없습니다.");
+      }
+      if (reason.status === 409) {
+        throw new PaymentError(
+          "already_canceled",
+          "이미 취소되었거나 취소할 수 없는 결제입니다.",
+        );
+      }
+      throw new PaymentError("unavailable", reason.message);
+    }
+    throw reason;
+  }
 }
 
 /**
@@ -204,8 +389,123 @@ interface VerifiedPayment {
   snapshotProduct: Record<string, unknown>;
 }
 
+/** 검증을 통과한 취소 한 건. */
+interface VerifiedCancellation {
+  /** 그룹키 = 원 결제의 `paymentId`. 취소는 원 결제와 같은 값을 쓴다. */
+  transactionKey: string;
+  /** 포트원이 채번한 취소 내역 아이디. 멱등 키다. */
+  cancellationId: string;
+  userId: string;
+  /** 취소 금액. 양수로 담고 원장에 넣을 때 DB 함수가 음수로 뒤집는다. */
+  amount: number;
+  snapshotPayment: Record<string, unknown>;
+  snapshotProduct: Record<string, unknown>;
+}
+
 /**
- * 결제 검증 — 두 경로가 공유하는 유일한 검증.
+ * 결제 검증 — 결제 확정의 두 문이 공유한다.
+ *
+ * 교차검증은 `crossCheckPayment`가 하고, 여기서는 상태 한 줄만 더 본다.
+ */
+async function verifyPaidPayment(paymentId: string): Promise<VerifiedPayment> {
+  const checked = await crossCheckPayment(paymentId);
+
+  // 승인이 끝난 건만 기록한다. 가상계좌 발급(`VIRTUAL_ACCOUNT_ISSUED`)처럼
+  // 돈이 아직 안 들어온 상태가 여기로 오면 미납을 결제로 적게 된다.
+  if (checked.portone.status !== "PAID") {
+    console.info(
+      `[payments] 결제가 완료되지 않은 건 paymentId=${paymentId} status=${checked.portone.status}`,
+    );
+    throw new PaymentError("not_paid", "아직 결제가 완료되지 않았습니다.");
+  }
+
+  return {
+    transactionKey: paymentId,
+    userId: checked.userId,
+    productId: checked.productId,
+    // 부호는 방향이다. 결제는 양수, 취소는 음수로 쌓인다.
+    amount: checked.amount,
+    snapshotPayment: checked.portone as unknown as Record<string, unknown>,
+    snapshotProduct: checked.snapshotProduct,
+  };
+}
+
+/**
+ * 취소 검증 — 취소 확정의 두 문이 공유한다.
+ *
+ * 결제 검증과 §5의 교차검증을 그대로 공유하고, 상태를 보는 줄만 다르다. 취소된
+ * 건의 `status`는 `PAID`가 아니라 `CANCELLED`이기 때문이다. 금액 검사가 살아
+ * 있다는 점이 중요하다 — `amount.total`은 취소해도 줄지 않으므로, 취소된 건도
+ * 결제와 똑같이 "이 상품을 이 금액에 산 건이 맞는가"를 다시 묻는다.
+ *
+ * 전액 취소만 만들기 때문에 `PARTIAL_CANCELLED`는 통과시키지 않는다. 반쯤
+ * 지원하는 취소 코드가 가장 위험하다.
+ */
+async function verifyCancellation(
+  paymentId: string,
+  cancellationId: string,
+): Promise<VerifiedCancellation> {
+  // 멱등 키가 될 값이다. uuid가 아니면 저장 단계에서 터지므로 여기서 거른다.
+  if (!asUuid(cancellationId)) {
+    return failVerification(paymentId, "mismatch", "취소 내역 ID 형식 불일치");
+  }
+
+  const checked = await crossCheckPayment(paymentId);
+
+  if (checked.portone.status !== "CANCELLED") {
+    // 아직 취소가 반영되지 않았다. 비동기로 취소를 처리하는 PG에서 일어난다.
+    // 잠시 후 다시 물으면 달라질 수 있으므로 재시도가 의미 있는 실패다.
+    console.info(
+      `[payments] 취소가 완료되지 않은 건 paymentId=${paymentId} status=${checked.portone.status}`,
+    );
+    throw new PaymentError("not_canceled", "아직 취소가 완료되지 않았습니다.");
+  }
+
+  // 웹훅이 알려 준 취소 내역이 조회 응답에도 있는지. 없으면 우리 건이 아니거나
+  // 위조된 아이디다.
+  const cancellation = checked.portone.cancellations?.find(
+    (item) => item.id === cancellationId,
+  );
+  if (!cancellation) {
+    return failVerification(paymentId, "mismatch", "취소 내역 없음");
+  }
+
+  if (cancellation.status !== "SUCCEEDED") {
+    console.info(
+      `[payments] 완료되지 않은 취소 내역 paymentId=${paymentId} status=${cancellation.status}`,
+    );
+    throw new PaymentError("not_canceled", "아직 취소가 완료되지 않았습니다.");
+  }
+
+  // 취소 금액의 출처도 DB다. 전액 취소만 하므로 상품 가격과 같아야 한다.
+  if (cancellation.totalAmount !== checked.amount) {
+    return failVerification(paymentId, "mismatch", "취소 금액 불일치");
+  }
+
+  return {
+    transactionKey: paymentId,
+    cancellationId,
+    userId: checked.userId,
+    amount: cancellation.totalAmount,
+    snapshotPayment: checked.portone as unknown as Record<string, unknown>,
+    snapshotProduct: checked.snapshotProduct,
+  };
+}
+
+/** 교차검증을 통과한 결제 건. 상태는 아직 보지 않았다. */
+interface CheckedPayment {
+  /** 포트원 조회 응답 원문. 스냅샷에 그대로 들어간다. */
+  portone: PortOnePayment;
+  /** `customData`가 말하는 사람. */
+  userId: string;
+  productId: number;
+  /** DB 상품 가격이자 포트원이 말하는 총 결제액. 둘이 같음을 확인한 값이다. */
+  amount: number;
+  snapshotProduct: Record<string, unknown>;
+}
+
+/**
+ * §5 교차검증 — 결제와 취소, 네 문이 모두 지나는 유일한 검증.
  *
  * 핵심은 **교차검증**이다. 우리 서버 바깥을 지나온 값들이 서로를 물게 해서,
  * 하나를 조작하면 반드시 다른 하나와 어긋나게 만든다. `customData.productId`를
@@ -214,8 +514,11 @@ interface VerifiedPayment {
  *
  * 세션은 보지 않는다. 웹훅에는 세션이 없기 때문이다. 소유자 확인은 부르는 쪽이
  * 자기 경로에 맞게 한다.
+ *
+ * 상태(`status`)도 보지 않는다. 결제는 `PAID`를, 취소는 `CANCELLED`를 요구하므로
+ * 그 한 줄만 부르는 쪽이 각자 확인한다.
  */
-async function verifyPaidPayment(paymentId: string): Promise<VerifiedPayment> {
+async function crossCheckPayment(paymentId: string): Promise<CheckedPayment> {
   // 그룹키는 uuid 컬럼이다. 우리가 채번한 결제 건이라면 반드시 UUID v4다.
   // 콘솔의 웹훅 호출 테스트처럼 임의의 문자열이 오는 경우가 여기서 걸린다.
   if (!asUuid(paymentId)) {
@@ -254,15 +557,6 @@ async function verifyPaidPayment(paymentId: string): Promise<VerifiedPayment> {
     return failVerification(paymentId, "mismatch", "결제 건 ID 불일치");
   }
 
-  // 승인이 끝난 건만 기록한다. 가상계좌 발급(`VIRTUAL_ACCOUNT_ISSUED`)처럼
-  // 돈이 아직 안 들어온 상태가 여기로 오면 미납을 결제로 적게 된다.
-  if (portone.status !== "PAID") {
-    console.info(
-      `[payments] 결제가 완료되지 않은 건 paymentId=${paymentId} status=${portone.status}`,
-    );
-    throw new PaymentError("not_paid", "아직 결제가 완료되지 않았습니다.");
-  }
-
   // 우리 채널을 지난 결제인지. 남의 상점에서 만든 결제 건 ID를 들고 와도 여기서
   // 걸린다. 키가 아예 없는 응답도 통과시키지 않는다.
   if (portone.channel?.key !== keys.channelKey) {
@@ -278,7 +572,12 @@ async function verifyPaidPayment(paymentId: string): Promise<VerifiedPayment> {
   // DB다 — 결제창에 실렸던 금액은 여기서 판단 근거가 되지 않는다.
   const { product, row } = await getProductSnapshot(custom.productId);
 
-  if (product.price === null || portone.amount.total !== product.price) {
+  // 금액이 없는 응답(승인 전 상태 등)을 숫자로 다루면 그 자리에서 500이 된다.
+  const total = portone.amount?.total;
+  if (typeof total !== "number") {
+    return failVerification(paymentId, "mismatch", "결제 금액 없음");
+  }
+  if (product.price === null || total !== product.price) {
     // customData의 productId를 싼 상품으로 바꿔치기하면 여기서 어긋난다.
     return failVerification(paymentId, "mismatch", "결제 금액 불일치");
   }
@@ -290,12 +589,10 @@ async function verifyPaidPayment(paymentId: string): Promise<VerifiedPayment> {
   }
 
   return {
-    transactionKey: paymentId,
+    portone,
     userId: custom.userId,
     productId: Number(product.id),
-    // 부호는 방향이다. 결제는 양수, 취소는 음수로 쌓는다.
-    amount: portone.amount.total,
-    snapshotPayment: portone as unknown as Record<string, unknown>,
+    amount: total,
     snapshotProduct: row,
   };
 }
@@ -335,6 +632,32 @@ async function recordPayment(
 }
 
 /**
+ * 원장에 취소 행을 남긴다. 원 결제 행은 건드리지 않는다 — 원장은 append-only다.
+ *
+ * `record_cancellation`은 `record_payment`와 같은 규약이다. 소유자와 상품은
+ * 인자가 아니라 원 결제 행에서 복사하고, 그룹 합계에서 취소액을 뺀 값이 0보다
+ * 작아지면 거절하며, 같은 취소 내역 아이디가 다시 들어오면 기존 행 id를 돌려준다.
+ */
+async function recordCancellation(
+  supabase: Db,
+  verified: VerifiedCancellation,
+): Promise<void> {
+  const { error } = await supabase.rpc("record_cancellation", {
+    p_transaction_key: verified.transactionKey,
+    p_cancellation_id: verified.cancellationId,
+    p_user_id: verified.userId,
+    p_amount: verified.amount,
+    p_snapshot_payment: verified.snapshotPayment as unknown as Json,
+    p_snapshot_product: verified.snapshotProduct as unknown as Json,
+  });
+
+  if (error) {
+    console.error("[payments] 취소 기록 실패", error);
+    throw new PaymentError("unavailable", "취소 내역을 저장하지 못했습니다.");
+  }
+}
+
+/**
  * 검증 실패. 사유는 로그에만 남기고 사용자에게는 한 문구로 답한다.
  *
  * 어떤 검사에서 걸렸는지 알려 주면, 값을 하나씩 바꿔 가며 통과 조건을 찾아낼 수
@@ -342,11 +665,107 @@ async function recordPayment(
  */
 function failVerification(
   paymentId: string,
-  code: PaymentFailureCode,
+  code: PaymentFailureCode | CancelFailureCode,
   reason: string,
 ): never {
   console.error(`[payments] 결제 검증 실패 paymentId=${paymentId} ${reason}`);
   throw new PaymentError(code, "결제 정보를 확인하지 못했습니다.");
+}
+
+/**
+ * 원장 한 줄. 결제 행과 취소 행이 같은 모양으로 온다.
+ *
+ * `amount`는 Postgres `numeric`이다. PostgREST가 숫자로 보내지만 정밀도 보존을
+ * 위해 문자열로 오는 설정도 있어서, 두 경우를 모두 받아 두고 DTO로 옮길 때 숫자로
+ * 못 박는다.
+ */
+interface LedgerRow {
+  id: string;
+  transaction_key: string;
+  cancellation_id: string | null;
+  type: string;
+  amount: number | string;
+  created_at: string;
+  product_id: number | null;
+  product: { name: string | null } | null;
+}
+
+const LEDGER_SELECT =
+  "id, transaction_key, cancellation_id, type, amount, created_at, product_id, product(name)";
+
+/** 내 원장 전부, 최신순. 남의 행은 RLS가 애초에 내려보내지 않는다. */
+async function readMyLedger(): Promise<LedgerRow[]> {
+  await requireUser();
+
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("payment")
+    .select(LEDGER_SELECT)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("[payments] 결제 내역 조회 실패", error);
+    throw new Error("결제 내역을 불러오지 못했습니다.");
+  }
+
+  return (data ?? []) as unknown as LedgerRow[];
+}
+
+/** 그룹키로 묶은 원장 한 덩어리 — 결제 하나와 그에 딸린 취소들. */
+interface LedgerGroup {
+  /** 취소 행만 있고 결제 행이 없는 그룹은 있을 수 없지만, 타입으로 강제하지 않는다. */
+  payment: LedgerRow | null;
+  cancels: LedgerRow[];
+}
+
+function groupLedger(rows: LedgerRow[]): Map<string, LedgerGroup> {
+  const groups = new Map<string, LedgerGroup>();
+
+  for (const row of rows) {
+    const group = groups.get(row.transaction_key) ?? {
+      payment: null,
+      cancels: [],
+    };
+
+    if (row.type === PAYMENT_TYPE_PAYMENT) {
+      group.payment = row;
+    } else {
+      group.cancels.push(row);
+    }
+
+    groups.set(row.transaction_key, group);
+  }
+
+  return groups;
+}
+
+/**
+ * 그룹 하나를 결제 내역 한 줄로.
+ *
+ * 상태는 컬럼이 아니라 **합계**에서 나온다. 결제 행의 금액에서 취소들을 빼고
+ * 남은 것이 0 이하면 취소된 결제다. 원장은 결제 행을 덮어쓰지 않으므로 이것이
+ * 유일한 판단 근거다.
+ */
+function toPaymentDto(group: LedgerGroup): PaymentDto {
+  // 부르는 쪽이 `payment !== null`을 확인하고 넘긴다.
+  const row = group.payment as LedgerRow;
+
+  const amount = Number(row.amount ?? 0);
+  const canceledAmount = group.cancels.reduce(
+    (sum, cancel) => sum + Math.abs(Number(cancel.amount ?? 0)),
+    0,
+  );
+
+  return {
+    id: row.transaction_key,
+    amount,
+    paidAt: row.created_at,
+    productId: row.product_id === null ? null : String(row.product_id),
+    productName: row.product?.name ?? DELETED_PRODUCT_NAME,
+    canceledAmount,
+    status: amount - canceledAmount <= 0 ? "canceled" : "paid",
+  };
 }
 
 interface PaymentCustomData {

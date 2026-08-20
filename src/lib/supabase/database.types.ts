@@ -26,6 +26,7 @@ export type Database = {
       payment: {
         Row: {
           amount: number
+          cancellation_id: string | null
           created_at: string
           id: string
           payment_snapshot_id: number | null
@@ -36,6 +37,7 @@ export type Database = {
         }
         Insert: {
           amount: number
+          cancellation_id?: string | null
           created_at?: string
           id?: string
           payment_snapshot_id?: number | null
@@ -46,6 +48,7 @@ export type Database = {
         }
         Update: {
           amount?: number
+          cancellation_id?: string | null
           created_at?: string
           id?: string
           payment_snapshot_id?: number | null
@@ -237,6 +240,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      record_cancellation: {
+        Args: {
+          p_amount: number
+          p_cancellation_id: string
+          p_snapshot_payment: Json
+          p_snapshot_product: Json
+          p_transaction_key: string
+          p_user_id: string
+        }
+        Returns: string
+      }
       record_payment: {
         Args: {
           p_amount: number

@@ -12,10 +12,10 @@ import { portoneWebhookSecret } from "./env";
  * 검증은 Standard Webhooks 스펙을 따르며, 포트원 서버 SDK가 그것을 구현한다.
  *
  * 검증을 통과한 뒤에도 본문이 말하는 "무슨 일이 있었는지"는 믿지 않는다. 웹훅이
- * 알려 주는 것은 `paymentId`까지이고, 상태는 결제 조회 API로 다시 확인한다
- * (`service.ts`의 `verifyPaidPayment`).
+ * 알려 주는 것은 `paymentId`와 `cancellationId`까지이고, 상태는 결제 조회 API로
+ * 다시 확인한다(`service.ts`의 `crossCheckPayment`).
  *
- * 이 파일은 서명과 이벤트 종류만 안다. 결제 검증과 기록은 `service.ts`가 한다.
+ * 이 파일은 서명과 이벤트 종류만 안다. 결제·취소 검증과 기록은 `service.ts`가 한다.
  */
 
 /**
@@ -27,6 +27,7 @@ import { portoneWebhookSecret } from "./env";
  */
 export type PaymentWebhookEvent =
   | { kind: "paid"; paymentId: string }
+  | { kind: "cancelled"; paymentId: string; cancellationId: string }
   | { kind: "ignored"; type: string };
 
 /**
@@ -50,16 +51,29 @@ export async function readPaymentWebhook(
     Object.fromEntries(headers),
   );
 
+  if (webhook.type === "Transaction.Paid") {
+    return { kind: "paid", paymentId: webhook.data.paymentId };
+  }
+
   /*
-    결제 취소 웹훅(`Transaction.Cancelled` / `Transaction.PartialCancelled`)은
-    아직 처리하지 않는다. 취소 원장 행을 쓰는 경로가 아직 없기 때문이다.
-    여기서 `kind`를 하나 늘리고 `service.ts`에 기록 함수를 붙이면 된다.
+    전액 취소만 처리한다.
+
+    `Transaction.PartialCancelled`(부분 취소)와 `Transaction.CancelPending`
+    (비동기 취소 요청 접수)은 흘려보낸다. 부분 취소는 우리가 만들지 않는 상태이고
+    (전액 취소만 요청한다), 접수는 아직 돈이 돌아가지 않은 상태다. 둘 다 원장에
+    적을 사실이 아니다 — 콘솔에서 부분 취소가 일어났다면 로그에만 남고, 접수된
+    취소는 완료될 때 `Transaction.Cancelled`로 다시 온다.
 
     가상계좌 발급(`Transaction.VirtualAccountIssued`)도 범위 밖이다. 돈이 아직
     들어오지 않은 상태라 결제로 적으면 안 된다.
   */
-  if (webhook.type === "Transaction.Paid") {
-    return { kind: "paid", paymentId: webhook.data.paymentId };
+  if (webhook.type === "Transaction.Cancelled") {
+    return {
+      kind: "cancelled",
+      paymentId: webhook.data.paymentId,
+      // 취소 원장 행의 멱등 키다. 그룹키만으로는 취소 행을 구분할 수 없다.
+      cancellationId: webhook.data.cancellationId,
+    };
   }
 
   return { kind: "ignored", type: String(webhook.type) };

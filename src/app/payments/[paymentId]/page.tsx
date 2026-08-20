@@ -8,7 +8,7 @@ import { DetailRow } from "../../../components/ui/DetailRow";
 import { NotFoundError } from "../../../lib/api/http";
 import { UnauthorizedError } from "../../../lib/auth/session";
 import type { PaymentDto } from "../../../lib/payments/dto";
-import { formatPaidAt } from "../../../lib/payments/format";
+import { formatPaymentDateTime } from "../../../lib/payments/format";
 import { getPayment } from "../../../lib/payments/service";
 import { formatWon } from "../../../lib/products/format";
 
@@ -64,7 +64,7 @@ export default async function PaymentCompletePage(
             {formatWon(payment.amount)}
           </DetailRow>
           <DetailRow label="결제 일시">
-            {formatPaidAt(payment.paidAt)}
+            {formatPaymentDateTime(payment.paidAt)}
           </DetailRow>
           {/*
             주문번호는 포트원 결제 건 ID 그대로다. 문의할 때 이 값 하나로 건을

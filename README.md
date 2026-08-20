@@ -24,7 +24,7 @@
 | `/products/[id]` | 상품 상세. 배너·정보 카드·소개·상세 이미지, 하단 결제 바 |
 | `/payments/[paymentId]` | 결제 완료. 조회만 하는 화면이라 새로고침해도 안전하다 |
 | `/payments/failed` | 결제 실패. 사유별 안내 (로그인 없이 열린다) |
-| `/my` | 내 프로필과 내가 쓴 글 |
+| `/my` | 내 프로필과 세 탭 — 내가 쓴 글 / 결제 내역 / 취소 내역 (`?tab=payments`, `?tab=cancels`) |
 | `/my/edit` | 프로필 수정 |
 
 ## 기술 스택
@@ -33,7 +33,8 @@
 - **Tailwind CSS 4** — 디자인 토큰은 `src/tokens/*`
 - **Supabase** — 인증(구글 OAuth), Postgres, Storage
 - **네이버 지도 API** — 지도 표시, 지역검색, 리버스 지오코딩
-- **포트원(PortOne) V2** — 카드 결제와 결제 웹훅. 규칙은 `rules/payment.md`가 SSOT다
+- **포트원(PortOne) V2** — 카드 결제, 전액 취소, 결제·취소 웹훅. 규칙은
+  `rules/payment.md`가 SSOT다
 - **Storybook 10** — 디자인 시스템의 단일 진실 공급원(SSOT)
 
 ## 실행 방법
@@ -95,6 +96,9 @@ NCP 콘솔에 등록하는 **Web 서비스 URL 허용목록**이다. 개발용 `
 
 - **테이블**: `place`, `place_image`, `profile`, `product`, `payment`,
   `payment_snapshot` — 컬럼 구조는 `database.types.ts` 참고
+- **결제 원장 함수**: `record_payment`, `record_cancellation` (둘 다 `security definer`).
+  `payment`에는 insert 정책이 없고 모든 쓰기가 이 둘을 지난다 — 자세한 규약은
+  `rules/payment.md` §4.1
 - **상품 등록**: 운영자 어드민 화면은 아직 없다. `product` 행을 SQL로 넣고,
   `status`를 `Public`으로 둬야 목록에 나온다. 정책은 읽기 전용이라 앱은 쓰지 않는다
 - **Storage 버킷**: `profile-image`, `place_image`, `product-image` (모두 공개 읽기)
